@@ -1,0 +1,21 @@
+LAKE,NAME,Type,Ca,Secchi,Cobble,Area,MaxDepth,Drainage
+ST,Little Star,HC,11.2,428,25,245,67,DG
+PA,Papoose,HC,16,358,21,428,65,SP
+PI,Presque Isle,HC,14.2,498,21,1280,80,DG
+SP,Spider,HC,9.4,395,30,272,43,DG
+SQ,Squirrel,HC,9.6,273,21,1317,68,DG
+CO,Cochran,HP,9.2,203,0,126,12,SP
+LH,Lake of the Hills,HP,8.8,204,8,62,10,DG
+MA,Mann,HP,20,250,0,261,18,SP
+SA,Sanborn,HP,9.2,240,8,253,13,SP
+VA,Van Vliet,HP,13.6,256,25,220,23,SP
+HI,High,LC,17.2,316,21,734,31,DG
+JO,Little John,LC,16.6,342,8,166,19,SP
+PL,Plum,LC,12.6,416,17,1108,57,DG
+AL,Upper Allequash,LC,11.2,335,13,426,24,DG
+RI,Wild Rice,LC,19,174,21,379,26,DG
+LA,Landing,LP,7.2,286,0,220,11,DG
+CR,Little Crooked,LP,17.6,237,0,153,20,DG
+RO,Round,LP,13.8,180,25,116,25,DG
+GR,Upper Gresham,LP,15,349,0,366,32,DG
+BI,White Birch,LP,8.8,395,0,117,27,DG
