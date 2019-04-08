@@ -20,6 +20,7 @@ par(mfrow=c(1,2))
 # Then we match this with the sector-based fish dataset.
 # Then set up the colors variable for plotting.
 # Let's color the lake sector names in the ordination plots by lake type
+#test run
 lake.dat=read.csv("~/Documents/GitHub/ACE/MultiLake Data 1987 simplified.csv")
 
 names(lake.dat)
