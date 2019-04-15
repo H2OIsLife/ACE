@@ -210,3 +210,4 @@ text(fish.hel.pcoa.scores[,1:2],labels=fish.dat$LAKE,col=colors)
 ordisurf(fish.hel.pcoa.scores, fish.lakes[,24])
 
 #watch out for hulls, they are convex and always angle inward
+

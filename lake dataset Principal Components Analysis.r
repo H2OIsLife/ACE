@@ -36,13 +36,15 @@ colors=ifelse(fish.lakes$Type=="LC",2,ifelse(fish.lakes$Type=="HC",3,ifelse(fish
 #QUESTIONS FOR MONDAY
 # Why do we take the means?
 # What is centering, why do we do it? Why does it give us negative numbers, and why are the means 0?
-#for the eigenvalues, do we caulcate a percentage of variance explained by an axes with those? When we go to plot arounf line 70, why do we multiple our eigen values by the raw data, why not just use the fish scores? 
+#for the eigenvalues, do we caulcate a percentage of variance explained by an axes with those? 
+#When we go to plot arounf line 70, why do we multiple our eigen values by the raw data, why not just use the fish scores? 
 
 # This block starts us off with Euclidean distance as a demo - simple, but incorrect for species data
 # First I'm going to do it "by hand"
 n=nrow(fish.dat)
 p=ncol(fish.dat[,3:20])
 fish.means=apply(fish.dat[,3:20],2,sum)/n
+#^vector of mans form raw data, gets substrated to get the centered values... so when values are negarive, that means that they are less than the average species score..
 fish.means
 means.matrix=t(matrix(nrow=p,ncol=n,fish.means))
 fish.centered=fish.dat[,3:20]-means.matrix
@@ -133,6 +135,7 @@ ordihull(fish.hel.pca,fish.lakes[,23])
 
 ###Hellinger based PCoA and PCA yield the same results#
 #how? they are calculated totally differently? 
+
 # Is it the same ordination as found by Hellinger-based PCoA?
 fish.dist.hel=vegdist(fish.hel,method="euclidean")
 fish.hel.pcoa=wcmdscale(fish.dist.hel,eig=TRUE)
@@ -149,7 +152,7 @@ names(lake.dat)
 lake.pca=rda(lake.dat[,4:8])
 summary(lake.pca)
 # Does it make sense to perform this PCA using Euclidean distance directly on these variables?
-# Nope, definitely not.
+# Nope, definitely not.- they are different scales, they aren't standardized, so the high numbers will have a really large effect simply because the magnitude of the values is greater..
 # We can use the "standardize" tranformation to instead base the PCA on the correlation matrix, which removes differences in scales among variables.
 lake.pca.cor=rda(decostand(lake.dat[,4:8],method="standardize"))
 summary(lake.pca.cor)
@@ -192,8 +195,14 @@ fish.wchi.pcoa.scores=scores(fish.wchi.pcoa)
 plot(fish.wchi.pcoa,type="none",xlab="Axis 1 (22%)",ylab="Axis 2 (14%)")
 text(fish.wchi.pcoa.scores[,1:2],labels=fish.dat$LAKE,col=colors)
 #why does weighting change the ordination? How are you weighting? 
+#^if something is more abundant, you can weigh it more heavily. this is the opposite of what eucidean does.. chi square favors rares
+
 
 # Is it the same ordination as found by Chi-square-based PCA or the same as CA? 
+
+#^yes, you get the same results from a chi square PCoA, classical CCA and PCA. 
+
+
 cor(cbind(fish.chi.pcoa.scores[,1:4],fish.chi.pca.scores[,1:4],fish.ca.scores[,1:4]))
 # Is it the same ordination as found by CA?
 cor(cbind(fish.wchi.pcoa.scores[,1:4],fish.ca.scores[,1:4]))
