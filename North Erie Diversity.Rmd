@@ -1,0 +1,157 @@
+---
+title: "North Erie Diversity"
+author: "Jordyn Stoll"
+date: "March 20, 2019"
+output: html_document
+---
+NORTH ERIE ANALYSIS
+
+Read in the data and look at some basic features (make sure it read in correctly)
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+nerie<-read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+
+names(nerie)
+dim(nerie)
+head(nerie)
+str(nerie)
+```
+
+Calculate species richness
+```{r}
+# Total caught per species
+nerie.colsums=apply(nerie[,5:147],2,sum)
+# Total number of fish per sampe
+nerie.rowsums=apply(nerie[,5:147],1,sum)
+#check out what we did
+nerie.colsums
+nerie.rowsums
+# Its so easy to calculate richness, right?  Well, maybe...
+nerie.rich=apply(nerie[,5:147]>0,1,sum)
+nerie.rich
+# add total catch and raw richness to the dataset for future use, and look at the lowest number of fish caught in a sample
+#cbind stands for column bind, so we are combining the dataset info, richness and rowsums
+cbind(nerie[,1:2],nerie.rich,nerie.rowsums)
+min(nerie.rowsums)
+#helps to determine how many sites you would exclude during rarefaction
+as.data.frame(table(nerie.rowsums))
+```
+Individual based rarefaction
+```{r}
+library(vegan)
+# Using the rarefaction formula to find expected species richness
+rarecurve(nerie[,5:147])
+# You can choose a minimum sample size to rarefy all samples to using the command below
+#uses formulas from Gotelli et al
+rarefy(nerie[,5:147],sample=380)
+#could store to analyze later
+
+```
+Shannon Diversity Hill Numbers
+```{r}
+diversity(nerie[,5:147],index="shannon")  
+# Hill and Renyi numbers are calculated by this command- exponentiates the shannon values
+renyi(nerie[,5:147], hill=TRUE)
+plot(renyi(nerie[,5:147], hill=TRUE))
+plot(renyi(nerie[,5:147], scales=c(0,1,2,Inf), hill=TRUE))
+#you would have to dump the NaN (dividing my 0 error) before you can do stats, you would also have to choose what hill number to run stats on and filter out the samples that are 'bad'
+
+```
+Rarefaction
+```{r}
+#rarefy to 380
+nerie.rare<-rrarefy(nerie[,5:147], sample =380)
+head(rrarefy(nerie[,5:147],sample=380))
+```
+
+Run 999 simulations (each is slightly different, so run a lot, then average)
+```{r}
+# Perform random sampling "nperm" times and then take averages
+# First set some parameters and set up an empty matrix to store simulated communities
+nperm=100
+n=nrow(nerie[nerie.rowsums>0,])
+p=ncol(nerie[,5:147])
+#matrix to store the results
+renyi.indperms=matrix(nrow=n,ncol=4*nperm)
+# Simulate rarefied communities "nperm" times, i is a variable that ends up being, 1,2,3... for each perm. 
+#(1+(i-1)*4):(i*4) tells the loop where to store the data- we need four columns for every iteration
+#rrarefy(fish.dat[fish.rowsums>5,3:20],sample=6) simulates the community
+#renyi(fish.rare6, scales=c(0,1,2,Inf), hill=TRUE) runs the calculation to get the hill numbers
+
+for(i in 1:nperm){
+	nerie.rare=rrarefy(nerie[nerie.rowsums>0,5:147],sample=380)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare=renyi(nerie.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms[,cols]=as.matrix(renyi.rare)
+}
+maxperm=nperm*4
+head(renyi.indperms)
+```
+
+Notes:
+look at what we did: head(renyi.indperms)
+seq(from=1,to=(maxperm-3),by=4) gives you 1,5,9.... to 797
+
+Average permuations to yield rarefied, average hill numbers
+```{r}
+nerie.hills=cbind(nerie[,c(2,4)],
+	apply(renyi.indperms[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(nerie.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+nerie.hills
+#the product of this is what you would then run stats on... this would be averaged, rarified data.
+
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+nerie.hills$trace<-grepl("Trace", nerie.hills$TREATMENT) 
+nerie.hills$nitrogen<-grepl("N", nerie.hills$TREATMENT) 
+nerie.hills$phosphorus<-grepl("P", nerie.hills$TREATMENT) 
+
+```
+Stats on Hill numbers
+```{r}
+#Blackwood says to run a LM instead of aov... why?
+
+#Richness
+nerieRICHNESSaov<-aov(H0~nitrogen*phosphorus*trace, data=nerie.hills)
+shapiro.test(resid(nerieRICHNESSaov))
+par(mfrow=c(1,2))
+plot(nerieRICHNESSaov,which=c(1,2), main="North Erie Richness Normality")
+summary(nerieRICHNESSaov)
+#phosphorus almost significant
+TukeyHSD(nerieRICHNESSaov)
+
+
+#Exponential Shannon Entropy (Shannon Hill)
+#NORMALITY  ASSUMPTION NOT MET- binomial error distribution- or poisson
+nerieSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=nerie.hills)
+shapiro.test(resid(nerieSHANNONaov))
+par(mfrow=c(1,2))
+plot(nerieSHANNONaov,which=c(1,2), main="North Erie Shannon Normality")
+summary(nerieSHANNONaov)
+# P almost significant
+
+#Exponential Inverse Simpson Entropy (Simpson Hill)
+#this indice and the ones below are more concerned with species evenness, whereas the above are more richness based
+#NORMALITY  ASSUMPTION NOT MET
+nerieSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=nerie.hills)
+shapiro.test(resid(nerieSIMPSONaov))
+par(mfrow=c(1,2))
+plot(nerieSIMPSONaov,which=c(1,2), main="North Erie Simpson Normality")
+summary(nerieSIMPSONaov)
+TukeyHSD(nerieSIMPSONaov)
+# no significance, P close
+
+
+#Exponential Berger Parker (BP Hill)
+nerieBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=nerie.hills)
+shapiro.test(resid(maumeeBPaov))
+par(mfrow=c(1,2))
+plot(maumeeBPaov,which=c(1,2), main="Maumee Berger-Parker Normality")
+summary(maumeeBPaov)
+# P significant
+
+
+```
+

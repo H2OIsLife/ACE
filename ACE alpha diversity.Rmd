@@ -1,0 +1,254 @@
+---
+title: "Maumee"
+author: "Jordyn Stoll"
+date: "February 11, 2019 - April 3, 2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+MAUMEE ANALYSIS
+
+Read in the data and look at some basic features (make sure it read in correctly)
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+maumee1<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+#remove initial sample
+
+maumee<-maumee1[-c(1),]
+names(maumee)
+dim(maumee)
+head(maumee)
+str(maumee)
+
+```
+
+Calculate species richness
+```{r}
+# Total caught per species
+maum.colsums=apply(maumee[,4:70],2,sum)
+# Total number of fish per sampe
+maum.rowsums=apply(maumee[,4:70],1,sum)
+#check out what we did
+maum.colsums
+maum.rowsums
+# Its so easy to calculate richness, right?  Well, maybe...
+maum.rich=apply(maumee[,4:70]>0,1,sum)
+maum.rich
+# add total catch and raw richness to the dataset for future use, and look at the lowest number of fish caught in a sample
+#cbind stands for column bind, so we are combining the dataset info, richness and rowsums
+cbind(maumee[,1:2],maum.rich,maum.rowsums)
+min(maum.rowsums)
+#helps to determine how many sites you would exclude during rarefaction
+as.data.frame(table(maum.rowsums))
+```
+
+Individual based rarefaction
+```{r}
+library(vegan)
+# Using the rarefaction formula to find expected species richness
+rarecurve(maumee[,4:70])
+# You can choose a minimum sample size to rarefy all samples to using the command below
+#uses formulas from Gotelli et al
+rarefy(maumee[,4:70],sample=399)
+#could store to analyze later
+
+```
+
+Shannon Diversity Hill Numbers
+```{r}
+diversity(maumee[,4:70],index="shannon")  
+# Hill and Renyi numbers are calculated by this command- exponentiates the shannon values
+renyi(maumee[,4:70], hill=TRUE)
+plot(renyi(maumee[,4:70], hill=TRUE))
+plot(renyi(maumee[,4:70], scales=c(0,1,2,Inf), hill=TRUE))
+```
+
+Rarefaction
+```{r}
+#rarefy to 399
+maum.rare<-rrarefy(maumee[,4:70], sample=399)
+head(rrarefy(maumee[,4:70],sample=399))
+```
+
+Run  simulations (each is slightly different, so run a lot, then average)
+```{r}
+nperm=100
+n=nrow(maumee[maum.rowsums>0,])
+p=ncol(maumee[,4:70])
+#matrix to store the results
+renyi.indperms=matrix(nrow=n,ncol=4*nperm)
+
+for(i in 1:nperm){
+	maum.rare=rrarefy(maumee[maum.rowsums>0,4:70],sample=399)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare=renyi(maum.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms[,cols]=as.matrix(renyi.rare)
+}
+maxperm=nperm*4
+head(renyi.indperms)
+```
+
+Average permuations to yield rarefied, average hill numbers
+```{r}
+maum.hills=cbind(maumee[,c(2,3)],
+	apply(renyi.indperms[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(maum.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+maum.hills
+# Why are richness Hill nubers not whole numbers??
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+maum.hills$trace<-grepl("Trace", maum.hills$TREATMENT) 
+maum.hills$nitrogen<-grepl("N", maum.hills$TREATMENT) 
+maum.hills$phosphorus<-grepl("P", maum.hills$TREATMENT) 
+
+```
+ANOVA on Hill numbers
+```{r}
+#not considering significance from the intitial sample. Counts for the initial are biased (long story) so I'm not considering them in my statistical analysis currently. 
+
+#Richness
+maumeeRICHNESSaov<-aov(H0~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeRICHNESSaov))
+par(mfrow=c(1,2))
+plot(maumeeRICHNESSaov,which=c(1,2), main="Maumee Richness Normality")
+summary(maumeeRICHNESSaov)
+#nitrogen, phosphorus significant
+maumeeRICHNESSaov2<-aov(H0~TREATMENT, data=maum.hills)
+summary(maumeeRICHNESSaov2)
+TukeyHSD(maumeeRICHNESSaov2)
+#N+P-control
+#N+P-trace
+
+#Exponential Shannon Entropy (Shannon Hill)
+maumeeSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeSHANNONaov))
+par(mfrow=c(1,2))
+plot(maumeeSHANNONaov,which=c(1,2), main="Maumee Shannon Normality")
+summary(maumeeSHANNONaov)
+#N, P significant
+maumeeSHANNONaov2<-aov(H1~TREATMENT, data=maum.hills)
+summary(maumeeSHANNONaov2)
+TukeyHSD(maumeeSHANNONaov2)
+#N+P-control
+#Trace-N+P
+
+#Exponential Inverse Simpson Entropy (Simpson Hill)
+#this indice and the ones below are more concerned with species evenness, whereas the above are more richness based
+maumeeSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeSIMPSONaov))
+par(mfrow=c(1,2))
+plot(maumeeSIMPSONaov,which=c(1,2), main="Maumee Simpson Normality")
+summary(maumeeSIMPSONaov)
+boxplot(H0~phosphorus, data=maum.hills, main="P")
+boxplot(H0~nitrogen, data=maum.hills, main="N")
+#P significant
+
+maumeeSIMPSONaov2<-aov(H2~TREATMENT, data=maum.hills)
+summary(maumeeSIMPSONaov2)
+TukeyHSD(maumeeSIMPSONaov2)
+#NPtrace- control nearly significant
+
+#Exponential Berger Parker (BP Hill)
+maumeeBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeBPaov))
+par(mfrow=c(1,2))
+plot(maumeeBPaov,which=c(1,2), main="Maumee Berger-Parker Normality")
+summary(maumeeBPaov)
+#P significant
+
+maumeeBPaov2<-aov(HInf~TREATMENT, data=maum.hills)
+summary(maumeeBPaov2)
+TukeyHSD(maumeeBPaov2)
+#NPtrace- control nearly significant
+
+
+```
+Graphing results
+```{r}
+par(mfrow=c(1,1))
+#order treatments in a logical way
+maum.hills$TREATMENT <- factor(maum.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+#richness
+boxplot(H0~TREATMENT, data=maum.hills,
+        main="Maumee Richness",
+        xlab="Treatment",
+        ylab="species richness",
+        las=2,
+        col=c("gray76","gray76","darkturquoise","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+#Shannon
+boxplot(H1~TREATMENT, data=maum.hills,
+        main="Maumee Shannon Index",
+        xlab="Treatment",
+        ylab="Shannon Index",
+        las=2,
+        col=c("gray76","gray76","darkturquoise","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+#Simpson
+boxplot(H2~TREATMENT, data=maum.hills,
+        main="Maumee Simpson Index",
+        xlab="Treatment",
+        ylab="Simpson Index",
+        las=2,
+        col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+#Berger Parker
+boxplot(HInf~TREATMENT, data=maum.hills,
+        main="Maumee Berger Parker Index",
+        xlab="Treatment",
+        ylab="Berger Parker Index",
+        las=2,
+        col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+
+```
+###Background and Interpretation
+
+This data is from a bottle incubation experiment in which water was collected from Maumee Bay, placed into clear bottles and treated with NH4, PO4 and trace metals (Fe, Mo, Mn, Ni, Zn, Co) in replicate of 4 for each treatment. The control had no nutrients add, and the 'chelex' treatment removed trace metals via chelation with 'chelex'. After a 72 hour incubation, water was sampled and analyzed for ash free dry mass, chl-a, microcystin and community composition. Community composition was comepleted by counting 400 natural units per sample and identifying down to lowest taxonomic unit, or labelled as a morphospecies.
+
+The community composition data was rarefied to the lowest count (399) and Hill numbers were calculated. Multiway ANOVA was used to look for interactions between N, P and trace metals on all four Hill numbers. The null hypothesis was that treatment would have no effect on diversity, while the alternative was that it would. I made no specific hypotheses prior to analyses as to what specific treatments would increase or decrease diversity from the control. 
+
+The richness ANOVA indicates that N and P are significant. Using a Tukey post hoc, there is a significant relationship between N+P and trace, and N+P and control treatments. N+P increased richness (though there was great variation within the replicates) the most, and is significantly different from the control and trace treatment
+
+The Shannon ANOVA indicates similar results, being that N+P facilitate the greatest diversity while the control and trace treatments the least.
+
+Both Simpson and Berger Parker indicate P significant in the MANOVA, but no significance with the post hoc. N+P+trace - control are nearly significant in both analyses, and graphs demonstrate N+P and N+P+trace treatments have the highest diversity values, while the control and trace metals have the lowest. 
+
+While this diversity is interesting, I'm more interested to see if there is a community composition shift. Ordination analysis will hopefully shed light on this. 
+
+Using iNEXT 
+```{r}
+library(iNEXT)
+#to do it on one row (one sample)
+iNEXT(as.numeric(maumee[36,4:70]), q=c(0,1,2), datatype="abundance")
+some.maumee=iNEXT(as.numeric(maumee[36,4:70]), q=c(0,1,2), datatype="abundance")
+ggiNEXT(some.maumee, type=1, facet.var="site")
+ggiNEXT(some.maumee, type=3, facet.var="site")
+some.maumee=iNEXT(as.numeric(maumee[1,4:70]), q=c(0,1,2), datatype="abundance")
+ggiNEXT(some.maumee, type=1, facet.var="site")
+
+#since this only shows data for one sample, I'm not super interested in this. The code to run iNEXT for multiple samples was not working for me- I kept getting errors saying there are zero abundances (well obviously).. and couldn't figure out how to make it work. 
+
+#NONE OF THIS WORKS
+#to run it on reformatted data for iNext- iNext takes list data
+#t transposes data, switches rows and columns, apply is applying by colunm abucount function
+
+#maumee.inext=apply(t(maumee[maum.rowsums,4:70]),2,as.abucount)
+#all.maumee.data=iNEXT(maumee.inext, q=0, datatype="abundance")
+#ggiNEXT(all.maumee.data, type=1, facet.var="site")
+#estimateD(maumee.inext,datatype="abundance",base="coverage")
+#estimateD(maumee.inext,datatype="abundance",base="coverage",level=0.9)
+#estimateD(maumee.inext,datatype="abundance",base="coverage",level=0.5)
+
+# estimateD gives an individual diversity value at a cut off of sample coverage (SC)- gives Hill numbers (as orders, 0, 1,2)
+
+#estimateD(maumee.inext,datatype="abundance",base="size")
+#estimateD(maumee.inext,datatype="abundance",base="size",level=15)
+```
+

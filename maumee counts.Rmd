@@ -1,0 +1,319 @@
+---
+title: "Maumee"
+author: "Jordyn Stoll"
+date: "February 11, 2019"
+output: html_document
+---
+###to change something throughout the code, such as a dataframe name, go to Code-> rename in scope
+####if you don't want your knit to show the code for a chunk, write echo=false
+if you have NA (missing data) run na.strings="NULL"
+--it's more reproducible to exclude the first column using negative index to create the community matrix
+
+MAUMEE ANALYSIS
+
+Read in the data and look at some basic features (make sure it read in correctly)
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+maumee<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+names(maumee)
+dim(maumee)
+head(maumee)
+str(maumee)
+```
+
+Calculate species richness
+```{r}
+# Total caught per species
+maum.colsums=apply(maumee[,4:70],2,sum)
+# Total number of fish per sampe
+maum.rowsums=apply(maumee[,4:70],1,sum)
+#check out what we did
+maum.colsums
+maum.rowsums
+# Its so easy to calculate richness, right?  Well, maybe...
+maum.rich=apply(maumee[,4:70]>0,1,sum)
+maum.rich
+# add total catch and raw richness to the dataset for future use, and look at the lowest number of fish caught in a sample
+#cbind stands for column bind, so we are combining the dataset info, richness and rowsums
+cbind(maumee[,1:2],maum.rich,maum.rowsums)
+min(maum.rowsums)
+#helps to determine how many sites you would exclude during rarefaction
+as.data.frame(table(maum.rowsums))
+```
+
+Individual based rarefaction
+```{r}
+library(vegan)
+# Using the rarefaction formula to find expected species richness
+rarecurve(maumee[,4:70])
+# You can choose a minimum sample size to rarefy all samples to using the command below
+#uses formulas from Gotelli et al
+rarefy(maumee[,4:70],sample=399)
+#could store to analyze later
+
+```
+
+Shannon Diversity Hill Numbers
+```{r}
+diversity(maumee[,4:70],index="shannon")  
+# Hill and Renyi numbers are calculated by this command- exponentiates the shannon values
+renyi(maumee[,4:70], hill=TRUE)
+plot(renyi(maumee[,4:70], hill=TRUE))
+plot(renyi(maumee[,4:70], scales=c(0,1,2,Inf), hill=TRUE))
+#you would have to dump the NaN (dividing my 0 error) before you can do stats, you would also have to choose what hill number to run stats on and filter out the samples that are 'bad'
+
+```
+Notes:
+Individual-based rarefaction for other indices.  
+Writing our own simulation code to get average rarefied index values.
+start by looking at one rarefaction "realization"
+head commands are simulations- they will be different everytime- so you do it a bunch of times and then take an average. constrained by computing power.. so maybe 99 or 999 is enough- you can run at different nperm #'s and see how much your end values change
+
+Rarefaction
+```{r}
+#rarefy to 399
+maum.rare<-rrarefy(maumee[,4:70], sample =399)
+#rrarefy(maumee[maum.rowsums,4:70],sample=399)
+#DO I NEED THE LINE ABOVE IF I'M RAREFYING ALL SAMPLES AND NOT EXCLUDING ANY?
+head(rrarefy(maumee[,4:70],sample=399))
+
+#WHAT DOES THE SAMPLE=6 DO AGAIN? ALSO, I DON'T THINK I NEED THE ROW SUMS... I THINK THAT SHOULD INSTEAD BE COL SUMS... GET RID OF SPECIES THAT WE COUNTED LESS THAN 10 TIMES... TOO RARE
+```
+
+Run 999 simulations (each is slightly different, so run a lot, then average)
+```{r}
+# Perform random sampling "nperm" times and then take averages
+# First set some parameters and set up an empty matrix to store simulated communities
+nperm=100
+n=nrow(maumee[maum.rowsums>0,])
+p=ncol(maumee[,4:70])
+#matrix to store the results
+renyi.indperms=matrix(nrow=n,ncol=4*nperm)
+# Simulate rarefied communities "nperm" times, i is a variable that ends up being, 1,2,3... for each perm. 
+#(1+(i-1)*4):(i*4) tells the loop where to store the data- we need four columns for every iteration
+#rrarefy(fish.dat[fish.rowsums>5,3:20],sample=6) simulates the community
+#renyi(fish.rare6, scales=c(0,1,2,Inf), hill=TRUE) runs the calculation to get the hill numbers
+
+# WHAT DOES THIS LINE OF CODE DO????
+### WHERE DOES RENYI RARE COME FROM????
+#renyi.indperms[,cols]=as.matrix(renyi.rare)
+for(i in 1:nperm){
+	maum.rare=rrarefy(maumee[maum.rowsums>0,4:70],sample=399)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare=renyi(maum.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms[,cols]=as.matrix(renyi.rare)
+}
+maxperm=nperm*4
+head(renyi.indperms)
+```
+
+Notes:
+look at what we did: head(renyi.indperms)
+seq(from=1,to=(maxperm-3),by=4) gives you 1,5,9.... to 797
+
+Average permuations to yield rarefied, average hill numbers
+```{r}
+maum.hills=cbind(maumee[,c(2,3)],
+	apply(renyi.indperms[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(maum.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+maum.hills
+#the product of this is what you would then run stats on... this would be averaged, rarified data.
+
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+maum.hills$trace<-grepl("Trace", maum.hills$TREATMENT) 
+maum.hills$nitrogen<-grepl("N", maum.hills$TREATMENT) 
+maum.hills$phosphorus<-grepl("P", maum.hills$TREATMENT) 
+  
+
+
+```
+ANOVA on Hill numbers
+```{r}
+#Blackwood says to run a LM instead of aov... why?
+
+#Richness
+maumeeRICHNESSaov<-aov(H0~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeRICHNESSaov))
+par(mfrow=c(1,2))
+plot(maumeeRICHNESSaov,which=c(1,2), main="Maumee Richness Normality")
+summary(maumeeRICHNESSaov)
+#nitrogen, phosphorus significant
+TukeyHSD(maumeeRICHNESSaov)
+
+
+#Exponential Shannon Entropy (Shannon Hill)
+maumeeSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeSHANNONaov))
+par(mfrow=c(1,2))
+plot(maumeeSHANNONaov,which=c(1,2), main="Maumee Shannon Normality")
+summary(maumeeSHANNONaov)
+#N, P significant
+
+#Exponential Inverse Simpson Entropy (Simpson Hill)
+#this indice and the ones below are more concerned with species evenness, whereas the above are more richness based
+maumeeSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeSIMPSONaov))
+par(mfrow=c(1,2))
+plot(maumeeSIMPSONaov,which=c(1,2), main="Maumee Simpson Normality")
+summary(maumeeSIMPSONaov)
+TukeyHSD(maumeeSIMPSONaov)
+boxplot(H0~phosphorus, data=maum.hills, main="P")
+boxplot(H0~nitrogen, data=maum.hills, main="N")
+#P significant
+
+
+#Exponential Berger Parker (BP Hill)
+maumeeBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=maum.hills)
+shapiro.test(resid(maumeeBPaov))
+par(mfrow=c(1,2))
+plot(maumeeBPaov,which=c(1,2), main="Maumee Berger-Parker Normality")
+summary(maumeeBPaov)
+#P significant
+
+
+```
+Generalized Linear Mixed Models
+```{r}
+library(nlme)
+library(lme4)
+library(MuMIn)
+library(lattice)
+
+#Specify the full model using all variables
+MaumMod1 <- lmer(H0~TREATMENT+(1|trace/nitrogen/phosphorus),data=maum.hills)
+summary(MaumMod1)
+shapiro.test(resid(MaumMod1))
+plot(MaumMod1)
+#test various models with more or less variables, run anova's on the models?
+
+
+
+```
+
+
+Sample based rarefaction
+```{r}
+#simulating a group of samples instead of a group of individuals
+# These functions work on an entire dataset. Further coding could be used to get results on subsets (like lakes).
+sp.accum=specaccum(maumee[,4:70], method="exact", conditioned=T)
+plot(sp.accum)
+#error bars are calculated with permutations- sampling simulations- lower variation^
+sp.accum=specaccum(maumee[,4:70], method="exact", conditioned=F)
+plot(sp.accum)
+#more variation around the highest number, assumes this is a subset of the population^
+sp.accum=specaccum(maumee[,4:70], method="rarefaction", conditioned=F)
+plot(sp.accum, xvar="individuals")
+# Sample-based rarefaction for Hill numbers.
+# Plot shows each rarefaction realization.
+renyiaccum(maumee[maum.rowsums,4:70], scales=c(0,1,2,Inf), permutations=100, raw=FALSE, hill=TRUE)
+plot(renyiaccum(maumee[,4:70], scales=c(0,1,2,Inf), permutations=10, raw=TRUE, hill=TRUE))
+```
+Notes: 
+^ shows the 4 different hill number orders and each accumulation curve. The above graphs is a average of the accumulation curves. This would be more interesting if this was by lake... 
+#inf plot is the Berger Parker hill numbers- its easier to estimate the evenness than it is to estimate richness, so Berger Parker reaches asymptope with few samples. High sample numbers are needed for richness analysis, but getting a good estimate for proportional abundance is not so dependent on rare taxa, which hardly make up any of the community anyway (contribute less to the Simposon(2) and Berger-Parker). Plots 1 (shannon) and 0(richness) are dependnet on high sampling efforts...
+Sample-based rarefaction by sample subsets (here, treatments)
+
+Install and load packages
+```{r}
+install.packages("data.table", type = "source",
+                 repos = "http://Rdatatable.github.io/data.table")
+library('data.table')
+install.packages('car')
+library('car')
+library(BiodiversityR)
+library(tcltk)
+library(vegan)
+```
+
+Method for rarefaction of richness
+```{r}
+#rarefaction by sample
+Accum.maum.uncond=accumcomp(maumee[,4:70], y=maumee[,1:2], factor='Treatment', method='exact', 
+	conditioned =F, gamma = 'boot', permutations=100, legend=F, rainbow=T, ci=2, 
+	ci.type='bar', cex=1, xlab='treatments', scale='')
+Accum.maum.uncond
+Accum.maum.cond=accumcomp(maummee[,4:70], y=maumee[,1:2], factor='Treatment', method='exact', 
+	conditioned =T, gamma = 'boot', permutations=100, legend=F, rainbow=T, ci=2, ci.type='bar', 
+	cex=1, xlab='treatment', scale='')
+Accum.maum.cond
+Accum.maum.rare=accumcomp(maumee[,4:70], y=cbind(maumee[,1:2],maum.rowsums), factor='Treatment', 
+	method='rarefaction', conditioned =F, gamma = 'boot', permutations=100, legend=F, rainbow=T, 
+	xvar="individuals", xlab='individuals', scale='maum.rowsums')
+Accum.maum.rare
+```
+
+Diversity index calculation on subsets
+```{r}
+# NOTE: This does not perform rarefaction...so Feed this a rarefied dataset.
+# Note difference below between pooled and mean methods
+#rarefied by sample, gives sample richness-  would do this if I had different numbers of samples per treatment- use individual because its the same (4) for each treatment
+diversitycomp(maum.rare, y=maumee[maum.rowsums>5,1:2], factor1='Treatment',
+    index="inverseSimpson", method="pooled")
+diversitycomp(maum.rare, y=maumee[fish.rowsums>5,1:2], factor1='Treatment',
+    index="inverseSimpson", method="mean")
+# How would you transform this to Hill number equivalent?
+diversitycomp(maum.rare, y=maumee[maum.rowsums>5,1:2], factor1='Treatment',
+    index="Shannon", method="mean")
+```
+
+Using iNEXT (STILL NEEDS CONVERTED FOR MAUMEE)
+```{r}
+library(iNEXT)
+
+# demo data
+#HOW DO YOU OPEN DEMO DATA TO LEARN HOW TO CONVERT CODE FOR OWN DATASET??
+data(spider)
+spider
+iNEXT(spider$Logged, q=0, datatype="abundance")
+some.spider.data=iNEXT(spider, q=c(0,1,2), datatype="abundance")
+ggiNEXT(some.spider.data, type=1, facet.var="site")
+
+#to do it on one row (one sample)
+iNEXT(as.numeric(fish.dat[16,3:20]), q=c(0,1,2), datatype="abundance")
+some.fish.data=iNEXT(as.numeric(fish.dat[16,3:20]), q=c(0,1,2), datatype="abundance")
+ggiNEXT(some.fish.data, type=1, facet.var="site")
+ggiNEXT(some.fish.data, type=3, facet.var="site")
+some.fish.data=iNEXT(as.numeric(fish.dat[1,3:20]), q=c(0,1,2), datatype="abundance")
+ggiNEXT(some.fish.data, type=1, facet.var="site")
+
+#to run it on reformatted data for iNext- iNext takes list data
+#t transposes data, switches rows and columns, apply is applying by colunm abucount function
+fish.inext=apply(t(fish.dat[fish.rowsums,4:70]),2,as.abucount)
+all.fish.data=iNEXT(fish.inext, q=0, datatype="abundance")
+ggiNEXT(all.fish.data, type=1, facet.var="site")
+estimateD(fish.inext,datatype="abundance",base="coverage")
+estimateD(fish.inext,datatype="abundance",base="coverage",level=0.9)
+estimateD(fish.inext,datatype="abundance",base="coverage",level=0.5)
+# estimateD gives an individual diversity value at a cut off of sample coverage (SC)- gives Hill numbers (as orders, 0, 1,2)
+estimateD(fish.inext,datatype="abundance",base="size")
+estimateD(fish.inext,datatype="abundance",base="size",level=15)
+```
+
+
+IS THIS TO LOOK AT ENVIRONMENTAL VARIABLES??? NOT NEEDED FOR MAUMEE MESOCOSM... WOULD BE INTERESTING FOR IN SITU STUDIES THOUGH...
+```{r}
+#Load the environemntal dataset 
+maum.dat=
+maum.dat
+names(maum.dat)
+match(maum.hills[,1], maum.dat[,1])
+maum.lakes=cbind(maum.dat[match(fish.hills[,1], lake.dat[,1]),],fish.hills[,2:6])
+names(fish.lakes)
+
+#Classical approach (not mixed)
+H0.nomix=lm(fish.lakes[,11]~fish.lakes[,3])
+anova(H0.nomix)
+AIC(H0.nomix)
+
+#Mixed model approach
+#Must download the nlme package before using the nlme library
+library(nlme)
+H0.lake=lme(fixed=H0~Cobble, random=~1|factor(LAKE), data=fish.lakes)
+anova(H0.lake)
+AIC(H0.lake)
+VarCorr(H0.lake)
+```
+

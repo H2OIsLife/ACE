@@ -1,0 +1,86 @@
+---
+title: "counts to %ab"
+author: "Jordyn Stoll"
+date: "March 13, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#SPECIES COUNTS
+maumee<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+str(maumee)
+nerie<-read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+str(nerie)
+ford<-read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
+str(ford)
+greenbay<-read.csv("~/Desktop/USGS/GB species counts.csv")
+str(greenbay)
+#DIVISONS COUNTS
+
+
+```
+Create a loop to transform from counts to percent abundance
+```{r}
+#previous loop to work with
+
+#so, I need to create a matrix to store the loop results in
+# create a loop that takes counts from columns 4-70 and divides each number by the corresponding 'total counted' in column 3. Then store that in the matrix
+#Christie's code
+
+#MAUMEE
+for (i in 4:70){
+ #extract name of column i, add, '.prop' to it in a text string
+ vecname<-paste(colnames(maumee[i]), ".prop", sep="")
+ #do the proportion calculation, put it in a new vector
+ newvec<-maumee[i]/maumee$Total.counted
+ #bind that new vector to the maumee data frame
+ maumee<-cbind(maumee, newvec)
+ #the number of the new column is i +67, becayse we started counting i at 4 and there are 70 columns
+ columnnum<-i+67
+ #rename newly created column with vecname
+ colnames(maumee)[columnnum] <- vecname
+}
+
+#NORTH ERIE
+for (i in 5:147){
+ vecname2<-paste(colnames(nerie[i]), ".prop", sep="")
+ newvec2<-nerie[i]/nerie$Total
+ nerie<-cbind(nerie, newvec2)
+ columnnum<-i+143
+ colnames(nerie)[columnnum] <- vecname2
+}
+#GREENBAY
+for (i in 5:52){
+ vecname3<-paste(colnames(greenbay[i]), ".prop", sep="")
+ newvec3<-greenbay[i]/greenbay$Total.Counted
+ greenbay<-cbind(greenbay, newvec3)
+ columnnum<-i+48
+ colnames(greenbay)[columnnum] <- vecname3
+}
+#FORD
+for (i in 4:80){
+ vecname4<-paste(colnames(ford[i]), ".prop", sep="")
+ newvec4<-ford[i]/ford$Total.counted
+ ford<-cbind(ford, newvec4)
+ columnnum<-i+77
+ colnames(ford)[columnnum] <- vecname4
+}
+```
+Plots of percent abundance Microcystis
+```{r}
+#MAUMEE
+plot(Microcystis.spp..prop$Treatment, data=maumee)
+
+#NERIE
+
+#GREEN BAY
+
+#FORD
+
+
+
+
+```
+

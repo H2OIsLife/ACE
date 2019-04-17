@@ -1,0 +1,358 @@
+---
+title: "Incubator PCoA, PCA, NMDS"
+author: "Jordyn Stoll"
+date: "March 20, 2019"
+output: html_document
+---
+Load packages, data
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+maumcounts<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+necounts<- read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+gbcounts<- read.csv("~/Desktop/USGS/GB species counts.csv")
+fordcounts<- read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
+
+
+#Maumee (37,70)
+names(maumcounts)
+dim(maumcounts)
+#North Erie (37, 147)
+names(necounts)
+dim(necounts)
+#Green Bay (37,52)
+names(gbcounts)
+dim(gbcounts)
+#Ford (37,80)
+names(fordcounts)
+dim(fordcounts)
+
+library(vegan)
+```
+Calculate Bray Curtis Distance
+```{r}
+#[,y1:y2] indicates the columns with species count data in them within the larger dataset... essentially subsets the counts from the other info
+#Maumee
+maum.bc=vegdist(maumcounts[,4:70], method="bray")
+maum.bc
+#North Erie
+ne.bc=vegdist(necounts[,5:147], method="bray")
+ne.bc
+#Green Bay
+gb.bc=vegdist(gbcounts[,5:52], method="bray")
+gb.bc
+#Ford
+ford.bc=vegdist(fordcounts[,4:80], method="bray")
+ford.bc
+```
+Treatment colors
+```{r}
+#set colors for each treatment
+colors=ifelse(maumcounts$Treatment=="Control",2,ifelse(maumcounts$Treatment=="Nitrogen",3,ifelse(maumcounts$Treatment=="Phoshorus",4,ifelse(maumcounts$Treatment=="Chelex",5,ifelse(maumcounts$Treatment=="Trace",6,ifelse(maumcounts$Treatment=="N+Trace",7,ifelse(maumcounts$Treatment=="P+Trace",8,ifelse(maumcounts$Treatment=="N+P",9,ifelse(maumcounts$Treatment=="N+P+Trace",10,11)))))))))
+
+
+```
+Bray Curtis Distance Principal Coordinates Analysis (PCoA) also known as Metric Multidimensional Scaling (MDS)
+
+MAUMEE PCOA
+```{r}
+#not based on euclidean distance format so no need for decostand fuction first
+#gives negative eigenvalues because its not euclidean distance- fix this if need be
+maum.dist.bc=vegdist(maumcounts[,4:70],method="bray")
+maum.bc.pcoa=wcmdscale(maum.dist.bc,eig=TRUE)
+eigenvals(maum.bc.pcoa)/sum(eigenvals(maum.bc.pcoa))
+maum.bc.pcoa.scores=scores(maum.bc.pcoa)
+plot(maum.bc.pcoa,type="none",xlab="Axis 1 (33%)",ylab="Axis 2 (21%)",main="Maumee PCoA Bray Curtis Distance")
+text(maum.bc.pcoa.scores[,1:2],labels=maumcounts$Treatment,col=colors)
+
+# Bray-Curtis-based PCoA, negative eigenvalues fixed
+eigenvals(maum.bc.pcoa)
+maum.dist.bc.noneg=as.matrix(vegdist(maumcounts[,4:70],method="bray",diag=TRUE,upper=TRUE))
+n=nrow(maum.dist.bc.noneg)
+for(i in 1:n){
+	for(j in 1:n){
+		maum.dist.bc.noneg[i,j]=ifelse(i==j,0,sqrt(maum.dist.bc.noneg[i,j]^2+2*0.488514))
+}}
+maum.bc.noneg.pcoa=wcmdscale(maum.dist.bc.noneg,eig=TRUE)
+eigenvals(maum.bc.noneg.pcoa)/sum(eigenvals(maum.bc.noneg.pcoa))
+maum.bc.noneg.pcoa.scores=scores(maum.bc.noneg.pcoa)
+plot(maum.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (4%)",main="Maumee PCoA corrected Bray Curtis distance")
+text(maum.bc.noneg.pcoa.scores[,1:2],labels=maumcounts$Treatment,col=colors)
+#corrects for negative values so you can calculate percent variation explained.
+
+```
+NORTH ERIE PCOA
+```{r}
+ne.dist.bc=vegdist(necounts[,5:147],method="bray")
+ne.bc.pcoa=wcmdscale(ne.dist.bc,eig=TRUE)
+eigenvals(ne.bc.pcoa)/sum(eigenvals(ne.bc.pcoa))
+ne.bc.pcoa.scores=scores(ne.bc.pcoa)
+plot(ne.bc.pcoa,type="none",xlab="Axis 1 (29%)",ylab="Axis 2 (15%)",main="North Erie PCoA Bray Curtis distance")
+text(ne.bc.pcoa.scores[,1:2],labels=necounts$Treatment,col=colors)
+
+# Bray-Curtis-based PCoA, negative eigenvalues fixed
+eigenvals(ne.bc.pcoa)
+ne.dist.bc.noneg=as.matrix(vegdist(necounts[,5:147],method="bray",diag=TRUE,upper=TRUE))
+n=nrow(ne.dist.bc.noneg)
+for(i in 1:n){
+	for(j in 1:n){
+		ne.dist.bc.noneg[i,j]=ifelse(i==j,0,sqrt(ne.dist.bc.noneg[i,j]^2+2*0.488514))
+}}
+ne.bc.noneg.pcoa=wcmdscale(ne.dist.bc.noneg,eig=TRUE)
+eigenvals(ne.bc.noneg.pcoa)/sum(eigenvals(ne.bc.noneg.pcoa))
+ne.bc.noneg.pcoa.scores=scores(ne.bc.noneg.pcoa)
+plot(ne.bc.noneg.pcoa,type="none",xlab="Axis 1 (7%)",ylab="Axis 2 (5%)",main="North Erie PCoA corrected Bray Curtis distance")
+text(ne.bc.noneg.pcoa.scores[,1:2],labels=necounts$Treatment,col=colors)
+
+```
+GREEN BAY PCOA
+```{r}
+gb.dist.bc=vegdist(gbcounts[,5:52],method="bray")
+gb.bc.pcoa=wcmdscale(gb.dist.bc,eig=TRUE)
+eigenvals(gb.bc.pcoa)/sum(eigenvals(gb.bc.pcoa))
+gb.bc.pcoa.scores=scores(gb.bc.pcoa)
+plot(gb.bc.pcoa,type="none",xlab="Axis 1 (30%)",ylab="Axis 2 (21%)",main="Green Bay PCoA Bray Curtis distance")
+text(gb.bc.pcoa.scores[,1:2],labels=gbcounts$Treatment,col=colors)
+
+# Bray-Curtis-based PCoA, negative eigenvalues fixed
+eigenvals(gb.bc.pcoa)
+gb.dist.bc.noneg=as.matrix(vegdist(gbcounts[,5:52],method="bray",diag=TRUE,upper=TRUE))
+n=nrow(gb.dist.bc.noneg)
+for(i in 1:n){
+	for(j in 1:n){
+		gb.dist.bc.noneg[i,j]=ifelse(i==j,0,sqrt(gb.dist.bc.noneg[i,j]^2+2*0.488514))
+}}
+gb.bc.noneg.pcoa=wcmdscale(gb.dist.bc.noneg,eig=TRUE)
+eigenvals(gb.bc.noneg.pcoa)/sum(eigenvals(gb.bc.noneg.pcoa))
+gb.bc.noneg.pcoa.scores=scores(gb.bc.noneg.pcoa)
+plot(gb.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (4%)",main="Green Bay PCoA corrected Bray Curtis distance")
+text(gb.bc.noneg.pcoa.scores[,1:2],labels=gbcounts$Treatment,col=colors)
+
+```
+FORD PCOA
+```{r}
+ford.dist.bc=vegdist(fordcounts[,4:80],method="bray")
+ford.bc.pcoa=wcmdscale(ford.dist.bc,eig=TRUE)
+eigenvals(ford.bc.pcoa)/sum(eigenvals(ford.bc.pcoa))
+ford.bc.pcoa.scores=scores(ford.bc.pcoa)
+plot(ford.bc.pcoa,type="none",xlab="Axis 1 (34%)",ylab="Axis 2 (24%)",main="Ford PCoA Bray Curtis distance")
+text(ford.bc.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
+
+# Bray-Curtis-based PCoA, negative eigenvalues fixed
+eigenvals(ford.bc.pcoa)
+ford.dist.bc.noneg=as.matrix(vegdist(fordcounts[,4:80],method="bray",diag=TRUE,upper=TRUE))
+n=nrow(maum.dist.bc.noneg)
+for(i in 1:n){
+	for(j in 1:n){
+		ford.dist.bc.noneg[i,j]=ifelse(i==j,0,sqrt(ford.dist.bc.noneg[i,j]^2+2*0.488514))
+}}
+ford.bc.noneg.pcoa=wcmdscale(ford.dist.bc.noneg,eig=TRUE)
+eigenvals(ford.bc.noneg.pcoa)/sum(eigenvals(ford.bc.noneg.pcoa))
+ford.bc.noneg.pcoa.scores=scores(ford.bc.noneg.pcoa)
+plot(ford.bc.noneg.pcoa,type="none",xlab="Axis 1 (9%)",ylab="Axis 2 (7%)",main="Ford PCoA corrected Bray Curtis distance")
+text(ford.bc.noneg.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
+
+```
+Maumee PCA
+```{r}
+#MAUMEE
+# Here is a function for the covariance matrix, shortcut
+maum.cov=cov(maumcounts[,4:70])
+maum.cov
+
+# Eigen analysis with R base functions
+maum.eigen=eigen(maum.cov)
+maum.eigen
+#^yields species scores coefficent for each pairwaise comparison and eigenvalues, one eigenvalue for each eigenvector. Higher eigenvalues tell you that more variation is explained in that axes. vectors are species scores, which are then used to calculate the site location? Values are the axes. 
+maum.colsums=apply(maumcounts[,4:70],2,sum)
+maum.propexpl=maum.eigen$values/sum(maum.eigen$values)
+maum.propexpl
+#^tells you the percent variation explained by each axes
+maum.scores=as.matrix(maumcounts[,4:70])%*%as.matrix(maum.eigen$vectors)
+head(maum.scores)
+head(maumcounts)
+head(maum.eigen$vectors)
+plot(maum.scores[,1:2],col=colors)
+
+#Vegan way to do PCA
+par(mfrow=c(1,1))
+maum.pca=rda(maumcounts[,4:70])
+class(maum.pca)
+str(maum.pca)
+summary(maum.pca)
+eigenvals(maum.pca)
+eigenvals(maum.pca)/sum(eigenvals(maum.pca))
+plot(maum.pca)
+plot(maum.scores[,1:2],col=colors)
+plot(maum.pca,type="none",xlab="PC1 (46%)",ylab="PC2 (26%)",main="Maumee PCA Euclidean")
+text(maum.pca,labels=maumcounts$Treatment,col=colors)
+text(maum.pca,display="species",col=8)
+
+# Hellinger distance-based PCA
+maum.hel=decostand(maumcounts[,4:70],method="hellinger")
+maum.hel.pca=rda(maum.hel)
+summary(maum.hel.pca)
+maum.hel.pca.scores=scores(maum.hel.pca,choices=1:18,display="sites")
+plot(maum.hel.pca,type="none",xlab="PC1 (19%)",ylab="PC2 (16%)",main="Maumee PCA Hellinger Distance")
+text(maum.hel.pca,labels=maumcounts$Treatment,col=colors)
+text(maum.hel.pca,display="species",col=8)
+```
+NORTH ERIE PCA
+```{r}
+ne.cov=cov(necounts[,5:147])
+ne.cov
+# Eigen analysis with R base functions
+ne.eigen=eigen(ne.cov)
+ne.eigen
+ne.scores=as.matrix(necounts[,5:147])%*%as.matrix(ne.eigen$vectors)
+
+par(mfrow=c(1,1))
+ne.pca=rda(necounts[,5:147])
+class(ne.pca)
+str(ne.pca)
+summary(ne.pca)
+eigenvals(ne.pca)
+eigenvals(ne.pca)/sum(eigenvals(ne.pca))
+plot(ne.pca)
+plot(ne.scores[,1:2],col=colors)
+plot(ne.pca,type="none",xlab="PC1 (44%)",ylab="PC2 (15%)",main="North Erie PCA Euclidean")
+text(ne.pca,labels=necounts$Treatment,col=colors)
+text(ne.pca,display="species",col=8)
+
+# Hellinger distance-based PCA
+ne.hel=decostand(necounts[,5:147],method="hellinger")
+ne.hel.pca=rda(ne.hel)
+summary(ne.hel.pca)
+ne.hel.pca.scores=scores(ne.hel.pca,choices=1:18,display="sites")
+plot(ne.hel.pca,type="none",xlab="PC1 (16%)",ylab="PC2 (14%)",main="North Erie PCA Hellinger Distance")
+text(ne.hel.pca,labels=necounts$Treatment,col=colors)
+text(ne.hel.pca,display="species",col=8)
+```
+GREEN BAY PCA
+```{r}
+gb.cov=cov(gbcounts[,5:52])
+gb.cov
+# Eigen analysis with R base functions
+gb.eigen=eigen(gb.cov)
+gb.eigen
+gb.scores=as.matrix(gbcounts[,5:52])%*%as.matrix(gb.eigen$vectors)
+
+par(mfrow=c(1,1))
+gb.pca=rda(gbcounts[,5:52])
+class(gb.pca)
+str(gb.pca)
+summary(gb.pca)
+eigenvals(gb.pca)
+eigenvals(gb.pca)/sum(eigenvals(gb.pca))
+plot(gb.pca)
+plot(ne.scores[,1:2],col=colors)
+plot(gb.pca,type="none",xlab="PC1 (43%)",ylab="PC2 (25%)",main="Green Bay PCA Euclidean")
+text(gb.pca,labels=gbcounts$Treatment,col=colors)
+text(gb.pca,display="species",col=8)
+
+# Hellinger distance-based PCA
+gb.hel=decostand(gbcounts[,5:52],method="hellinger")
+gb.hel.pca=rda(gb.hel)
+summary(gb.hel.pca)
+gb.hel.pca.scores=scores(gb.hel.pca,choices=1:18,display="sites")
+plot(gb.hel.pca,type="none",xlab="PC1 (23%)",ylab="PC2 (18%)",main="Green Bay PCA Hellinger Distance")
+text(gb.hel.pca,labels=gbcounts$Treatment,col=colors)
+text(gb.hel.pca,display="species",col=8)
+```
+FORD PCA
+```{r}
+ford.cov=cov(fordcounts[,4:80])
+ford.cov
+# Eigen analysis with R base functions
+ford.eigen=eigen(ford.cov)
+ford.eigen
+ford.scores=as.matrix(fordcounts[,4:80])%*%as.matrix(ford.eigen$vectors)
+
+par(mfrow=c(1,1))
+ford.pca=rda(fordcounts[,4:80])
+class(ford.pca)
+str(ford.pca)
+summary(ford.pca)
+eigenvals(ford.pca)
+eigenvals(ford.pca)/sum(eigenvals(ford.pca))
+plot(ford.pca)
+plot(ford.scores[,1:2],col=colors)
+plot(ford.pca,type="none",xlab="PC1 (57%)",ylab="PC2 (21%)",main="Ford PCA Euclidean")
+text(ford.pca,labels=fordcounts$Treatment,col=colors)
+text(ford.pca,display="species",col=8)
+###Microcystis comes out near N+trace, intersting
+
+# Hellinger distance-based PCA
+ford.hel=decostand(fordcounts[,4:80],method="hellinger")
+ford.hel.pca=rda(ford.hel)
+summary(ford.hel.pca)
+ford.hel.pca.scores=scores(ford.hel.pca,choices=1:18,display="sites")
+plot(ford.hel.pca,type="none",xlab="PC1 (22%)",ylab="PC2 (20%)",main="Ford PCA Hellinger Distance")
+text(ford.hel.pca,labels=fordcounts$Treatment,col=colors)
+text(ford.hel.pca,display="species",col=8)
+```
+#Non-metric Multidimensional Scaling (NMDS)
+
+MAUMEE
+```{r}
+# NMDS of Hellinger distance matrix
+maum.hel=decostand(maumcounts[,4:70],method="hellinger")
+maum.dist.hel=vegdist(maum.hel,method="euclidean")
+maum.hel.nmds=metaMDS(maum.dist.hel, k=2, trymax=100, wascores=TRUE)
+maum.hel.nmds$stress
+stressplot(maum.hel.nmds)
+#stress is 0.166912
+goodness(maum.hel.nmds)
+plot(maum.hel.nmds, type="none")
+text(maum.hel.nmds, labels=maumcounts$Treatment,col=colors)
+maum.hel.nmds.spwa=wascores(scores(maum.hel.nmds), maumcounts[,4:70])
+text(maum.hel.nmds.spwa[,1:2],labels=rownames(maum.hel.nmds.spwa),col=8)
+
+# Bray-Curtis NMDS
+maum.dist.bc=vegdist(maumcounts[,4:70], method="bray")
+maum.bc.nmds=metaMDS(maum.dist.bc, k=2, trymax=100)
+maum.bc.nmds$stress
+#0.1400169 stress
+plot(maum.bc.nmds, type="none")
+text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
+text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.")
+
+
+```
+NORTH ERIE
+```{r}
+# NMDS of Hellinger distance matrix
+maum.hel=decostand(maumcounts[,4:70],method="hellinger")
+maum.dist.hel=vegdist(maum.hel,method="euclidean")
+maum.hel.nmds=metaMDS(maum.dist.hel, k=2, trymax=100, wascores=TRUE)
+maum.hel.nmds$stress
+stressplot(maum.hel.nmds)
+#stress is 0.166912
+goodness(maum.hel.nmds)
+plot(maum.hel.nmds, type="none")
+text(maum.hel.nmds, labels=maumcounts$Treatment,col=colors)
+maum.hel.nmds.spwa=wascores(scores(maum.hel.nmds), maumcounts[,4:70])
+text(maum.hel.nmds.spwa[,1:2],labels=rownames(maum.hel.nmds.spwa),col=8)
+
+# Bray-Curtis NMDS
+maum.dist.bc=vegdist(maumcounts[,4:70], method="bray")
+maum.bc.nmds=metaMDS(maum.dist.bc, k=2, trymax=100)
+maum.bc.nmds$stress
+#0.1400169 stress
+plot(maum.bc.nmds, type="none")
+text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
+text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.")
+
+
+```
+GREEN BAY
+```{r}
+
+```
+FORD
+```{r}
+
+```
+
+
+
+

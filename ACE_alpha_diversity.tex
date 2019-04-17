@@ -1,0 +1,2027 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Maumee},
+            pdfauthor={Jordyn Stoll},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Maumee}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Jordyn Stoll}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{February 11, 2019 - April 3, 2019}
+
+
+\begin{document}
+\maketitle
+
+MAUMEE ANALYSIS
+
+Read in the data and look at some basic features (make sure it read in
+correctly)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\NormalTok{opts_chunk}\OperatorTok{$}\KeywordTok{set}\NormalTok{(}\DataTypeTok{echo =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{maumee1<-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"~/Desktop/USGS/Maumee Species Counts.csv"}\NormalTok{)}
+\CommentTok{#remove initial sample}
+
+\NormalTok{maumee<-maumee1[}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{),]}
+\KeywordTok{names}\NormalTok{(maumee)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "Lowest.taxonimic.Sample.ID" "Treatment"                 
+##  [3] "Total.counted"              "Microcystis.spp."          
+##  [5] "Nitzschia.spp."             "Pseudoanabaena.spp."       
+##  [7] "Glaucocystis.spp..."        "morphospecies.10"          
+##  [9] "Aulacoseria.spp."           "Mougeotia.spp..."          
+## [11] "Diatoma.spp..."             "morphospecies.1"           
+## [13] "pollen."                    "Selenastraceae"            
+## [15] "morphospecies.2"            "morphospecies.3"           
+## [17] "Cyclotella.spp."            "morphospecies.4"           
+## [19] "Dolichospermum.spp."        "Aphanocapsa.spp.."         
+## [21] "morphospecies.5"            "Merismopedia.spp."         
+## [23] "Scenedesmus.spp."           "morphospecies.6"           
+## [25] "morphospecies.7"            "morphospecies.8"           
+## [27] "clamydomonadaceae.1"        "morphospecies.11"          
+## [29] "morphospecies.12"           "morphospecies.13"          
+## [31] "Westella.spp.."             "Melosira.spp..."           
+## [33] "morphospecies.14"           "morphospecies.15"          
+## [35] "morphospecies.16"           "Unidentified.13"           
+## [37] "Spirulina.spp..."           "Tetraedron.spp."           
+## [39] "Cycyotella.spp..2.."        "Thalassiosira.spp."        
+## [41] "Micractinium.spp..."        "morphospecies.17"          
+## [43] "morphospecies.18"           "morphospecies.19"          
+## [45] "morphospecies.20"           "clamydomonadaceae.2"       
+## [47] "morphospecies.21"           "Dinobryon.spp."            
+## [49] "morphospecies.22"           "morphospecies.23"          
+## [51] "morphospecies.24"           "morphospecies.25"          
+## [53] "morphospecies.26"           "morphospecies.27"          
+## [55] "morphospecies.28"           "morphospecies.29"          
+## [57] "Tetraselmis.spp..."         "morphospecies.30"          
+## [59] "morphospecies.31"           "Kirchneriella.spp."        
+## [61] "morphospecies.32"           "Tetraedron.spp..2"         
+## [63] "Dinobryon.spp..1"           "Desmodesmus.spp..."        
+## [65] "Selenastrum.spp."           "Unidentified.33"           
+## [67] "Euglena.spp."               "Phacus.spp."               
+## [69] "Unidentified.34"            "Treubaria.spp."
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{dim}\NormalTok{(maumee)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 36 70
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(maumee)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Lowest.taxonimic.Sample.ID Treatment Total.counted Microcystis.spp.
+## 2                         37   Control           453              175
+## 3                         38   Control           439              209
+## 4                         39   Control           403              170
+## 5                         40   Control           400              174
+## 6                         41  Nitrogen           461              154
+## 7                         42  Nitrogen           411              131
+##   Nitzschia.spp. Pseudoanabaena.spp. Glaucocystis.spp... morphospecies.10
+## 2             12                  29                   0                0
+## 3             35                  17                   0                0
+## 4             26                  10                   0                0
+## 5             19                  11                   0                0
+## 6             21                  16                   0                0
+## 7             41                  28                   0                0
+##   Aulacoseria.spp. Mougeotia.spp... Diatoma.spp... morphospecies.1 pollen.
+## 2               15               98              1               0       0
+## 3                0               63              0               0       0
+## 4                0               67              0               1       0
+## 5                0               83              0               0       0
+## 6                0              102              6               0       4
+## 7               16               75              0               0       2
+##   Selenastraceae morphospecies.2 morphospecies.3 Cyclotella.spp.
+## 2              9               0               6              16
+## 3              1               0               0              15
+## 4              3               1               0              22
+## 5              1               0               0              12
+## 6              4               1               0              11
+## 7              2               0               3              20
+##   morphospecies.4 Dolichospermum.spp. Aphanocapsa.spp.. morphospecies.5
+## 2              10                   0                 2               0
+## 3               0                   0                 0               0
+## 4               2                   0                 0               1
+## 5               2                   0                 0               1
+## 6               0                   0                 5               2
+## 7               0                   0                 4               1
+##   Merismopedia.spp. Scenedesmus.spp. morphospecies.6 morphospecies.7
+## 2                 6                0               0               0
+## 3                 0                2               4               0
+## 4                 0                0               0               0
+## 5                 0                4               0               0
+## 6                17                0               4               0
+## 7                 4                0               4               0
+##   morphospecies.8 clamydomonadaceae.1 morphospecies.11 morphospecies.12
+## 2               2                   1                5                0
+## 3               1                   0                9                0
+## 4               1                   1               22                0
+## 5               1                   2               24                0
+## 6               4                   1               18                0
+## 7               2                   0               12                0
+##   morphospecies.13 Westella.spp.. Melosira.spp... morphospecies.14
+## 2                0              0              48                2
+## 3                0              0              45                3
+## 4                0              0              37                1
+## 5                0              0              19                1
+## 6                4              0              38                0
+## 7                1              0              19                2
+##   morphospecies.15 morphospecies.16 Unidentified.13 Spirulina.spp...
+## 2                6                4               2                3
+## 3                0                0               0                0
+## 4                0                0               0                3
+## 5                1                0               1                0
+## 6                1                0               0                3
+## 7                3                0               1                4
+##   Tetraedron.spp. Cycyotella.spp..2.. Thalassiosira.spp.
+## 2               1                   0                  0
+## 3               0                  33                  1
+## 4               0                  23                  0
+## 5               0                  26                  3
+## 6               0                  27                  1
+## 7               0                  32                  2
+##   Micractinium.spp... morphospecies.17 morphospecies.18 morphospecies.19
+## 2                   0                0                0                0
+## 3                   1                0                0                0
+## 4                   0                1                4                3
+## 5                   0                0                5                0
+## 6                   1                0                5                0
+## 7                   0                0                0                0
+##   morphospecies.20 clamydomonadaceae.2 morphospecies.21 Dinobryon.spp.
+## 2                0                   0                0              0
+## 3                0                   0                0              0
+## 4                2                   2                0              0
+## 5                4                   1                1              3
+## 6                1                   2                2              0
+## 7                0                   0                2              0
+##   morphospecies.22 morphospecies.23 morphospecies.24 morphospecies.25
+## 2                0                0                0                0
+## 3                0                0                0                0
+## 4                0                0                0                0
+## 5                1                0                0                0
+## 6                0                4                1                1
+## 7                0                0                0                0
+##   morphospecies.26 morphospecies.27 morphospecies.28 morphospecies.29
+## 2                0                0                0                0
+## 3                0                0                0                0
+## 4                0                0                0                0
+## 5                0                0                0                0
+## 6                0                0                0                0
+## 7                0                0                0                0
+##   Tetraselmis.spp... morphospecies.30 morphospecies.31 Kirchneriella.spp.
+## 2                  0                0                0                  0
+## 3                  0                0                0                  0
+## 4                  0                0                0                  0
+## 5                  0                0                0                  0
+## 6                  0                0                0                  0
+## 7                  0                0                0                  0
+##   morphospecies.32 Tetraedron.spp..2 Dinobryon.spp..1 Desmodesmus.spp...
+## 2                0                 0                0                  0
+## 3                0                 0                0                  0
+## 4                0                 0                0                  0
+## 5                0                 0                0                  0
+## 6                0                 0                0                  0
+## 7                0                 0                0                  0
+##   Selenastrum.spp. Unidentified.33 Euglena.spp. Phacus.spp.
+## 2                0               0            0           0
+## 3                0               0            0           0
+## 4                0               0            0           0
+## 5                0               0            0           0
+## 6                0               0            0           0
+## 7                0               0            0           0
+##   Unidentified.34 Treubaria.spp.
+## 2               0              0
+## 3               0              0
+## 4               0              0
+## 5               0              0
+## 6               0              0
+## 7               0              0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(maumee)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    36 obs. of  70 variables:
+##  $ Lowest.taxonimic.Sample.ID: Factor w/ 37 levels "37","38","39",..: 1 2 3 4 5 6 7 8 9 10 ...
+##  $ Treatment                 : Factor w/ 10 levels "Chelex","Control",..: 2 2 2 2 7 7 7 7 9 9 ...
+##  $ Total.counted             : int  453 439 403 400 461 411 408 430 407 399 ...
+##  $ Microcystis.spp.          : int  175 209 170 174 154 131 204 169 157 130 ...
+##  $ Nitzschia.spp.            : int  12 35 26 19 21 41 31 19 17 29 ...
+##  $ Pseudoanabaena.spp.       : int  29 17 10 11 16 28 27 34 30 6 ...
+##  $ Glaucocystis.spp...       : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.10          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Aulacoseria.spp.          : int  15 0 0 0 0 16 0 2 0 10 ...
+##  $ Mougeotia.spp...          : int  98 63 67 83 102 75 48 49 51 70 ...
+##  $ Diatoma.spp...            : int  1 0 0 0 6 0 2 0 0 0 ...
+##  $ morphospecies.1           : int  0 0 1 0 0 0 0 0 0 0 ...
+##  $ pollen.                   : int  0 0 0 0 4 2 1 3 0 2 ...
+##  $ Selenastraceae            : int  9 1 3 1 4 2 2 1 8 2 ...
+##  $ morphospecies.2           : int  0 0 1 0 1 0 0 0 0 0 ...
+##  $ morphospecies.3           : int  6 0 0 0 0 3 0 0 0 0 ...
+##  $ Cyclotella.spp.           : int  16 15 22 12 11 20 16 32 19 15 ...
+##  $ morphospecies.4           : int  10 0 2 2 0 0 0 0 1 0 ...
+##  $ Dolichospermum.spp.       : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Aphanocapsa.spp..         : int  2 0 0 0 5 4 1 0 0 2 ...
+##  $ morphospecies.5           : int  0 0 1 1 2 1 0 0 2 0 ...
+##  $ Merismopedia.spp.         : int  6 0 0 0 17 4 2 11 15 1 ...
+##  $ Scenedesmus.spp.          : int  0 2 0 4 0 0 0 4 4 2 ...
+##  $ morphospecies.6           : int  0 4 0 0 4 4 0 0 0 0 ...
+##  $ morphospecies.7           : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.8           : int  2 1 1 1 4 2 3 1 1 0 ...
+##  $ clamydomonadaceae.1       : int  1 0 1 2 1 0 0 1 3 0 ...
+##  $ morphospecies.11          : int  5 9 22 24 18 12 12 8 14 14 ...
+##  $ morphospecies.12          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.13          : int  0 0 0 0 4 1 0 0 0 0 ...
+##  $ Westella.spp..            : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Melosira.spp...           : int  48 45 37 19 38 19 38 22 28 59 ...
+##  $ morphospecies.14          : int  2 3 1 1 0 2 4 2 2 1 ...
+##  $ morphospecies.15          : int  6 0 0 1 1 3 0 6 0 4 ...
+##  $ morphospecies.16          : int  4 0 0 0 0 0 1 0 0 0 ...
+##  $ Unidentified.13           : int  2 0 0 1 0 1 7 4 0 2 ...
+##  $ Spirulina.spp...          : int  3 0 3 0 3 4 1 0 6 0 ...
+##  $ Tetraedron.spp.           : int  1 0 0 0 0 0 0 0 0 0 ...
+##  $ Cycyotella.spp..2..       : int  0 33 23 26 27 32 0 47 21 29 ...
+##  $ Thalassiosira.spp.        : int  0 1 0 3 1 2 1 1 0 4 ...
+##  $ Micractinium.spp...       : int  0 1 0 0 1 0 0 4 8 0 ...
+##  $ morphospecies.17          : int  0 0 1 0 0 0 0 0 0 0 ...
+##  $ morphospecies.18          : int  0 0 4 5 5 0 2 2 3 0 ...
+##  $ morphospecies.19          : int  0 0 3 0 0 0 0 0 0 0 ...
+##  $ morphospecies.20          : int  0 0 2 4 1 0 4 3 3 4 ...
+##  $ clamydomonadaceae.2       : int  0 0 2 1 2 0 0 0 2 2 ...
+##  $ morphospecies.21          : int  0 0 0 1 2 2 1 5 5 4 ...
+##  $ Dinobryon.spp.            : int  0 0 0 3 0 0 0 0 0 0 ...
+##  $ morphospecies.22          : int  0 0 0 1 0 0 0 0 0 0 ...
+##  $ morphospecies.23          : int  0 0 0 0 4 0 0 0 0 3 ...
+##  $ morphospecies.24          : int  0 0 0 0 1 0 0 0 0 0 ...
+##  $ morphospecies.25          : int  0 0 0 0 1 0 0 0 6 2 ...
+##  $ morphospecies.26          : int  0 0 0 0 0 0 0 0 1 0 ...
+##  $ morphospecies.27          : int  0 0 0 0 0 0 0 0 0 2 ...
+##  $ morphospecies.28          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.29          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Tetraselmis.spp...        : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.30          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.31          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Kirchneriella.spp.        : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ morphospecies.32          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Tetraedron.spp..2         : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Dinobryon.spp..1          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Desmodesmus.spp...        : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Selenastrum.spp.          : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Unidentified.33           : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Euglena.spp.              : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Phacus.spp.               : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Unidentified.34           : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Treubaria.spp.            : int  0 0 0 0 0 0 0 0 0 0 ...
+\end{verbatim}
+
+Calculate species richness
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Total caught per species}
+\NormalTok{maum.colsums=}\KeywordTok{apply}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DecValTok{2}\NormalTok{,sum)}
+\CommentTok{# Total number of fish per sampe}
+\NormalTok{maum.rowsums=}\KeywordTok{apply}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DecValTok{1}\NormalTok{,sum)}
+\CommentTok{#check out what we did}
+\NormalTok{maum.colsums}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Microcystis.spp.      Nitzschia.spp. Pseudoanabaena.spp. 
+##                5475                 940                 596 
+## Glaucocystis.spp...    morphospecies.10    Aulacoseria.spp. 
+##                   3                   9                 397 
+##    Mougeotia.spp...      Diatoma.spp...     morphospecies.1 
+##                2900                  64                   6 
+##             pollen.      Selenastraceae     morphospecies.2 
+##                  14                 153                   6 
+##     morphospecies.3     Cyclotella.spp.     morphospecies.4 
+##                  18                 727                  42 
+## Dolichospermum.spp.   Aphanocapsa.spp..     morphospecies.5 
+##                   4                  44                  44 
+##   Merismopedia.spp.    Scenedesmus.spp.     morphospecies.6 
+##                 197                 108                  63 
+##     morphospecies.7     morphospecies.8 clamydomonadaceae.1 
+##                   7                  63                  46 
+##    morphospecies.11    morphospecies.12    morphospecies.13 
+##                 508                   0                  12 
+##      Westella.spp..     Melosira.spp...    morphospecies.14 
+##                   5                1654                  91 
+##    morphospecies.15    morphospecies.16     Unidentified.13 
+##                  69                  11                  28 
+##    Spirulina.spp...     Tetraedron.spp. Cycyotella.spp..2.. 
+##                  92                   3                 809 
+##  Thalassiosira.spp. Micractinium.spp...    morphospecies.17 
+##                 110                  31                   1 
+##    morphospecies.18    morphospecies.19    morphospecies.20 
+##                  29                  15                  54 
+## clamydomonadaceae.2    morphospecies.21      Dinobryon.spp. 
+##                  21                  66                   9 
+##    morphospecies.22    morphospecies.23    morphospecies.24 
+##                  16                  17                   1 
+##    morphospecies.25    morphospecies.26    morphospecies.27 
+##                  25                   5                   7 
+##    morphospecies.28    morphospecies.29  Tetraselmis.spp... 
+##                   2                  23                  23 
+##    morphospecies.30    morphospecies.31  Kirchneriella.spp. 
+##                   1                  36                   3 
+##    morphospecies.32   Tetraedron.spp..2    Dinobryon.spp..1 
+##                   3                   1                   5 
+##  Desmodesmus.spp...    Selenastrum.spp.     Unidentified.33 
+##                   4                   7                   4 
+##        Euglena.spp.         Phacus.spp.     Unidentified.34 
+##                   5                   1                   7 
+##      Treubaria.spp. 
+##                   1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{maum.rowsums}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19 
+## 453 439 403 400 461 411 408 430 407 399 411 447 408 427 455 442 442 470 
+##  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37 
+## 421 439 498 451 426 436 472 453 482 465 472 446 420 416 447 441 428 415
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Its so easy to calculate richness, right?  Well, maybe...}
+\NormalTok{maum.rich=}\KeywordTok{apply}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{]}\OperatorTok{>}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,sum)}
+\NormalTok{maum.rich}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 
+## 22 15 22 24 30 24 21 23 24 24 28 32 20 17 23 20 25 32 25 31 23 29 24 19 37 
+## 27 28 29 30 31 32 33 34 35 36 37 
+## 22 28 42 29 22 25 27 25 26 27 18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add total catch and raw richness to the dataset for future use, and look at the lowest number of fish caught in a sample}
+\CommentTok{#cbind stands for column bind, so we are combining the dataset info, richness and rowsums}
+\KeywordTok{cbind}\NormalTok{(maumee[,}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{],maum.rich,maum.rowsums)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Lowest.taxonimic.Sample.ID  Treatment maum.rich maum.rowsums
+## 2                          37    Control        22          453
+## 3                          38    Control        15          439
+## 4                          39    Control        22          403
+## 5                          40    Control        24          400
+## 6                          41   Nitrogen        30          461
+## 7                          42   Nitrogen        24          411
+## 8                          43   Nitrogen        21          408
+## 9                          44   Nitrogen        23          430
+## 10                         45 Phosphorus        24          407
+## 11                         46 Phosphorus        24          399
+## 12                         47 Phosphorus        28          411
+## 13                         48 Phosphorus        32          447
+## 14                         49      Trace        20          408
+## 15                         50      Trace        17          427
+## 16                         51      Trace        23          455
+## 17                         52      Trace        20          442
+## 18                         53    N+Trace        25          442
+## 19                         54    N+Trace        32          470
+## 20                         55    N+Trace        25          421
+## 21                         56    N+Trace        31          439
+## 22                         57    P+Trace        23          498
+## 23                         58    P+Trace        29          451
+## 24                         59    P+Trace        24          426
+## 25                         60    P+Trace        19          436
+## 26                         61        N+P        37          472
+## 27                         62        N+P        22          453
+## 28                         63        N+P        28          482
+## 29                         64        N+P        42          465
+## 30                         65  N+P+Trace        29          472
+## 31                         66  N+P+Trace        22          446
+## 32                         67  N+P+Trace        25          420
+## 33                         68  N+P+Trace        27          416
+## 34                         69     Chelex        25          447
+## 35                         70     Chelex        26          441
+## 36                         71     Chelex        27          428
+## 37                         72     Chelex        18          415
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{min}\NormalTok{(maum.rowsums)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 399
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#helps to determine how many sites you would exclude during rarefaction}
+\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{table}\NormalTok{(maum.rowsums))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    maum.rowsums Freq
+## 1           399    1
+## 2           400    1
+## 3           403    1
+## 4           407    1
+## 5           408    2
+## 6           411    2
+## 7           415    1
+## 8           416    1
+## 9           420    1
+## 10          421    1
+## 11          426    1
+## 12          427    1
+## 13          428    1
+## 14          430    1
+## 15          436    1
+## 16          439    2
+## 17          441    1
+## 18          442    2
+## 19          446    1
+## 20          447    2
+## 21          451    1
+## 22          453    2
+## 23          455    1
+## 24          461    1
+## 25          465    1
+## 26          470    1
+## 27          472    2
+## 28          482    1
+## 29          498    1
+\end{verbatim}
+
+Individual based rarefaction
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(vegan)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: permute
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\begin{verbatim}
+## This is vegan 2.5-4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Using the rarefaction formula to find expected species richness}
+\KeywordTok{rarecurve}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# You can choose a minimum sample size to rarefy all samples to using the command below}
+\CommentTok{#uses formulas from Gotelli et al}
+\KeywordTok{rarefy}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DataTypeTok{sample=}\DecValTok{399}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        2        3        4        5        6        7        8        9 
+## 21.58465 14.62666 21.93030 23.97750 28.86636 23.90767 20.86591 22.69575 
+##       10       11       12       13       14       15       16       17 
+## 23.94000 24.00000 27.70564 31.04887 19.93079 16.72912 22.43108 19.67108 
+##       18       19       20       21       22       23       24       25 
+## 24.55425 30.58087 24.57112 29.76604 21.92225 28.20024 23.72249 18.80096 
+##       26       27       28       29       30       31       32       33 
+## 35.90784 21.58465 26.97073 40.49168 28.28675 21.93342 24.68773 26.70589 
+##       34       35       36       37 
+## 24.47852 25.39050 26.43536 17.95725 
+## attr(,"Subsample")
+## [1] 399
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#could store to analyze later}
+\end{Highlighting}
+\end{Shaded}
+
+Shannon Diversity Hill Numbers
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{diversity}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DataTypeTok{index=}\StringTok{"shannon"}\NormalTok{)  }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        2        3        4        5        6        7        8        9 
+## 2.034390 1.739454 1.969522 1.936441 2.278541 2.256906 1.814903 2.150873 
+##       10       11       12       13       14       15       16       17 
+## 2.279787 2.194568 2.271968 2.388018 1.786471 1.657891 2.015676 2.151910 
+##       18       19       20       21       22       23       24       25 
+## 2.076632 2.238071 1.973475 2.150752 2.254356 2.227794 1.952152 1.937024 
+##       26       27       28       29       30       31       32       33 
+## 2.475325 2.034390 2.330242 2.602905 2.332774 2.395928 2.175281 2.093190 
+##       34       35       36       37 
+## 2.178076 2.081399 2.129789 2.100211
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Hill and Renyi numbers are calculated by this command- exponentiates the shannon values}
+\KeywordTok{renyi}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{], }\DataTypeTok{hill=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     0     0.25       0.5         1        2        4        8       16
+## 2  22 16.49085 12.388898  7.647584 4.626305 3.437971 2.961212 2.758003
+## 3  15 11.02170  8.449781  5.694235 3.662714 2.679458 2.335388 2.207019
+## 4  22 15.75175 11.535878  7.167246 4.378427 3.132095 2.681455 2.510999
+## 5  24 16.92297 12.015395  6.934029 4.051043 2.982248 2.588147 2.430028
+## 6  30 22.23099 16.430361  9.762427 5.602241 4.062214 3.482962 3.220222
+## 7  24 18.41341 14.314265  9.553481 6.132547 4.417500 3.687996 3.385879
+## 8  21 14.80573 10.559722  6.140480 3.499643 2.515522 2.208175 2.094588
+## 9  23 17.47588 13.407870  8.592355 5.062425 3.454731 2.907478 2.707825
+## 10 24 19.03580 15.082870  9.774595 5.390641 3.544337 2.970203 2.762323
+## 11 24 18.21985 13.907413  8.976125 5.762515 4.280056 3.597963 3.307476
+## 12 28 20.61930 15.392977  9.698470 6.049529 4.364235 3.628509 3.331623
+## 13 32 23.77310 17.713861 10.891882 6.556489 4.724789 3.975743 3.643459
+## 14 20 14.27554 10.225743  5.968355 3.603273 2.764152 2.437232 2.298294
+## 15 17 12.01309  8.643747  5.248229 3.409102 2.751617 2.470400 2.332639
+## 16 23 16.80056 12.345690  7.505802 4.676946 3.679996 3.331737 3.160519
+## 17 20 15.51980 12.330757  8.601273 5.793369 4.457723 3.967588 3.761412
+## 18 25 18.66969 13.823261  7.977552 4.201557 2.920132 2.518111 2.367844
+## 19 32 23.03309 16.482315  9.375227 5.302448 3.842021 3.296340 3.054243
+## 20 25 17.61287 12.476409  7.195637 4.242144 3.130288 2.707787 2.535247
+## 21 31 21.60610 15.137372  8.591321 4.815256 3.309516 2.805635 2.619273
+## 22 23 17.38024 13.554866  9.529153 7.051177 5.982134 5.489560 5.219813
+## 23 29 21.02435 15.294302  9.279372 5.965014 4.717954 4.226164 4.017769
+## 24 24 17.19298 12.274183  7.043831 4.080313 2.951279 2.546684 2.392959
+## 25 19 14.32014 10.925163  6.938073 4.038924 2.820600 2.436725 2.296256
+## 26 37 27.84469 20.579742 11.885574 6.644319 4.826038 4.109574 3.769815
+## 27 22 16.49085 12.388898  7.647584 4.626305 3.437971 2.961212 2.758003
+## 28 28 21.11303 16.075156 10.280429 6.244597 4.328912 3.576075 3.286112
+## 29 42 31.94409 23.794064 13.502911 6.645920 4.191265 3.433665 3.162634
+## 30 29 21.85753 16.436903 10.306488 6.771139 5.497760 4.839908 4.425144
+## 31 22 18.01794 14.940051 10.978379 7.661223 5.877167 5.102338 4.758834
+## 32 25 18.26321 13.598273  8.804661 6.068529 4.920813 4.354504 4.016104
+## 33 27 19.46552 13.984904  8.110751 4.817013 3.548245 3.022110 2.808440
+## 34 25 18.43357 13.799005  8.829306 5.742133 4.432347 3.955171 3.759694
+## 35 26 18.84576 13.642509  8.015678 4.858017 3.793998 3.436869 3.272206
+## 36 27 19.25477 13.868991  8.413093 5.425102 4.236260 3.756545 3.523396
+## 37 18 14.23019 11.459267  8.167893 5.660641 4.266506 3.601086 3.313004
+##          32       64      Inf
+## 2  2.669222 2.627947 2.588571
+## 3  2.151372 2.125369 2.100478
+## 4  2.437520 2.403290 2.370588
+## 5  2.361415 2.329426 2.298851
+## 6  3.101279 3.046061 2.993506
+## 7  3.255284 3.194866 3.137405
+## 8  2.045223 2.022126 2.000000
+## 9  2.622195 2.582376 2.544379
+## 10 2.673251 2.631851 2.592357
+## 11 3.182293 3.124354 3.069231
+## 12 3.204766 3.146066 3.090226
+## 13 3.494929 3.426197 3.360902
+## 14 2.237423 2.209005 2.181818
+## 15 2.269841 2.240499 2.212435
+## 16 3.059066 3.005789 2.954545
+## 17 3.646703 3.578355 3.507937
+## 18 2.302911 2.272620 2.243655
+## 19 2.946313 2.896210 2.848485
+## 20 2.460298 2.425390 2.392045
+## 21 2.539166 2.501886 2.466292
+## 22 5.055912 4.954224 4.834951
+## 23 3.919666 3.864396 3.789916
+## 24 2.326545 2.295571 2.265957
+## 25 2.235499 2.207135 2.180000
+## 26 3.612728 3.539818 3.470588
+## 27 2.669222 2.627947 2.588571
+## 28 3.162390 3.105122 3.050633
+## 29 3.047322 2.993898 2.943038
+## 30 4.219841 4.124500 4.034188
+## 31 4.578181 4.475963 4.372549
+## 32 3.842491 3.761266 3.684211
+## 33 2.716431 2.673683 2.632911
+## 34 3.654764 3.590181 3.519685
+## 35 3.173268 3.117377 3.062500
+## 36 3.394061 3.329154 3.267176
+## 37 3.187477 3.129362 3.074074
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{renyi}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{], }\DataTypeTok{hill=}\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{renyi}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{], }\DataTypeTok{scales=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\OtherTok{Inf}\NormalTok{), }\DataTypeTok{hill=}\OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+Rarefaction
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#rarefy to 399}
+\NormalTok{maum.rare<-}\KeywordTok{rrarefy}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{], }\DataTypeTok{sample=}\DecValTok{399}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{rrarefy}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DataTypeTok{sample=}\DecValTok{399}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Microcystis.spp. Nitzschia.spp. Pseudoanabaena.spp. Glaucocystis.spp...
+## 2              151             10                  26                   0
+## 3              190             30                  15                   0
+## 4              169             26                  10                   0
+## 5              174             19                  11                   0
+## 6              132             19                  12                   0
+## 7              126             41                  28                   0
+##   morphospecies.10 Aulacoseria.spp. Mougeotia.spp... Diatoma.spp...
+## 2                0               12               88              1
+## 3                0                0               60              0
+## 4                0                0               66              0
+## 5                0                0               83              0
+## 6                0                0               88              5
+## 7                0               16               73              0
+##   morphospecies.1 pollen. Selenastraceae morphospecies.2 morphospecies.3
+## 2               0       0              7               0               6
+## 3               0       0              1               0               0
+## 4               1       0              3               1               0
+## 5               0       0              1               0               0
+## 6               0       4              4               0               0
+## 7               0       2              2               0               3
+##   Cyclotella.spp. morphospecies.4 Dolichospermum.spp. Aphanocapsa.spp..
+## 2              14               9                   0                 1
+## 3              14               0                   0                 0
+## 4              21               2                   0                 0
+## 5              12               2                   0                 0
+## 6              10               0                   0                 3
+## 7              20               0                   0                 4
+##   morphospecies.5 Merismopedia.spp. Scenedesmus.spp. morphospecies.6
+## 2               0                 6                0               0
+## 3               0                 0                2               4
+## 4               1                 0                0               0
+## 5               1                 0                4               0
+## 6               1                17                0               3
+## 7               1                 3                0               4
+##   morphospecies.7 morphospecies.8 clamydomonadaceae.1 morphospecies.11
+## 2               0               2                   1                4
+## 3               0               1                   0                9
+## 4               0               1                   1               22
+## 5               0               1                   2               24
+## 6               0               2                   1               15
+## 7               0               2                   0               11
+##   morphospecies.12 morphospecies.13 Westella.spp.. Melosira.spp...
+## 2                0                0              0              44
+## 3                0                0              0              40
+## 4                0                0              0              36
+## 5                0                0              0              19
+## 6                0                4              0              35
+## 7                0                1              0              18
+##   morphospecies.14 morphospecies.15 morphospecies.16 Unidentified.13
+## 2                2                5                4               2
+## 3                3                0                0               0
+## 4                1                0                0               0
+## 5                1                1                0               1
+## 6                0                1                0               0
+## 7                2                2                0               1
+##   Spirulina.spp... Tetraedron.spp. Cycyotella.spp..2.. Thalassiosira.spp.
+## 2                3               1                   0                  0
+## 3                0               0                  29                  0
+## 4                3               0                  23                  0
+## 5                0               0                  25                  3
+## 6                3               0                  24                  1
+## 7                4               0                  31                  2
+##   Micractinium.spp... morphospecies.17 morphospecies.18 morphospecies.19
+## 2                   0                0                0                0
+## 3                   1                0                0                0
+## 4                   0                1                4                3
+## 5                   0                0                5                0
+## 6                   1                0                4                0
+## 7                   0                0                0                0
+##   morphospecies.20 clamydomonadaceae.2 morphospecies.21 Dinobryon.spp.
+## 2                0                   0                0              0
+## 3                0                   0                0              0
+## 4                2                   2                0              0
+## 5                4                   1                1              3
+## 6                1                   2                2              0
+## 7                0                   0                2              0
+##   morphospecies.22 morphospecies.23 morphospecies.24 morphospecies.25
+## 2                0                0                0                0
+## 3                0                0                0                0
+## 4                0                0                0                0
+## 5                1                0                0                0
+## 6                0                4                0                1
+## 7                0                0                0                0
+##   morphospecies.26 morphospecies.27 morphospecies.28 morphospecies.29
+## 2                0                0                0                0
+## 3                0                0                0                0
+## 4                0                0                0                0
+## 5                0                0                0                0
+## 6                0                0                0                0
+## 7                0                0                0                0
+##   Tetraselmis.spp... morphospecies.30 morphospecies.31 Kirchneriella.spp.
+## 2                  0                0                0                  0
+## 3                  0                0                0                  0
+## 4                  0                0                0                  0
+## 5                  0                0                0                  0
+## 6                  0                0                0                  0
+## 7                  0                0                0                  0
+##   morphospecies.32 Tetraedron.spp..2 Dinobryon.spp..1 Desmodesmus.spp...
+## 2                0                 0                0                  0
+## 3                0                 0                0                  0
+## 4                0                 0                0                  0
+## 5                0                 0                0                  0
+## 6                0                 0                0                  0
+## 7                0                 0                0                  0
+##   Selenastrum.spp. Unidentified.33 Euglena.spp. Phacus.spp.
+## 2                0               0            0           0
+## 3                0               0            0           0
+## 4                0               0            0           0
+## 5                0               0            0           0
+## 6                0               0            0           0
+## 7                0               0            0           0
+##   Unidentified.34 Treubaria.spp.
+## 2               0              0
+## 3               0              0
+## 4               0              0
+## 5               0              0
+## 6               0              0
+## 7               0              0
+\end{verbatim}
+
+Run simulations (each is slightly different, so run a lot, then average)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nperm=}\DecValTok{100}
+\NormalTok{n=}\KeywordTok{nrow}\NormalTok{(maumee[maum.rowsums}\OperatorTok{>}\DecValTok{0}\NormalTok{,])}
+\NormalTok{p=}\KeywordTok{ncol}\NormalTok{(maumee[,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{])}
+\CommentTok{#matrix to store the results}
+\NormalTok{renyi.indperms=}\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{nrow=}\NormalTok{n,}\DataTypeTok{ncol=}\DecValTok{4}\OperatorTok{*}\NormalTok{nperm)}
+
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{nperm)\{}
+\NormalTok{    maum.rare=}\KeywordTok{rrarefy}\NormalTok{(maumee[maum.rowsums}\OperatorTok{>}\DecValTok{0}\NormalTok{,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{],}\DataTypeTok{sample=}\DecValTok{399}\NormalTok{)}
+\NormalTok{    cols=(}\DecValTok{1}\OperatorTok{+}\NormalTok{(i}\OperatorTok{-}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\DecValTok{4}\NormalTok{)}\OperatorTok{:}\NormalTok{(i}\OperatorTok{*}\DecValTok{4}\NormalTok{)}
+\NormalTok{    renyi.rare=}\KeywordTok{renyi}\NormalTok{(maum.rare, }\DataTypeTok{scales=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\OtherTok{Inf}\NormalTok{), }\DataTypeTok{hill=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    renyi.indperms[,cols]=}\KeywordTok{as.matrix}\NormalTok{(renyi.rare)}
+\NormalTok{\}}
+\NormalTok{maxperm=nperm}\OperatorTok{*}\DecValTok{4}
+\KeywordTok{head}\NormalTok{(renyi.indperms)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1]     [,2]     [,3]     [,4] [,5]      [,6]     [,7]     [,8] [,9]
+## [1,]   21 7.810344 4.687207 2.574194   21  7.415441 4.497839 2.525316   22
+## [2,]   15 5.658171 3.647300 2.100000   15  5.733484 3.649809 2.089005   15
+## [3,]   22 7.202477 4.396482 2.375000   22  7.192929 4.392842 2.375000   22
+## [4,]   24 6.940271 4.047723 2.293103   24  6.953214 4.066541 2.306358   24
+## [5,]   28 9.275846 5.302281 2.829787   30 10.033099 5.798616 3.141732   30
+## [6,]   24 9.651762 6.165085 3.117188   24  9.647340 6.154599 3.117188   24
+##         [,10]    [,11]    [,12] [,13]    [,14]    [,15]    [,16] [,17]
+## [1,] 7.638659 4.635347 2.607843    22 7.630733 4.604246 2.541401    22
+## [2,] 5.960826 3.885510 2.192308    15 5.650459 3.614180 2.078125    14
+## [3,] 7.213041 4.403535 2.375000    22 7.209602 4.417464 2.389222    22
+## [4,] 6.914313 4.034593 2.293103    24 6.914313 4.034593 2.293103    24
+## [5,] 9.795121 5.606656 2.977612    29 9.426760 5.331759 2.870504    29
+## [6,] 9.565786 6.136096 3.141732    24 9.388060 6.108314 3.141732    24
+##         [,18]    [,19]    [,20] [,21]    [,22]    [,23]    [,24] [,25]
+## [1,] 7.482121 4.546911 2.557692    22 7.838300 4.786129 2.660000    21
+## [2,] 5.533988 3.607791 2.089005    14 5.532624 3.568489 2.067358    15
+## [3,] 7.144302 4.350111 2.360947    22 7.168471 4.362030 2.360947    22
+## [4,] 6.953214 4.066541 2.306358    24 6.953214 4.066541 2.306358    24
+## [5,] 9.250560 5.269288 2.933824    25 9.133688 5.460130 2.891304    27
+## [6,] 9.521138 6.112067 3.117188    24 9.628459 6.198692 3.166667    24
+##         [,26]    [,27]    [,28] [,29]    [,30]    [,31]    [,32] [,33]
+## [1,] 7.477074 4.553935 2.574194    22 7.769524 4.705495 2.625000    22
+## [2,] 5.730824 3.630333 2.078125    14 5.754637 3.777100 2.156757    15
+## [3,] 7.174418 4.364421 2.360947    22 7.178213 4.389935 2.375000    22
+## [4,] 6.953214 4.066541 2.306358    24 6.940271 4.047723 2.293103    24
+## [5,] 9.690149 5.701021 3.022727    29 9.902994 5.695310 3.069231    30
+## [6,] 9.476895 6.061798 3.093023    24 9.463570 6.091487 3.117188    24
+##         [,34]    [,35]    [,36] [,37]    [,38]    [,39]    [,40] [,41]
+## [1,] 7.604168 4.592292 2.574194    22 7.583228 4.570670 2.541401    22
+## [2,] 5.718166 3.686318 2.111111    14 5.603580 3.626529 2.089005    15
+## [3,] 7.192929 4.392842 2.375000    22 7.166223 4.361313 2.360947    22
+## [4,] 6.940271 4.047723 2.293103    24 6.953214 4.066541 2.306358    24
+## [5,] 9.518767 5.514983 3.022727    28 9.643561 5.608631 2.977612    29
+## [6,] 9.490964 6.089157 3.117188    24 9.504022 6.092885 3.117188    24
+##         [,42]    [,43]    [,44] [,45]    [,46]    [,47]    [,48] [,49]
+## [1,] 7.626327 4.576451 2.574194    22 7.902233 4.821497 2.642384    21
+## [2,] 5.783439 3.698135 2.111111    15 5.620286 3.581333 2.067358    12
+## [3,] 7.175915 4.368014 2.360947    22 7.212686 4.418445 2.389222    22
+## [4,] 6.953214 4.066541 2.306358    24 6.953214 4.066541 2.306358    24
+## [5,] 9.850146 5.724390 3.022727    29 9.305534 5.309001 2.870504    29
+## [6,] 9.750595 6.311239 3.217742    24 9.428299 6.106440 3.141732    24
+##         [,50]    [,51]    [,52] [,53]    [,54]    [,55]    [,56] [,57]
+## [1,] 7.687528 4.674271 2.607843    21 7.548614 4.556541 2.525316    21
+## [2,] 5.471224 3.633979 2.100000    14 5.808028 3.779073 2.145161    14
+## [3,] 7.219172 4.421145 2.389222    22 7.085134 4.309368 2.347059    22
+## [4,] 6.953214 4.066541 2.306358    24 6.885463 4.031528 2.293103    24
+## [5,] 9.476067 5.560441 3.045802    29 9.760374 5.611003 2.977612    30
+## [6,] 9.674969 6.185686 3.117188    24 9.649514 6.246851 3.217742    24
+##         [,58]    [,59]    [,60] [,61]    [,62]    [,63]    [,64] [,65]
+## [1,] 7.428864 4.530865 2.557692    22 7.873295 4.704938 2.590909    22
+## [2,] 5.778304 3.729321 2.122340    15 5.747877 3.683418 2.111111    15
+## [3,] 7.134013 4.380755 2.375000    22 7.182941 4.385823 2.375000    22
+## [4,] 6.953214 4.066541 2.306358    24 6.906076 4.033162 2.293103    24
+## [5,] 9.969181 5.783869 3.045802    30 9.666839 5.508495 2.955556    29
+## [6,] 9.499486 6.106440 3.141732    24 9.356734 5.978482 3.069231    24
+##         [,66]    [,67]    [,68] [,69]    [,70]    [,71]    [,72] [,73]
+## [1,] 7.597859 4.619208 2.590909    21 7.678190 4.627532 2.590909    22
+## [2,] 5.833583 3.772983 2.145161    15 5.855265 3.796737 2.156757    15
+## [3,] 7.132821 4.356777 2.360947    22 7.150553 4.352013 2.360947    22
+## [4,] 6.953214 4.066541 2.306358    24 6.953214 4.066541 2.306358    24
+## [5,] 9.692667 5.602316 3.022727    29 9.347783 5.389519 2.933824    29
+## [6,] 9.460702 6.009172 3.069231    24 9.642984 6.171299 3.141732    23
+##         [,74]    [,75]    [,76] [,77]    [,78]    [,79]    [,80] [,81]
+## [1,] 7.753123 4.743066 2.677852    22 7.829446 4.770353 2.642384    21
+## [2,] 5.589293 3.536307 2.046154    15 5.544553 3.589246 2.078125    15
+## [3,] 7.182122 4.385582 2.375000    22 7.213041 4.403535 2.375000    22
+## [4,] 6.940271 4.047723 2.293103    24 6.940271 4.047723 2.293103    24
+## [5,] 9.660709 5.668542 3.022727    29 9.794518 5.567442 2.977612    29
+## [6,] 9.451089 6.090088 3.117188    24 9.473530 6.077534 3.117188    24
+##         [,82]    [,83]    [,84] [,85]    [,86]    [,87]    [,88] [,89]
+## [1,] 7.533472 4.618940 2.590909    22 7.851510 4.753830 2.642384    21
+## [2,] 5.711009 3.646465 2.089005    14 5.513279 3.544653 2.056701    15
+## [3,] 7.209602 4.417464 2.389222    22 7.246685 4.453299 2.403614    22
+## [4,] 6.940271 4.047723 2.293103    24 6.885463 4.031528 2.293103    24
+## [5,] 9.997712 5.791444 3.117188    30 9.764142 5.465753 2.912409    29
+## [6,] 9.542277 6.105503 3.141732    24 9.450425 6.056264 3.093023    24
+##         [,90]    [,91]    [,92] [,93]    [,94]    [,95]    [,96] [,97]
+## [1,] 7.677361 4.696056 2.625000    22 7.718526 4.613318 2.574194    22
+## [2,] 5.839310 3.814751 2.168478    15 5.677007 3.659541 2.100000    14
+## [3,] 7.192929 4.392842 2.375000    22 7.160989 4.380031 2.375000    22
+## [4,] 6.918461 4.035616 2.293103    24 6.953214 4.066541 2.306358    24
+## [5,] 9.797900 5.697756 3.022727    28 9.484695 5.524935 2.977612    30
+## [6,] 9.586771 6.128065 3.141732    24 9.478464 6.091487 3.117188    23
+##         [,98]    [,99]   [,100] [,101]    [,102]   [,103]   [,104] [,105]
+## [1,] 7.489511 4.540427 2.541401     22  7.603717 4.571195 2.574194     20
+## [2,] 5.632132 3.653662 2.100000     15  5.872645 3.828512 2.168478     15
+## [3,] 7.156722 4.357731 2.360947     22  7.131469 4.326937 2.347059     22
+## [4,] 6.885463 4.031528 2.293103     24  6.953214 4.066541 2.306358     24
+## [5,] 9.541429 5.569779 3.093023     30 10.222249 5.866998 3.141732     30
+## [6,] 9.370335 6.075678 3.117188     24  9.513257 6.123351 3.117188     24
+##        [,106]   [,107]   [,108] [,109]   [,110]   [,111]   [,112] [,113]
+## [1,] 7.506371 4.628609 2.642384     22 7.595767 4.617064 2.574194     21
+## [2,] 5.789259 3.779611 2.156757     14 5.654593 3.670002 2.100000     15
+## [3,] 7.176733 4.368254 2.360947     22 7.145970 4.350586 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.889825 4.031732 2.293103     24
+## [5,] 9.958882 5.686765 3.045802     30 9.734907 5.577585 2.977612     28
+## [6,] 9.532863 6.120055 3.141732     24 9.523682 6.035599 3.093023     23
+##        [,114]   [,115]   [,116] [,117]   [,118]   [,119]   [,120] [,121]
+## [1,] 7.515480 4.527515 2.525316     22 7.797081 4.697442 2.574194     20
+## [2,] 5.693156 3.599145 2.067358     15 5.767406 3.695559 2.111111     15
+## [3,] 7.167429 4.382684 2.375000     22 7.175915 4.368014 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.771657 5.635633 2.977612     30 9.976802 5.762932 3.069231     29
+## [6,] 9.423690 6.089157 3.117188     24 9.741009 6.309238 3.217742     24
+##        [,122]   [,123]   [,124] [,125]   [,126]   [,127]   [,128] [,129]
+## [1,] 7.489629 4.660587 2.642384     20 7.610047 4.659496 2.557692     22
+## [2,] 5.718514 3.644294 2.089005     15 5.604717 3.579079 2.067358     15
+## [3,] 7.166223 4.361313 2.360947     22 7.209602 4.417464 2.389222     22
+## [4,] 6.889825 4.031732 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.759015 5.532231 2.933824     30 9.941819 5.589726 2.955556     30
+## [6,] 9.674019 6.216118 3.166667     24 9.538025 6.122409 3.117188     24
+##        [,130]   [,131]   [,132] [,133]   [,134]   [,135]   [,136] [,137]
+## [1,] 7.314834 4.477094 2.557692     21 7.527191 4.609578 2.590909     21
+## [2,] 5.536918 3.570890 2.067358     15 5.631363 3.584559 2.067358     15
+## [3,] 7.185441 4.371612 2.360947     22 7.141267 4.354632 2.360947     22
+## [4,] 6.918461 4.035616 2.293103     24 6.919877 4.036025 2.293103     24
+## [5,] 9.594307 5.407459 2.829787     27 9.386772 5.491015 2.955556     30
+## [6,] 9.514474 6.044307 3.069231     23 9.532659 6.156026 3.166667     24
+##        [,138]   [,139]   [,140] [,141]   [,142]   [,143]   [,144] [,145]
+## [1,] 7.565696 4.591233 2.574194     22 7.855998 4.717486 2.625000     22
+## [2,] 5.727089 3.668648 2.100000     14 5.634970 3.635971 2.089005     15
+## [3,] 7.176733 4.368254 2.360947     22 7.113643 4.317081 2.347059     22
+## [4,] 6.885463 4.031528 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.357507 5.358318 3.022727     28 9.550433 5.494047 2.977612     29
+## [6,] 9.415145 6.023268 3.093023     24 9.524927 6.160314 3.166667     24
+##        [,146]   [,147]   [,148] [,149]   [,150]   [,151]   [,152] [,153]
+## [1,] 7.576800 4.567261 2.525316     22 7.830225 4.749575 2.660000     22
+## [2,] 5.804198 3.731944 2.122340     15 5.701803 3.642460 2.089005     15
+## [3,] 7.086119 4.372573 2.375000     22 7.149461 4.381237 2.375000     22
+## [4,] 6.940271 4.047723 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.726711 5.525318 2.955556     29 9.567653 5.556560 3.000000     29
+## [6,] 9.602425 6.174650 3.166667     24 9.492894 6.104099 3.141732     24
+##        [,154]   [,155]   [,156] [,157]   [,158]   [,159]   [,160] [,161]
+## [1,] 7.561738 4.551851 2.525316     22 7.636013 4.600254 2.557692     22
+## [2,] 5.761774 3.701746 2.111111     15 5.751208 3.678481 2.100000     13
+## [3,] 7.196006 4.393812 2.375000     22 7.171744 4.381719 2.375000     22
+## [4,] 6.914313 4.034593 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.684613 5.565106 2.977612     29 9.482586 5.521486 3.045802     30
+## [6,] 9.291971 5.980279 3.093023     24 9.520610 6.016439 3.069231     24
+##         [,162]   [,163]   [,164] [,165]   [,166]   [,167]   [,168] [,169]
+## [1,]  7.692518 4.600786 2.557692     22 7.758400 4.666325 2.607843     22
+## [2,]  5.667750 3.754652 2.145161     15 5.685088 3.632155 2.089005     15
+## [3,]  7.182122 4.385582 2.375000     22 7.127317 4.330939 2.347059     22
+## [4,]  6.940271 4.047723 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 10.170483 5.883042 3.117188     28 9.660521 5.605472 2.977612     29
+## [6,]  9.486377 6.106909 3.141732     23 9.363361 6.053961 3.117188     24
+##        [,170]   [,171]   [,172] [,173]   [,174]   [,175]   [,176] [,177]
+## [1,] 7.511246 4.537580 2.525316     20 7.338778 4.547431 2.574194     22
+## [2,] 5.659494 3.605830 2.078125     15 5.841565 3.769231 2.145161     15
+## [3,] 7.246685 4.453299 2.403614     22 7.122015 4.323412 2.347059     22
+## [4,] 6.885463 4.031528 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.514214 5.560830 3.022727     29 9.973750 5.727685 3.069231     27
+## [6,] 9.558174 6.082178 3.093023     24 9.713836 6.286814 3.217742     24
+##        [,178]   [,179]   [,180] [,181]   [,182]   [,183]   [,184] [,185]
+## [1,] 7.370595 4.492001 2.557692     22 7.887340 4.792468 2.660000     20
+## [2,] 5.655731 3.646799 2.100000     15 5.817345 3.711758 2.111111     15
+## [3,] 7.219172 4.421145 2.389222     22 7.193749 4.393085 2.375000     22
+## [4,] 6.940271 4.047723 2.293103     24 6.906076 4.033162 2.293103     24
+## [5,] 9.256988 5.412239 2.912409     27 9.618537 5.601527 3.045802     29
+## [6,] 9.487684 6.113005 3.141732     24 9.631157 6.206909 3.192000     24
+##        [,186]   [,187]   [,188] [,189]   [,190]   [,191]   [,192] [,193]
+## [1,] 7.557978 4.641835 2.607843     22 7.518213 4.655408 2.642384     22
+## [2,] 5.830083 3.747758 2.133690     15 5.815344 3.749700 2.133690     15
+## [3,] 7.185441 4.371612 2.360947     22 7.158968 4.358447 2.360947     22
+## [4,] 6.940271 4.047723 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.799552 5.565496 2.912409     28 9.471728 5.451902 2.870504     29
+## [6,] 9.719392 6.265536 3.192000     23 9.506674 6.191460 3.192000     24
+##        [,194]   [,195]   [,196] [,197]   [,198]   [,199]   [,200] [,201]
+## [1,] 7.541004 4.560196 2.557692     22 7.560831 4.549510 2.525316     22
+## [2,] 5.656071 3.571050 2.056701     15 5.727293 3.681884 2.111111     14
+## [3,] 7.213041 4.403535 2.375000     22 7.120345 4.353918 2.360947     22
+## [4,] 6.919877 4.036025 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.713810 5.528004 2.912409     28 9.704922 5.760013 3.117188     28
+## [6,] 9.606930 6.118174 3.117188     24 9.678184 6.228277 3.192000     23
+##        [,202]   [,203]   [,204] [,205]   [,206]   [,207]   [,208] [,209]
+## [1,] 7.648012 4.673722 2.642384     22 7.830621 4.711343 2.607843     22
+## [2,] 5.631470 3.660719 2.100000     15 5.828101 3.785003 2.156757     15
+## [3,] 7.213041 4.403535 2.375000     22 7.196006 4.393812 2.375000     22
+## [4,] 6.919877 4.036025 2.293103     24 6.953214 4.066541 2.306358     24
+## [5,] 9.719552 5.597194 3.000000     30 9.823900 5.653645 3.022727     28
+## [6,] 9.434548 6.157455 3.192000     24 9.532868 6.052119 3.093023     24
+##        [,210]   [,211]   [,212] [,213]   [,214]   [,215]   [,216] [,217]
+## [1,] 7.480269 4.504456 2.557692     21 7.673356 4.587000 2.541401     21
+## [2,] 5.850348 3.776742 2.145161     14 5.810477 3.776742 2.145161     14
+## [3,] 7.069100 4.316145 2.347059     22 7.182122 4.385582 2.375000     22
+## [4,] 6.940271 4.047723 2.293103     23 6.846756 4.030915 2.293103     24
+## [5,] 9.463870 5.427739 2.870504     28 9.334748 5.390979 2.912409     29
+## [6,] 9.641079 6.187609 3.166667     24 9.649819 6.162222 3.117188     24
+##        [,218]   [,219]   [,220] [,221]   [,222]   [,223]   [,224] [,225]
+## [1,] 7.122398 4.415749 2.541401     22 7.514716 4.524427 2.525316     21
+## [2,] 5.650850 3.620920 2.078125     15 5.708352 3.631658 2.078125     15
+## [3,] 7.156722 4.357731 2.360947     22 7.157926 4.379068 2.375000     21
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.907382 5.756681 3.141732     29 9.800873 5.650435 3.000000     30
+## [6,] 9.527833 6.100824 3.141732     24 9.549328 6.121467 3.141732     24
+##        [,226]   [,227]   [,228] [,229]   [,230]   [,231]   [,232] [,233]
+## [1,] 7.617621 4.740806 2.677852     22 7.700561 4.706329 2.625000     19
+## [2,] 5.587273 3.596056 2.078125     14 5.704350 3.690077 2.111111     15
+## [3,] 7.099845 4.376900 2.375000     22 7.196006 4.393812 2.375000     22
+## [4,] 6.953214 4.066541 2.306358     24 6.904500 4.032958 2.293103     24
+## [5,] 9.896138 5.651638 2.955556     30 9.787814 5.551522 2.891304     29
+## [6,] 9.512476 6.123822 3.166667     24 9.444971 6.038346 3.093023     24
+##        [,234]   [,235]   [,236] [,237]   [,238]   [,239]   [,240] [,241]
+## [1,] 7.324750 4.551071 2.590909     22 7.629339 4.657315 2.642384     22
+## [2,] 5.747573 3.706918 2.122340     13 5.661363 3.734045 2.133690     15
+## [3,] 7.148212 4.351300 2.360947     22 7.101170 4.328584 2.347059     22
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.665912 5.503163 2.955556     30 9.915321 5.647228 2.977612     29
+## [6,] 9.565119 6.086363 3.117188     24 9.541046 6.137988 3.141732     24
+##        [,242]   [,243]   [,244] [,245]   [,246]   [,247]   [,248] [,249]
+## [1,] 7.806837 4.689969 2.574194     21 7.561832 4.669062 2.625000     22
+## [2,] 5.827974 3.806178 2.156757     15 5.633093 3.652321 2.100000     14
+## [3,] 7.141289 4.375938 2.375000     22 7.124555 4.377141 2.375000     22
+## [4,] 6.953214 4.066541 2.306358     24 6.918461 4.035616 2.293103     24
+## [5,] 9.754849 5.656860 3.022727     30 9.585980 5.426628 2.955556     29
+## [6,] 9.555771 6.134677 3.141732     24 9.372231 6.067343 3.141732     24
+##        [,250]   [,251]   [,252] [,253]   [,254]   [,255]   [,256] [,257]
+## [1,] 7.599415 4.566736 2.541401     21 7.514953 4.509560 2.541401     21
+## [2,] 5.714705 3.710201 2.122340     15 5.786654 3.748111 2.133690     14
+## [3,] 7.213041 4.403535 2.375000     22 7.209602 4.417464 2.389222     22
+## [4,] 6.940271 4.047723 2.293103     24 6.889825 4.031732 2.293103     24
+## [5,] 9.246815 5.318578 2.912409     29 9.990305 5.742560 3.022727     30
+## [6,] 9.414342 6.071045 3.093023     23 9.543272 6.160791 3.141732     24
+##        [,258]   [,259]   [,260] [,261]   [,262]   [,263]   [,264] [,265]
+## [1,] 7.767655 4.670158 2.557692     22 8.065613 4.842027 2.625000     22
+## [2,] 5.579140 3.606974 2.078125     15 5.594909 3.598657 2.078125     15
+## [3,] 7.157342 4.339676 2.347059     22 7.175915 4.368014 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.906076 4.033162 2.293103     24
+## [5,] 9.581248 5.492152 2.955556     29 9.378727 5.445934 2.955556     30
+## [6,] 9.710425 6.254705 3.192000     24 9.640766 6.191460 3.166667     24
+##         [,266]   [,267]   [,268] [,269]   [,270]   [,271]   [,272] [,273]
+## [1,]  7.713615 4.700771 2.607843     22 7.190154 4.323647 2.447853     21
+## [2,]  5.698095 3.654668 2.100000     15 5.752227 3.671186 2.100000     14
+## [3,]  7.193749 4.393085 2.375000     22 7.213041 4.403535 2.375000     22
+## [4,]  6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 10.169147 5.850612 3.117188     29 9.679076 5.633240 3.093023     28
+## [6,]  9.660945 6.190015 3.166667     24 9.570890 6.228765 3.217742     24
+##        [,274]   [,275]   [,276] [,277]   [,278]   [,279]   [,280] [,281]
+## [1,] 7.532560 4.621353 2.660000     22 7.716155 4.594943 2.525316     22
+## [2,] 5.573532 3.614344 2.089005     14 5.759281 3.760150 2.145161     13
+## [3,] 7.230035 4.428524 2.389222     22 7.111014 4.353680 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.918461 4.035616 2.293103     24
+## [5,] 9.412340 5.368075 2.829787     30 9.313580 5.352554 2.912409     29
+## [6,] 9.317477 6.025092 3.117188     24 9.674301 6.216604 3.192000     24
+##        [,282]   [,283]   [,284] [,285]   [,286]   [,287]   [,288] [,289]
+## [1,] 7.515575 4.503182 2.541401     21 7.281252 4.436175 2.541401     21
+## [2,] 5.607305 3.661224 2.100000     14 5.486842 3.514448 2.046154     15
+## [3,] 7.118931 4.322473 2.347059     22 7.170706 4.412811 2.389222     22
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.588712 5.522635 2.977612     29 9.496448 5.533000 3.000000     30
+## [6,] 9.615588 6.171299 3.141732     24 9.516635 6.089622 3.117188     24
+##        [,290]   [,291]   [,292] [,293]   [,294]   [,295]   [,296] [,297]
+## [1,] 7.531801 4.585150 2.557692     22 7.401456 4.444845 2.493750     21
+## [2,] 5.942579 3.848316 2.168478     15 5.714694 3.699682 2.122340     15
+## [3,] 7.150747 4.358209 2.360947     22 7.230035 4.428524 2.389222     22
+## [4,] 6.889825 4.031732 2.293103     24 6.906076 4.033162 2.293103     24
+## [5,] 9.834144 5.726449 3.093023     30 9.700459 5.566274 3.000000     28
+## [6,] 9.373511 6.073361 3.141732     23 9.460531 6.042930 3.069231     24
+##        [,298]   [,299]   [,300] [,301]    [,302]   [,303]   [,304] [,305]
+## [1,] 7.594201 4.631302 2.574194     21  7.773001 4.766640 2.660000     22
+## [2,] 5.713776 3.663414 2.100000     15  5.657597 3.652991 2.100000     15
+## [3,] 7.143282 4.363704 2.360947     22  7.091725 4.343227 2.360947     22
+## [4,] 6.940271 4.047723 2.293103     24  6.918461 4.035616 2.293103     24
+## [5,] 9.721339 5.681083 3.093023     29 10.158022 5.946771 3.117188     30
+## [6,] 9.523800 6.099421 3.117188     23  9.532985 6.146519 3.141732     24
+##        [,306]   [,307]   [,308] [,309]   [,310]   [,311]   [,312] [,313]
+## [1,] 7.541253 4.632919 2.625000     22 7.830206 4.664411 2.557692     22
+## [2,] 5.655237 3.654836 2.100000     15 5.744151 3.650478 2.089005     14
+## [3,] 7.219172 4.421145 2.389222     21 7.050575 4.318721 2.347059     22
+## [4,] 6.940271 4.047723 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.814390 5.578757 3.000000     29 9.707517 5.568610 2.933824     29
+## [6,] 9.494884 6.024180 3.093023     24 9.606391 6.194350 3.192000     24
+##        [,314]   [,315]   [,316] [,317]   [,318]   [,319]   [,320] [,321]
+## [1,] 7.349168 4.410855 2.478261     22 7.637466 4.599988 2.557692     22
+## [2,] 5.682159 3.705882 2.122340     15 5.703136 3.694016 2.122340     15
+## [3,] 7.175669 4.382925 2.375000     22 7.212686 4.418445 2.389222     22
+## [4,] 6.919877 4.036025 2.293103     24 6.918461 4.035616 2.293103     24
+## [5,] 9.557654 5.524168 3.000000     28 9.277428 5.289948 2.870504     30
+## [6,] 9.577647 6.135150 3.117188     24 9.391894 6.000113 3.069231     24
+##        [,322]   [,323]   [,324] [,325]    [,326]   [,327]   [,328] [,329]
+## [1,] 7.418284 4.497076 2.525316     22  7.751594 4.695225 2.660000     22
+## [2,] 5.681715 3.596544 2.067358     15  5.582524 3.534423 2.046154     14
+## [3,] 7.193749 4.393085 2.375000     22  7.196006 4.393812 2.375000     22
+## [4,] 6.919877 4.036025 2.293103     24  6.953214 4.066541 2.306358     24
+## [5,] 9.353043 5.321423 2.891304     30 10.012785 5.798194 3.166667     28
+## [6,] 9.657008 6.195797 3.166667     23  9.294987 5.965936 3.069231     24
+##        [,330]   [,331]   [,332] [,333]   [,334]   [,335]   [,336] [,337]
+## [1,] 7.388463 4.535770 2.574194     22 7.750441 4.642376 2.590909     21
+## [2,] 5.632962 3.666621 2.111111     15 5.711110 3.621744 2.078125     15
+## [3,] 7.195702 4.378345 2.360947     22 7.157926 4.379068 2.375000     22
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.673464 5.656860 3.069231     30 9.422776 5.379684 2.977612     28
+## [6,] 9.633185 6.199657 3.166667     24 9.548531 6.148418 3.166667     24
+##        [,338]   [,339]   [,340] [,341]   [,342]   [,343]   [,344] [,345]
+## [1,] 7.572717 4.538874 2.541401     22 7.645466 4.662498 2.590909     22
+## [2,] 5.873936 3.866636 2.192308     13 5.633008 3.661056 2.100000     13
+## [3,] 7.230035 4.428524 2.389222     22 7.194852 4.414525 2.389222     22
+## [4,] 6.914313 4.034593 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.717871 5.717811 3.045802     30 9.974219 5.713706 3.045802     27
+## [6,] 9.653375 6.204973 3.166667     24 9.586782 6.144622 3.166667     24
+##        [,346]   [,347]   [,348] [,349]   [,350]   [,351]   [,352] [,353]
+## [1,] 7.852521 4.787856 2.677852     22 7.700203 4.646441 2.607843     21
+## [2,] 5.575910 3.648972 2.100000     14 5.690181 3.687171 2.111111     15
+## [3,] 7.185441 4.371612 2.360947     22 7.195702 4.378345 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.940271 4.047723 2.293103     24
+## [5,] 9.831466 5.819814 3.093023     30 9.838394 5.608236 3.000000     30
+## [6,] 9.322825 6.015985 3.093023     24 9.464927 6.044307 3.093023     23
+##        [,354]   [,355]   [,356] [,357]   [,358]   [,359]   [,360] [,361]
+## [1,] 7.398200 4.525713 2.557692     21 7.305951 4.333769 2.462963     22
+## [2,] 5.707006 3.640295 2.089005     14 5.647956 3.661729 2.100000     15
+## [3,] 7.246685 4.453299 2.403614     22 7.143037 4.378586 2.375000     22
+## [4,] 6.953214 4.066541 2.306358     24 6.953214 4.066541 2.306358     24
+## [5,] 9.982394 5.682706 2.977612     27 9.687722 5.637629 2.955556     29
+## [6,] 9.333204 6.083572 3.117188     24 9.559763 6.131841 3.141732     24
+##        [,362]   [,363]   [,364] [,365]    [,366]   [,367]   [,368] [,369]
+## [1,] 7.738696 4.711343 2.625000     22  7.728996 4.622158 2.574194     21
+## [2,] 5.893362 3.844413 2.180328     14  5.684369 3.700886 2.122340     15
+## [3,] 7.175915 4.368014 2.360947     21  7.083320 4.352489 2.360947     22
+## [4,] 6.914313 4.034593 2.293103     24  6.914313 4.034593 2.293103     24
+## [5,] 9.714605 5.554621 2.891304     30 10.140948 5.847603 3.069231     28
+## [6,] 9.549172 6.112536 3.117188     24  9.372128 6.088691 3.141732     24
+##        [,370]   [,371]   [,372] [,373]   [,374]   [,375]   [,376] [,377]
+## [1,] 7.660319 4.601584 2.557692     22 7.517844 4.570670 2.625000     21
+## [2,] 5.607191 3.572172 2.067358     15 5.738905 3.709855 2.122340     14
+## [3,] 7.101031 4.343464 2.360947     22 7.161312 4.359163 2.360947     22
+## [4,] 6.953214 4.066541 2.306358     24 6.919877 4.036025 2.293103     24
+## [5,] 9.555136 5.601527 3.045802     30 9.793387 5.562384 2.977612     30
+## [6,] 9.521249 6.096152 3.117188     24 9.458300 6.078926 3.093023     23
+##        [,378]   [,379]   [,380] [,381]   [,382]   [,383]   [,384] [,385]
+## [1,] 7.877208 4.817995 2.660000     21 7.651067 4.649969 2.607843     22
+## [2,] 5.766736 3.743880 2.133690     15 5.723991 3.661729 2.100000     15
+## [3,] 7.191156 4.388967 2.375000     22 7.133804 4.327643 2.347059     22
+## [4,] 6.918461 4.035616 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.742242 5.615754 3.000000     29 9.991754 5.783449 3.022727     28
+## [6,] 9.465258 6.103163 3.141732     24 9.656731 6.186167 3.141732     24
+##        [,386]   [,387]   [,388] [,389]   [,390]   [,391]   [,392] [,393]
+## [1,] 7.725649 4.664957 2.590909     22 7.598102 4.619208 2.607843     21
+## [2,] 5.725294 3.645463 2.089005     15 5.547006 3.595569 2.089005     15
+## [3,] 7.193749 4.393085 2.375000     22 7.246685 4.453299 2.403614     21
+## [4,] 6.906076 4.033162 2.293103     24 6.940271 4.047723 2.293103     24
+## [5,] 9.874849 5.702654 3.022727     30 9.863637 5.682706 3.045802     29
+## [6,] 9.596691 6.129481 3.141732     24 9.464581 6.110659 3.141732     23
+##        [,394]   [,395]   [,396] [,397]   [,398]   [,399]   [,400]
+## [1,] 7.717223 4.659769 2.557692     22 7.544826 4.585150 2.574194
+## [2,] 5.710523 3.620756 2.078125     15 5.618423 3.611556 2.078125
+## [3,] 7.086350 4.353441 2.360947     21 7.099845 4.376900 2.375000
+## [4,] 6.953214 4.066541 2.306358     24 6.940271 4.047723 2.293103
+## [5,] 9.603657 5.544562 2.955556     29 9.558200 5.426259 2.891304
+## [6,] 9.432104 6.097553 3.117188     24 9.554864 6.153171 3.117188
+\end{verbatim}
+
+Average permuations to yield rarefied, average hill numbers
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{maum.hills=}\KeywordTok{cbind}\NormalTok{(maumee[,}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)],}
+    \KeywordTok{apply}\NormalTok{(renyi.indperms[,}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from=}\DecValTok{1}\NormalTok{,}\DataTypeTok{to=}\NormalTok{(maxperm}\OperatorTok{-}\DecValTok{3}\NormalTok{),}\DataTypeTok{by=}\DecValTok{4}\NormalTok{)],}\DecValTok{1}\NormalTok{,mean),}
+    \KeywordTok{apply}\NormalTok{(renyi.indperms[,}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from=}\DecValTok{2}\NormalTok{,}\DataTypeTok{to=}\NormalTok{(maxperm}\OperatorTok{-}\DecValTok{2}\NormalTok{),}\DataTypeTok{by=}\DecValTok{4}\NormalTok{)],}\DecValTok{1}\NormalTok{,mean),}
+    \KeywordTok{apply}\NormalTok{(renyi.indperms[,}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from=}\DecValTok{3}\NormalTok{,}\DataTypeTok{to=}\NormalTok{(maxperm}\OperatorTok{-}\DecValTok{1}\NormalTok{),}\DataTypeTok{by=}\DecValTok{4}\NormalTok{)],}\DecValTok{1}\NormalTok{,mean),}
+    \KeywordTok{apply}\NormalTok{(renyi.indperms[,}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from=}\DecValTok{4}\NormalTok{,}\DataTypeTok{to=}\NormalTok{maxperm,}\DataTypeTok{by=}\DecValTok{4}\NormalTok{)],}\DecValTok{1}\NormalTok{,mean))}
+\KeywordTok{colnames}\NormalTok{(maum.hills)=}\KeywordTok{c}\NormalTok{(}\StringTok{"TREATMENT"}\NormalTok{,}\StringTok{"# COUNTED"}\NormalTok{,}\StringTok{"H0"}\NormalTok{,}\StringTok{"H1"}\NormalTok{,}\StringTok{"H2"}\NormalTok{,}\StringTok{"HInf"}\NormalTok{)}
+\NormalTok{maum.hills}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     TREATMENT # COUNTED    H0        H1       H2     HInf
+## 2     Control       453 21.57  7.611785 4.616015 2.582924
+## 3     Control       439 14.62  5.700461 3.675331 2.106362
+## 4     Control       403 21.95  7.169261 4.379279 2.370424
+## 5     Control       400 23.99  6.933768 4.050984 2.298803
+## 6    Nitrogen       461 29.02  9.689969 5.584434 2.992926
+## 7    Nitrogen       411 23.86  9.528266 6.122562 3.135011
+## 8    Nitrogen       408 20.88  6.144812 3.504236 2.001806
+## 9    Nitrogen       430 22.62  8.555277 5.051553 2.541942
+## 10 Phosphorus       407 23.92  9.752051 5.381605 2.589962
+## 11 Phosphorus       399 24.00  8.976125 5.762515 3.069231
+## 12 Phosphorus       411 27.71  9.669524 6.033283 3.082489
+## 13 Phosphorus       447 31.00 10.790677 6.536698 3.360105
+## 14      Trace       408 19.97  5.966794 3.602258 2.180264
+## 15      Trace       427 16.76  5.243847 3.409621 2.209825
+## 16      Trace       455 22.49  7.473805 4.677027 2.951841
+## 17      Trace       442 19.72  8.584062 5.793158 3.505217
+## 18    N+Trace       442 24.54  7.935905 4.193929 2.241553
+## 19    N+Trace       470 30.48  9.322041 5.322589 2.863047
+## 20    N+Trace       421 24.61  7.190608 4.243999 2.393387
+## 21    N+Trace       439 29.62  8.557723 4.818025 2.467630
+## 22    P+Trace       498 22.00  9.492827 7.052204 4.806601
+## 23    P+Trace       451 28.14  9.239345 5.962168 3.768000
+## 24    P+Trace       426 23.79  7.058736 4.098329 2.273100
+## 25    P+Trace       436 18.75  6.912849 4.035106 2.179764
+## 26        N+P       472 35.82 11.762871 6.632838 3.477437
+## 27        N+P       453 21.58  7.627072 4.630139 2.595563
+## 28        N+P       482 27.06 10.199195 6.211812 3.039561
+## 29        N+P       465 40.58 13.405736 6.649130 2.946931
+## 30  N+P+Trace       472 28.31 10.215226 6.734352 4.017425
+## 31  N+P+Trace       446 21.93 10.949154 7.654081 4.365082
+## 32  N+P+Trace       420 24.64  8.768994 6.062804 3.689407
+## 33  N+P+Trace       416 26.66  8.106869 4.819041 2.633117
+## 34     Chelex       447 24.42  8.795057 5.736194 3.514082
+## 35     Chelex       441 25.56  7.982308 4.850363 3.068156
+## 36     Chelex       428 26.46  8.407228 5.428445 3.272628
+## 37     Chelex       415 17.93  8.154766 5.658300 3.077667
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Why are richness Hill nubers not whole numbers??}
+\CommentTok{#add columns for treatments n,p,trace as y/n for analysis of interactive effects}
+\NormalTok{maum.hills}\OperatorTok{$}\NormalTok{trace<-}\KeywordTok{grepl}\NormalTok{(}\StringTok{"Trace"}\NormalTok{, maum.hills}\OperatorTok{$}\NormalTok{TREATMENT) }
+\NormalTok{maum.hills}\OperatorTok{$}\NormalTok{nitrogen<-}\KeywordTok{grepl}\NormalTok{(}\StringTok{"N"}\NormalTok{, maum.hills}\OperatorTok{$}\NormalTok{TREATMENT) }
+\NormalTok{maum.hills}\OperatorTok{$}\NormalTok{phosphorus<-}\KeywordTok{grepl}\NormalTok{(}\StringTok{"P"}\NormalTok{, maum.hills}\OperatorTok{$}\NormalTok{TREATMENT) }
+\end{Highlighting}
+\end{Shaded}
+
+ANOVA on Hill numbers
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#not considering significance from the intitial sample. Counts for the initial are biased (long story) so I'm not considering them in my statistical analysis currently. }
+
+\CommentTok{#Richness}
+\NormalTok{maumeeRICHNESSaov<-}\KeywordTok{aov}\NormalTok{(H0}\OperatorTok{~}\NormalTok{nitrogen}\OperatorTok{*}\NormalTok{phosphorus}\OperatorTok{*}\NormalTok{trace, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{shapiro.test}\NormalTok{(}\KeywordTok{resid}\NormalTok{(maumeeRICHNESSaov))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(maumeeRICHNESSaov)
+## W = 0.98262, p-value = 0.8299
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(maumeeRICHNESSaov,}\DataTypeTok{which=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{main=}\StringTok{"Maumee Richness Normality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(maumeeRICHNESSaov)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                           Df Sum Sq Mean Sq F value  Pr(>F)   
+## nitrogen                   1  162.5  162.50   8.760 0.00621 **
+## phosphorus                 1   88.4   88.36   4.763 0.03762 * 
+## trace                      1   37.7   37.66   2.030 0.16524   
+## nitrogen:phosphorus        1    4.0    4.03   0.217 0.64470   
+## nitrogen:trace             1    4.8    4.82   0.260 0.61424   
+## phosphorus:trace           1   50.7   50.65   2.730 0.10962   
+## nitrogen:phosphorus:trace  1   33.6   33.56   1.809 0.18941   
+## Residuals                 28  519.4   18.55                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#nitrogen, phosphorus significant}
+\NormalTok{maumeeRICHNESSaov2<-}\KeywordTok{aov}\NormalTok{(H0}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{summary}\NormalTok{(maumeeRICHNESSaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value Pr(>F)  
+## TREATMENT    8  400.3   50.04   2.698 0.0254 *
+## Residuals   27  500.7   18.54                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TukeyHSD}\NormalTok{(maumeeRICHNESSaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = H0 ~ TREATMENT, data = maum.hills)
+## 
+## $TREATMENT
+##                          diff         lwr       upr     p adj
+## Control-Chelex        -3.0600 -13.3055115  7.185512 0.9821139
+## N+P-Chelex             7.6675  -2.5780115 17.913012 0.2674091
+## N+P+Trace-Chelex       1.7925  -8.4530115 12.038012 0.9995315
+## N+Trace-Chelex         3.7200  -6.5255115 13.965512 0.9444153
+## Nitrogen-Chelex        0.5025  -9.7430115 10.748012 1.0000000
+## P+Trace-Chelex        -0.4225 -10.6680115  9.823012 1.0000000
+## Phosphorus-Chelex      3.0650  -7.1805115 13.310512 0.9819335
+## Trace-Chelex          -3.8575 -14.1030115  6.388012 0.9324926
+## N+P-Control           10.7275   0.4819885 20.973012 0.0349216
+## N+P+Trace-Control      4.8525  -5.3930115 15.098012 0.7999496
+## N+Trace-Control        6.7800  -3.4655115 17.025512 0.4178190
+## Nitrogen-Control       3.5625  -6.6830115 13.808012 0.9562217
+## P+Trace-Control        2.6375  -7.6080115 12.883012 0.9930589
+## Phosphorus-Control     6.1250  -4.1205115 16.370512 0.5489405
+## Trace-Control         -0.7975 -11.0430115  9.448012 0.9999990
+## N+P+Trace-N+P         -5.8750 -16.1205115  4.370512 0.6008676
+## N+Trace-N+P           -3.9475 -14.1930115  6.298012 0.9238461
+## Nitrogen-N+P          -7.1650 -17.4105115  3.080512 0.3477997
+## P+Trace-N+P           -8.0900 -18.3355115  2.155512 0.2103837
+## Phosphorus-N+P        -4.6025 -14.8480115  5.643012 0.8405791
+## Trace-N+P            -11.5250 -21.7705115 -1.279488 0.0188710
+## N+Trace-N+P+Trace      1.9275  -8.3180115 12.173012 0.9992067
+## Nitrogen-N+P+Trace    -1.2900 -11.5355115  8.955512 0.9999601
+## P+Trace-N+P+Trace     -2.2150 -12.4605115  8.030512 0.9978747
+## Phosphorus-N+P+Trace   1.2725  -8.9730115 11.518012 0.9999640
+## Trace-N+P+Trace       -5.6500 -15.8955115  4.595512 0.6473869
+## Nitrogen-N+Trace      -3.2175 -13.4630115  7.028012 0.9757477
+## P+Trace-N+Trace       -4.1425 -14.3880115  6.103012 0.9027802
+## Phosphorus-N+Trace    -0.6550 -10.9005115  9.590512 0.9999998
+## Trace-N+Trace         -7.5775 -17.8230115  2.668012 0.2808191
+## P+Trace-Nitrogen      -0.9250 -11.1705115  9.320512 0.9999969
+## Phosphorus-Nitrogen    2.5625  -7.6830115 12.808012 0.9942643
+## Trace-Nitrogen        -4.3600 -14.6055115  5.885512 0.8755150
+## Phosphorus-P+Trace     3.4875  -6.7580115 13.733012 0.9611787
+## Trace-P+Trace         -3.4350 -13.6805115  6.810512 0.9644039
+## Trace-Phosphorus      -6.9225 -17.1680115  3.323012 0.3911375
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#N+P-control}
+\CommentTok{#N+P-trace}
+
+\CommentTok{#Exponential Shannon Entropy (Shannon Hill)}
+\NormalTok{maumeeSHANNONaov<-}\KeywordTok{aov}\NormalTok{(H1}\OperatorTok{~}\NormalTok{nitrogen}\OperatorTok{*}\NormalTok{phosphorus}\OperatorTok{*}\NormalTok{trace, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{shapiro.test}\NormalTok{(}\KeywordTok{resid}\NormalTok{(maumeeSHANNONaov))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(maumeeSHANNONaov)
+## W = 0.9803, p-value = 0.7554
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(maumeeSHANNONaov,}\DataTypeTok{which=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{main=}\StringTok{"Maumee Shannon Normality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-7-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(maumeeSHANNONaov)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                           Df Sum Sq Mean Sq F value  Pr(>F)   
+## nitrogen                   1  13.93  13.927   7.140 0.01243 * 
+## phosphorus                 1  25.50  25.504  13.075 0.00116 **
+## trace                      1   7.87   7.873   4.036 0.05427 . 
+## nitrogen:phosphorus        1   0.00   0.005   0.002 0.96163   
+## nitrogen:trace             1   0.35   0.354   0.182 0.67325   
+## phosphorus:trace           1   1.82   1.821   0.933 0.34227   
+## nitrogen:phosphorus:trace  1   0.01   0.015   0.008 0.93116   
+## Residuals                 28  54.62   1.951                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#N, P significant}
+\NormalTok{maumeeSHANNONaov2<-}\KeywordTok{aov}\NormalTok{(H1}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{summary}\NormalTok{(maumeeSHANNONaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value  Pr(>F)   
+## TREATMENT    8  53.89   6.736    3.62 0.00556 **
+## Residuals   27  50.23   1.860                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TukeyHSD}\NormalTok{(maumeeSHANNONaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = H1 ~ TREATMENT, data = maum.hills)
+## 
+## $TREATMENT
+##                             diff        lwr        upr     p adj
+## Control-Chelex       -1.48102104 -4.7262010  1.7641590 0.8291275
+## N+P-Chelex            2.41387908 -0.8313009  5.6590591 0.2742866
+## N+P+Trace-Chelex      1.17522091 -2.0699591  4.4204009 0.9451950
+## N+Trace-Chelex       -0.08327020 -3.3284502  3.1619098 1.0000000
+## Nitrogen-Chelex       0.14474136 -3.1004386  3.3899214 1.0000000
+## P+Trace-Chelex       -0.15890026 -3.4040803  3.0862797 1.0000000
+## Phosphorus-Chelex     1.46225463 -1.7829254  4.7074346 0.8384146
+## Trace-Chelex         -1.51771250 -4.7628925  1.7274675 0.8102409
+## N+P-Control           3.89490012  0.6497201  7.1400801 0.0101891
+## N+P+Trace-Control     2.65624195 -0.5889381  5.9014219 0.1761641
+## N+Trace-Control       1.39775084 -1.8474292  4.6429308 0.8682920
+## Nitrogen-Control      1.62576240 -1.6194176  4.8709424 0.7496208
+## P+Trace-Control       1.32212078 -1.9230592  4.5673008 0.8990610
+## Phosphorus-Control    2.94327568 -0.3019043  6.1884557 0.0980783
+## Trace-Control        -0.03669146 -3.2818715  3.2084885 1.0000000
+## N+P+Trace-N+P        -1.23865817 -4.4838382  2.0065218 0.9274702
+## N+Trace-N+P          -2.49714928 -5.7423293  0.7480307 0.2369844
+## Nitrogen-N+P         -2.26913772 -5.5143177  0.9760423 0.3479723
+## P+Trace-N+P          -2.57277934 -5.8179593  0.6724007 0.2063828
+## Phosphorus-N+P       -0.95162444 -4.1968044  2.2935556 0.9840290
+## Trace-N+P            -3.93159158 -7.1767716 -0.6864116 0.0092754
+## N+Trace-N+P+Trace    -1.25849111 -4.5036711  1.9866889 0.9212486
+## Nitrogen-N+P+Trace   -1.03047955 -4.2756595  2.2147005 0.9740899
+## P+Trace-N+P+Trace    -1.33412117 -4.5793012  1.9110588 0.8944953
+## Phosphorus-N+P+Trace  0.28703373 -2.9581463  3.5322137 0.9999974
+## Trace-N+P+Trace      -2.69293341 -5.9381134  0.5522466 0.1640221
+## Nitrogen-N+Trace      0.22801156 -3.0171684  3.4731916 0.9999996
+## P+Trace-N+Trace      -0.07563006 -3.3208101  3.1695499 1.0000000
+## Phosphorus-N+Trace    1.54552484 -1.6996552  4.7907048 0.7953148
+## Trace-N+Trace        -1.43444230 -4.6796223  1.8107377 0.8516931
+## P+Trace-Nitrogen     -0.30364162 -3.5488216  2.9415384 0.9999960
+## Phosphorus-Nitrogen   1.31751327 -1.9276667  4.5626933 0.9007819
+## Trace-Nitrogen       -1.66245386 -4.9076339  1.5827261 0.7275971
+## Phosphorus-P+Trace    1.62115490 -1.6240251  4.8663349 0.7523406
+## Trace-P+Trace        -1.35881224 -4.6039922  1.8863678 0.8847234
+## Trace-Phosphorus     -2.97996714 -6.2251471  0.2652129 0.0906282
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#N+P-control}
+\CommentTok{#Trace-N+P}
+
+\CommentTok{#Exponential Inverse Simpson Entropy (Simpson Hill)}
+\CommentTok{#this indice and the ones below are more concerned with species evenness, whereas the above are more richness based}
+\NormalTok{maumeeSIMPSONaov<-}\KeywordTok{aov}\NormalTok{(H2}\OperatorTok{~}\NormalTok{nitrogen}\OperatorTok{*}\NormalTok{phosphorus}\OperatorTok{*}\NormalTok{trace, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{shapiro.test}\NormalTok{(}\KeywordTok{resid}\NormalTok{(maumeeSIMPSONaov))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(maumeeSIMPSONaov)
+## W = 0.97533, p-value = 0.5875
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(maumeeSIMPSONaov,}\DataTypeTok{which=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{main=}\StringTok{"Maumee Simpson Normality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-7-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(maumeeSIMPSONaov)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                           Df Sum Sq Mean Sq F value  Pr(>F)   
+## nitrogen                   1  2.029   2.029   2.134 0.15522   
+## phosphorus                 1 11.009  11.009  11.577 0.00203 **
+## trace                      1  0.917   0.917   0.965 0.33443   
+## nitrogen:phosphorus        1  0.216   0.216   0.227 0.63713   
+## nitrogen:trace             1  0.442   0.442   0.464 0.50120   
+## phosphorus:trace           1  0.101   0.101   0.106 0.74728   
+## nitrogen:phosphorus:trace  1  0.452   0.452   0.475 0.49632   
+## Residuals                 28 26.626   0.951                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{boxplot}\NormalTok{(H0}\OperatorTok{~}\NormalTok{phosphorus, }\DataTypeTok{data=}\NormalTok{maum.hills, }\DataTypeTok{main=}\StringTok{"P"}\NormalTok{)}
+\KeywordTok{boxplot}\NormalTok{(H0}\OperatorTok{~}\NormalTok{nitrogen, }\DataTypeTok{data=}\NormalTok{maum.hills, }\DataTypeTok{main=}\StringTok{"N"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-7-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#P significant}
+
+\NormalTok{maumeeSIMPSONaov2<-}\KeywordTok{aov}\NormalTok{(H2}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{summary}\NormalTok{(maumeeSIMPSONaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value Pr(>F)  
+## TREATMENT    8  18.23  2.2788   2.611 0.0295 *
+## Residuals   27  23.56  0.8726                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TukeyHSD}\NormalTok{(maumeeSIMPSONaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = H2 ~ TREATMENT, data = maum.hills)
+## 
+## $TREATMENT
+##                            diff         lwr       upr     p adj
+## Control-Chelex       -1.2379234 -3.46044359 0.9845968 0.6357328
+## N+P-Chelex            0.6126542 -1.60986605 2.8351744 0.9891828
+## N+P+Trace-Chelex      0.8992441 -1.32327609 3.1217643 0.9024437
+## N+Trace-Chelex       -0.7736899 -2.99621007 1.4488303 0.9559383
+## Nitrogen-Chelex      -0.3526291 -2.57514929 1.8698911 0.9997720
+## P+Trace-Chelex       -0.1313738 -2.35389398 2.0911464 0.9999999
+## Phosphorus-Chelex     0.5102000 -1.71232024 2.7327202 0.9967840
+## Trace-Chelex         -1.0478096 -3.27032983 1.1747106 0.8037394
+## N+P-Control           1.8505775 -0.37194266 4.0730977 0.1610967
+## N+P+Trace-Control     2.1371675 -0.08535271 4.3596877 0.0664486
+## N+Trace-Control       0.4642335 -1.75828669 2.6867537 0.9983296
+## Nitrogen-Control      0.8852943 -1.33722590 3.1078145 0.9097608
+## P+Trace-Control       1.1065496 -1.11597060 3.3290698 0.7555395
+## Phosphorus-Control    1.7481233 -0.47439686 3.9706435 0.2142855
+## Trace-Control         0.1901138 -2.03240645 2.4126340 0.9999980
+## N+P+Trace-N+P         0.2865900 -1.93593025 2.5091102 0.9999521
+## N+Trace-N+P          -1.3863440 -3.60886423 0.8361762 0.4944174
+## Nitrogen-N+P         -0.9652832 -3.18780344 1.2572370 0.8631178
+## P+Trace-N+P          -0.7440279 -2.96654813 1.4784923 0.9647087
+## Phosphorus-N+P       -0.1024542 -2.32497440 2.1200660 1.0000000
+## Trace-N+P            -1.6604638 -3.88298398 0.5620564 0.2693174
+## N+Trace-N+P+Trace    -1.6729340 -3.89545418 0.5495862 0.2609427
+## Nitrogen-N+P+Trace   -1.2518732 -3.47439340 0.9706470 0.6224479
+## P+Trace-N+P+Trace    -1.0306179 -3.25313809 1.1919023 0.8169733
+## Phosphorus-N+P+Trace -0.3890441 -2.61156435 1.8334761 0.9995297
+## Trace-N+P+Trace      -1.9470537 -4.16957394 0.2754665 0.1211712
+## Nitrogen-N+Trace      0.4210608 -1.80145942 2.6435810 0.9991657
+## P+Trace-N+Trace       0.6423161 -1.58020411 2.8648363 0.9854140
+## Phosphorus-N+Trace    1.2838898 -0.93863037 3.5064100 0.5918148
+## Trace-N+Trace        -0.2741198 -2.49663996 1.9484004 0.9999659
+## P+Trace-Nitrogen      0.2212553 -2.00126489 2.4437755 0.9999935
+## Phosphorus-Nitrogen   0.8628290 -1.35969116 3.0853492 0.9208113
+## Trace-Nitrogen       -0.6951805 -2.91770074 1.5273397 0.9763204
+## Phosphorus-P+Trace    0.6415737 -1.58094646 2.8640939 0.9855191
+## Trace-P+Trace        -0.9164359 -3.13895605 1.3060844 0.8929471
+## Trace-Phosphorus     -1.5580096 -3.78052979 0.6645106 0.3448305
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#NPtrace- control nearly significant}
+
+\CommentTok{#Exponential Berger Parker (BP Hill)}
+\NormalTok{maumeeBPaov<-}\KeywordTok{aov}\NormalTok{(HInf}\OperatorTok{~}\NormalTok{nitrogen}\OperatorTok{*}\NormalTok{phosphorus}\OperatorTok{*}\NormalTok{trace, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{shapiro.test}\NormalTok{(}\KeywordTok{resid}\NormalTok{(maumeeBPaov))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(maumeeBPaov)
+## W = 0.97572, p-value = 0.6003
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(maumeeBPaov,}\DataTypeTok{which=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{main=}\StringTok{"Maumee Berger-Parker Normality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-7-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(maumeeBPaov)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                           Df Sum Sq Mean Sq F value Pr(>F)  
+## nitrogen                   1  0.022  0.0216   0.054 0.8184  
+## phosphorus                 1  2.713  2.7127   6.762 0.0147 *
+## trace                      1  0.137  0.1369   0.341 0.5637  
+## nitrogen:phosphorus        1  0.364  0.3642   0.908 0.3488  
+## nitrogen:trace             1  0.074  0.0744   0.186 0.6700  
+## phosphorus:trace           1  0.658  0.6582   1.641 0.2107  
+## nitrogen:phosphorus:trace  1  0.151  0.1509   0.376 0.5446  
+## Residuals                 28 11.232  0.4012                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#P significant}
+
+\NormalTok{maumeeBPaov2<-}\KeywordTok{aov}\NormalTok{(HInf}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills)}
+\KeywordTok{summary}\NormalTok{(maumeeBPaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value Pr(>F)  
+## TREATMENT    8  5.716  0.7145   2.002  0.085 .
+## Residuals   27  9.636  0.3569                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{TukeyHSD}\NormalTok{(maumeeBPaov2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = HInf ~ TREATMENT, data = maum.hills)
+## 
+## $TREATMENT
+##                             diff         lwr       upr     p adj
+## Control-Chelex       -0.89350493 -2.31482374 0.5278139 0.4843346
+## N+P-Chelex           -0.21826027 -1.63957908 1.2030585 0.9998212
+## N+P+Trace-Chelex      0.44312442 -0.97819439 1.8644432 0.9767798
+## N+Trace-Chelex       -0.74172903 -2.16304784 0.6795898 0.7084853
+## Nitrogen-Chelex      -0.56521223 -1.98653104 0.8561066 0.9105117
+## P+Trace-Chelex        0.02373296 -1.39758585 1.4450518 1.0000000
+## Phosphorus-Chelex    -0.20768663 -1.62900544 1.2136322 0.9998767
+## Trace-Chelex         -0.52134655 -1.94266536 0.8999723 0.9412651
+## N+P-Control           0.67524466 -0.74607415 2.0965635 0.7973808
+## N+P+Trace-Control     1.33662935 -0.08468946 2.7579482 0.0774499
+## N+Trace-Control       0.15177590 -1.26954291 1.5730947 0.9999887
+## Nitrogen-Control      0.32829271 -1.09302610 1.7496115 0.9966457
+## P+Trace-Control       0.91723789 -0.50408092 2.3385567 0.4503136
+## Phosphorus-Control    0.68581830 -0.73550051 2.1071371 0.7840816
+## Trace-Control         0.37215839 -1.04916042 1.7934772 0.9922415
+## N+P+Trace-N+P         0.66138469 -0.75993412 2.0827035 0.8142442
+## N+Trace-N+P          -0.52346876 -1.94478757 0.8978501 0.9399675
+## Nitrogen-N+P         -0.34695195 -1.76827076 1.0743669 0.9951233
+## P+Trace-N+P           0.24199323 -1.17932558 1.6633120 0.9996161
+## Phosphorus-N+P        0.01057364 -1.41074517 1.4318925 1.0000000
+## Trace-N+P            -0.30308627 -1.72440508 1.1182325 0.9980690
+## N+Trace-N+P+Trace    -1.18485345 -2.60617226 0.2364654 0.1600894
+## Nitrogen-N+P+Trace   -1.00833665 -2.42965546 0.4129822 0.3301570
+## P+Trace-N+P+Trace    -0.41939146 -1.84071027 1.0019274 0.9834014
+## Phosphorus-N+P+Trace -0.65081105 -2.07212986 0.7705078 0.8266492
+## Trace-N+P+Trace      -0.96447097 -2.38578978 0.4568478 0.3856585
+## Nitrogen-N+Trace      0.17651680 -1.24480201 1.5978356 0.9999640
+## P+Trace-N+Trace       0.76546199 -0.65585682 2.1867808 0.6743316
+## Phosphorus-N+Trace    0.53404240 -0.88727641 1.9553612 0.9332177
+## Trace-N+Trace         0.22038248 -1.20093633 1.6417013 0.9998078
+## P+Trace-Nitrogen      0.58894519 -0.83237362 2.0102640 0.8903746
+## Phosphorus-Nitrogen   0.35752560 -1.06379321 1.7788444 0.9940421
+## Trace-Nitrogen        0.04386568 -1.37745313 1.4651845 1.0000000
+## Phosphorus-P+Trace   -0.23141959 -1.65273840 1.1898992 0.9997238
+## Trace-P+Trace        -0.54507951 -1.96639832 0.8762393 0.9256608
+## Trace-Phosphorus     -0.31365992 -1.73497873 1.1076589 0.9975486
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#NPtrace- control nearly significant}
+\end{Highlighting}
+\end{Shaded}
+
+Graphing results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\CommentTok{#order treatments in a logical way}
+\NormalTok{maum.hills}\OperatorTok{$}\NormalTok{TREATMENT <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(maum.hills}\OperatorTok{$}\NormalTok{TREATMENT,}\DataTypeTok{levels=}\KeywordTok{c}\NormalTok{( }\StringTok{"Control"}\NormalTok{,}\StringTok{"Chelex"}\NormalTok{,}\StringTok{"Nitrogen"}\NormalTok{,}\StringTok{"Phosphorus"}\NormalTok{,}\StringTok{"Trace"}\NormalTok{,}\StringTok{"N+P"}\NormalTok{,}\StringTok{"N+Trace"}\NormalTok{,}\StringTok{"P+Trace"}\NormalTok{,}\StringTok{"N+P+Trace"}\NormalTok{))}
+
+\CommentTok{#richness}
+\KeywordTok{boxplot}\NormalTok{(H0}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills,}
+        \DataTypeTok{main=}\StringTok{"Maumee Richness"}\NormalTok{,}
+        \DataTypeTok{xlab=}\StringTok{"Treatment"}\NormalTok{,}
+        \DataTypeTok{ylab=}\StringTok{"species richness"}\NormalTok{,}
+        \DataTypeTok{las=}\DecValTok{2}\NormalTok{,}
+        \DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{bty=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{legend=}\KeywordTok{c}\NormalTok{(}\StringTok{"ANOVA p <0.05"}\NormalTok{,}\StringTok{"ANOVA p >0.05"}\NormalTok{),}\DataTypeTok{fill=}\KeywordTok{c}\NormalTok{(}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{), }\DataTypeTok{cex=}\FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Shannon}
+\KeywordTok{boxplot}\NormalTok{(H1}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills,}
+        \DataTypeTok{main=}\StringTok{"Maumee Shannon Index"}\NormalTok{,}
+        \DataTypeTok{xlab=}\StringTok{"Treatment"}\NormalTok{,}
+        \DataTypeTok{ylab=}\StringTok{"Shannon Index"}\NormalTok{,}
+        \DataTypeTok{las=}\DecValTok{2}\NormalTok{,}
+        \DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{bty=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{legend=}\KeywordTok{c}\NormalTok{(}\StringTok{"ANOVA p <0.05"}\NormalTok{,}\StringTok{"ANOVA p >0.05"}\NormalTok{),}\DataTypeTok{fill=}\KeywordTok{c}\NormalTok{(}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{), }\DataTypeTok{cex=}\FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-8-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Simpson}
+\KeywordTok{boxplot}\NormalTok{(H2}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills,}
+        \DataTypeTok{main=}\StringTok{"Maumee Simpson Index"}\NormalTok{,}
+        \DataTypeTok{xlab=}\StringTok{"Treatment"}\NormalTok{,}
+        \DataTypeTok{ylab=}\StringTok{"Simpson Index"}\NormalTok{,}
+        \DataTypeTok{las=}\DecValTok{2}\NormalTok{,}
+        \DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{bty=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{legend=}\KeywordTok{c}\NormalTok{(}\StringTok{"ANOVA p <0.05"}\NormalTok{,}\StringTok{"ANOVA p >0.05"}\NormalTok{),}\DataTypeTok{fill=}\KeywordTok{c}\NormalTok{(}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{), }\DataTypeTok{cex=}\FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-8-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Berger Parker}
+\KeywordTok{boxplot}\NormalTok{(HInf}\OperatorTok{~}\NormalTok{TREATMENT, }\DataTypeTok{data=}\NormalTok{maum.hills,}
+        \DataTypeTok{main=}\StringTok{"Maumee Berger Parker Index"}\NormalTok{,}
+        \DataTypeTok{xlab=}\StringTok{"Treatment"}\NormalTok{,}
+        \DataTypeTok{ylab=}\StringTok{"Berger Parker Index"}\NormalTok{,}
+        \DataTypeTok{las=}\DecValTok{2}\NormalTok{,}
+        \DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{bty=}\StringTok{"n"}\NormalTok{, }\DataTypeTok{legend=}\KeywordTok{c}\NormalTok{(}\StringTok{"ANOVA p <0.05"}\NormalTok{,}\StringTok{"ANOVA p >0.05"}\NormalTok{),}\DataTypeTok{fill=}\KeywordTok{c}\NormalTok{(}\StringTok{"darkturquoise"}\NormalTok{,}\StringTok{"gray76"}\NormalTok{), }\DataTypeTok{cex=}\FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-8-4.pdf}
+\#\#\#Background and Interpretation
+
+This data is from a bottle incubation experiment in which water was
+collected from Maumee Bay, placed into clear bottles and treated with
+NH4, PO4 and trace metals (Fe, Mo, Mn, Ni, Zn, Co) in replicate of 4 for
+each treatment. The control had no nutrients add, and the `chelex'
+treatment removed trace metals via chelation with `chelex'. After a 72
+hour incubation, water was sampled and analyzed for ash free dry mass,
+chl-a, microcystin and community composition. Community composition was
+comepleted by counting 400 natural units per sample and identifying down
+to lowest taxonomic unit, or labelled as a morphospecies.
+
+The community composition data was rarefied to the lowest count (399)
+and Hill numbers were calculated. Multiway ANOVA was used to look for
+interactions between N, P and trace metals on all four Hill numbers. The
+null hypothesis was that treatment would have no effect on diversity,
+while the alternative was that it would. I made no specific hypotheses
+prior to analyses as to what specific treatments would increase or
+decrease diversity from the control.
+
+The richness ANOVA indicates that N and P are significant. Using a Tukey
+post hoc, there is a significant relationship between N+P and trace, and
+N+P and control treatments. N+P increased richness (though there was
+great variation within the replicates) the most, and is significantly
+different from the control and trace treatment
+
+The Shannon ANOVA indicates similar results, being that N+P facilitate
+the greatest diversity while the control and trace treatments the least.
+
+Both Simpson and Berger Parker indicate P significant in the MANOVA, but
+no significance with the post hoc. N+P+trace - control are nearly
+significant in both analyses, and graphs demonstrate N+P and N+P+trace
+treatments have the highest diversity values, while the control and
+trace metals have the lowest.
+
+While this diversity is interesting, I'm more interested to see if there
+is a community composition shift. Ordination analysis will hopefully
+shed light on this.
+
+Using iNEXT
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(iNEXT)}
+\CommentTok{#to do it on one row (one sample)}
+\KeywordTok{iNEXT}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(maumee[}\DecValTok{36}\NormalTok{,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{]), }\DataTypeTok{q=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{datatype=}\StringTok{"abundance"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Compare 1 assemblages with Hill number order q = 0, 1, 2.
+## $class: iNEXT
+## 
+## $DataInfo: basic data information
+##     site   n S.obs     SC f1 f2 f3 f4 f5 f6 f7 f8 f9 f10
+## 1 site.1 415    18 0.9976  1  3  0  4  0  3  0  0  0   0
+## 
+## $iNextEst: diversity estimates with rarefied and extrapolated samples.
+##       m       method order     qD qD.LCL qD.UCL    SC SC.LCL SC.UCL
+## 1     1 interpolated     0  1.000  1.000  1.000 0.175  0.150  0.199
+## 10  207 interpolated     0 16.452 14.992 17.913 0.984  0.979  0.989
+## 20  415     observed     0 18.000 16.254 19.746 0.998  0.992  1.003
+## 30  612 extrapolated     0 18.156 15.998 20.315 1.000  0.996  1.004
+## 40  830 extrapolated     0 18.166 15.498 20.834 1.000  0.997  1.003
+## 41    1 interpolated     1  1.000  1.000  1.000 0.175  0.153  0.196
+## 50  207 interpolated     1  7.974  7.287  8.660 0.984  0.979  0.990
+## 60  415     observed     1  8.168  7.457  8.878 0.998  0.993  1.002
+## 70  612 extrapolated     1  8.239  7.519  8.958 1.000  0.996  1.004
+## 80  830 extrapolated     1  8.285  7.560  9.010 1.000  0.997  1.003
+## 81    1 interpolated     2  1.000  1.000  1.000 0.175  0.152  0.198
+## 90  207 interpolated     2  5.597  4.893  6.301 0.984  0.977  0.991
+## 100 415     observed     2  5.661  4.939  6.383 0.998  0.992  1.003
+## 110 612 extrapolated     2  5.681  4.954  6.409 1.000  0.996  1.004
+## 120 830 extrapolated     2  5.693  4.962  6.424 1.000  0.997  1.003
+## 
+## $AsyEst: asymptotic diversity estimates along with related statistics.
+##                   Observed Estimator Est_s.e. 95% Lower 95% Upper
+## Species Richness    18.000    18.166    0.535    18.008    21.527
+## Shannon diversity    8.168     8.347    0.409     8.168     9.148
+## Simpson diversity    5.661     5.725    0.363     5.661     6.437
+## 
+## NOTE: Only show five estimates, call iNEXT.object$iNextEst. to show complete output.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{some.maumee=}\KeywordTok{iNEXT}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(maumee[}\DecValTok{36}\NormalTok{,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{]), }\DataTypeTok{q=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{datatype=}\StringTok{"abundance"}\NormalTok{)}
+\KeywordTok{ggiNEXT}\NormalTok{(some.maumee, }\DataTypeTok{type=}\DecValTok{1}\NormalTok{, }\DataTypeTok{facet.var=}\StringTok{"site"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggiNEXT}\NormalTok{(some.maumee, }\DataTypeTok{type=}\DecValTok{3}\NormalTok{, }\DataTypeTok{facet.var=}\StringTok{"site"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{some.maumee=}\KeywordTok{iNEXT}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(maumee[}\DecValTok{1}\NormalTok{,}\DecValTok{4}\OperatorTok{:}\DecValTok{70}\NormalTok{]), }\DataTypeTok{q=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{datatype=}\StringTok{"abundance"}\NormalTok{)}
+\KeywordTok{ggiNEXT}\NormalTok{(some.maumee, }\DataTypeTok{type=}\DecValTok{1}\NormalTok{, }\DataTypeTok{facet.var=}\StringTok{"site"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{ACE_alpha_diversity_files/figure-latex/unnamed-chunk-9-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#since this only shows data for one sample, I'm not super interested in this. The code to run iNEXT for multiple samples was not working for me- I kept getting errors saying there are zero abundances (well obviously).. and couldn't figure out how to make it work. }
+
+\CommentTok{#NONE OF THIS WORKS}
+\CommentTok{#to run it on reformatted data for iNext- iNext takes list data}
+\CommentTok{#t transposes data, switches rows and columns, apply is applying by colunm abucount function}
+
+\CommentTok{#maumee.inext=apply(t(maumee[maum.rowsums,4:70]),2,as.abucount)}
+\CommentTok{#all.maumee.data=iNEXT(maumee.inext, q=0, datatype="abundance")}
+\CommentTok{#ggiNEXT(all.maumee.data, type=1, facet.var="site")}
+\CommentTok{#estimateD(maumee.inext,datatype="abundance",base="coverage")}
+\CommentTok{#estimateD(maumee.inext,datatype="abundance",base="coverage",level=0.9)}
+\CommentTok{#estimateD(maumee.inext,datatype="abundance",base="coverage",level=0.5)}
+
+\CommentTok{# estimateD gives an individual diversity value at a cut off of sample coverage (SC)- gives Hill numbers (as orders, 0, 1,2)}
+
+\CommentTok{#estimateD(maumee.inext,datatype="abundance",base="size")}
+\CommentTok{#estimateD(maumee.inext,datatype="abundance",base="size",level=15)}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
