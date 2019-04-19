@@ -142,6 +142,7 @@ shapiro.test(resid(maumeeSIMPSONaov))
 par(mfrow=c(1,2))
 plot(maumeeSIMPSONaov,which=c(1,2), main="Maumee Simpson Normality")
 summary(maumeeSIMPSONaov)
+par(mfrow=c(1,1))
 boxplot(H0~phosphorus, data=maum.hills, main="P")
 boxplot(H0~nitrogen, data=maum.hills, main="N")
 #P significant
