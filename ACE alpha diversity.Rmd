@@ -14,12 +14,13 @@ Read in the data and look at some basic features (make sure it read in correctly
 knitr::opts_chunk$set(echo = TRUE)
 maumee1<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
 #remove initial sample
-
 maumee<-maumee1[-c(1),]
+
 names(maumee)
 dim(maumee)
 head(maumee)
 str(maumee)
+
 
 ```
 
@@ -52,6 +53,7 @@ rarecurve(maumee[,4:70])
 #uses formulas from Gotelli et al
 rarefy(maumee[,4:70],sample=399)
 #could store to analyze later
+
 
 ```
 
@@ -143,8 +145,11 @@ par(mfrow=c(1,2))
 plot(maumeeSIMPSONaov,which=c(1,2), main="Maumee Simpson Normality")
 summary(maumeeSIMPSONaov)
 par(mfrow=c(1,1))
-boxplot(H0~phosphorus, data=maum.hills, main="P")
-boxplot(H0~nitrogen, data=maum.hills, main="N")
+boxplot(H0~phosphorus, data=maum.hills, main="Maumee P on Richness")
+boxplot(H0~nitrogen, data=maum.hills, main="Maumee N on Richness")
+boxplot(H0~trace, data=maum.hills, main="Maumee Metals on Richness")
+
+
 #P significant
 
 maumeeSIMPSONaov2<-aov(H2~TREATMENT, data=maum.hills)
@@ -254,3 +259,199 @@ ggiNEXT(some.maumee, type=1, facet.var="site")
 #estimateD(maumee.inext,datatype="abundance",base="size",level=15)
 ```
 
+OTHER SITES
+
+```{r}
+necounts1<- read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+gbcounts1<- read.csv("~/Desktop/USGS/GB species counts.csv")
+fordcounts1<- read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
+
+#get rid of initial treatments
+ne<-necounts1[-c(1),]
+gb<-gbcounts1[-c(1),]
+ford<-fordcounts1[-c(1),]
+
+#rarefy other sites
+dim(ne)
+dim(gb)
+dim(ford)
+
+str(ne)
+str(gb)
+str(ford)
+
+ne.rowsums=apply(ne[,5:147],1,sum)
+gb.rowsums=apply(gb[,5:52],1,sum)
+ford.rowsums=apply(ford[,4:80],1,sum)
+
+min(ne.rowsums)
+min(gb.rowsums)
+min(ford.rowsums)
+
+ne.rare=rarefy(ne[,5:147],sample=380)
+gb.rare=rarefy(gb[,5:52],sample=299)
+ford.rare=rarefy(ford[,4:80],sample=401)
+
+```
+NE
+```{r}
+nperm=100
+n=nrow(ne[ne.rowsums>0,])
+p=ncol(ne[,5:147])
+#matrix to store the results
+renyi.indperms2=matrix(nrow=n,ncol=4*nperm)
+
+for(i in 1:nperm){
+	ne.rare=rrarefy(ne[ne.rowsums>0,5:147],sample=380)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare2=renyi(ne.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms2[,cols]=as.matrix(renyi.rare2)
+}
+maxperm=nperm*4
+head(renyi.indperms2)
+
+ne.hills=cbind(ne[,c(2,4)],
+	apply(renyi.indperms2[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms2[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms2[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms2[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(ne.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+ne.hills
+
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+ne.hills$trace<-grepl("Trace", ne.hills$TREATMENT) 
+ne.hills$nitrogen<-grepl("N", ne.hills$TREATMENT) 
+ne.hills$phosphorus<-grepl("P", ne.hills$TREATMENT) 
+
+#Exponential Shannon Entropy (Shannon Hill)
+neSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=ne.hills)
+shapiro.test(resid(neSHANNONaov))
+par(mfrow=c(1,2))
+plot(neSHANNONaov,which=c(1,2), main="NE Shannon Normality")
+summary(neSHANNONaov)
+#P significant
+
+ne.hills$TREATMENT <- factor(ne.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+ne.hills$TREATMENT
+par(mfrow=c(1,1))
+boxplot(H1~TREATMENT, data=ne.hills,
+        main="North Erie Shannon Index",
+        xlab="Treatment",
+        ylab="Shannon Index",
+        las=2,
+        col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+boxplot(H0~phosphorus, data=ne.hills, main="North Erie P on Richness")
+boxplot(H0~nitrogen, data=ne.hills, main="North Erie N on Richness")
+boxplot(H0~trace, data=ne.hills, main="North Erie Metals on Richness")
+
+```
+GREEN BAY
+```{r}
+nperm=100
+n=nrow(gb[gb.rowsums>0,])
+p=ncol(gb[,5:52])
+#matrix to store the results
+renyi.indperms3=matrix(nrow=n,ncol=4*nperm)
+
+for(i in 1:nperm){
+	gb.rare=rrarefy(gb[gb.rowsums>0,5:52],sample=299)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare3=renyi(gb.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms3[,cols]=as.matrix(renyi.rare3)
+}
+maxperm=nperm*4
+head(renyi.indperms3)
+
+gb.hills=cbind(ne[,c(2,4)],
+	apply(renyi.indperms3[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms3[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms3[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms3[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(gb.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+gb.hills
+
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+gb.hills$trace<-grepl("Trace", gb.hills$TREATMENT) 
+gb.hills$nitrogen<-grepl("N", gb.hills$TREATMENT) 
+gb.hills$phosphorus<-grepl("P", gb.hills$TREATMENT) 
+
+#Exponential Shannon Entropy (Shannon Hill)
+gbSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=gb.hills)
+shapiro.test(resid(gbSHANNONaov))
+par(mfrow=c(1,2))
+plot(gbSHANNONaov,which=c(1,2), main="GB Shannon Normality")
+summary(gbSHANNONaov)
+#N significant
+
+gb.hills$TREATMENT <- factor(gb.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+par(mfrow=c(1,1))
+boxplot(H1~TREATMENT, data=gb.hills,
+        main="Green Bay Shannon Index",
+        xlab="Treatment",
+        ylab="Shannon Index",
+        las=2,
+        col=c("gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+boxplot(H0~phosphorus, data=gb.hills, main="Green Bay P on Richness")
+boxplot(H0~nitrogen, data=gb.hills, main="Green Bay N on Richness")
+boxplot(H0~trace, data=gb.hills, main="Green Bay Metals on Richness")
+```
+
+FORD
+```{r}
+nperm=100
+n=nrow(ford[ford.rowsums>0,])
+p=ncol(ford[,4:80])
+#matrix to store the results
+renyi.indperms4=matrix(nrow=n,ncol=4*nperm)
+
+for(i in 1:nperm){
+	ford.rare=rrarefy(ford[ford.rowsums>0,4:80],sample=401)
+	cols=(1+(i-1)*4):(i*4)
+	renyi.rare4=renyi(gb.rare, scales=c(0,1,2,Inf), hill=TRUE)
+	renyi.indperms4[,cols]=as.matrix(renyi.rare4)
+}
+maxperm=nperm*4
+head(renyi.indperms4)
+
+ford.hills=cbind(ford[,c(2,3)],
+	apply(renyi.indperms4[,seq(from=1,to=(maxperm-3),by=4)],1,mean),
+	apply(renyi.indperms4[,seq(from=2,to=(maxperm-2),by=4)],1,mean),
+	apply(renyi.indperms4[,seq(from=3,to=(maxperm-1),by=4)],1,mean),
+	apply(renyi.indperms4[,seq(from=4,to=maxperm,by=4)],1,mean))
+colnames(ford.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
+ford.hills
+
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+ford.hills$trace<-grepl("Trace", ford.hills$TREATMENT) 
+ford.hills$nitrogen<-grepl("N", ford.hills$TREATMENT) 
+ford.hills$phosphorus<-grepl("P", ford.hills$TREATMENT) 
+
+#Exponential Shannon Entropy (Shannon Hill)
+fordSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=ford.hills)
+shapiro.test(resid(fordSHANNONaov))
+par(mfrow=c(1,2))
+plot(fordSHANNONaov,which=c(1,2), main="Ford Shannon Normality")
+summary(fordSHANNONaov)
+#N,NPT significant
+
+ford.hills$TREATMENT <- factor(ford.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+par(mfrow=c(1,1))
+boxplot(H1~TREATMENT, data=ford.hills,
+        main="Ford Shannon Index",
+        xlab="Treatment",
+        ylab="Shannon Index",
+        las=2,
+        col=c("gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","darkturquoise"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+boxplot(H0~phosphorus, data=ford.hills, main="Ford P on Richness")
+boxplot(H0~nitrogen, data=ford.hills, main="Ford N on Richness")
+boxplot(H0~trace, data=ford.hills, main="Ford Metals on Richness")
+```

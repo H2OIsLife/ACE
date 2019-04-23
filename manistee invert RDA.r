@@ -77,6 +77,10 @@ rda.inv.rare.hel.int=rda(inv.rare.hel[,11:2046] ~ inv.rare.hel$Ecosystem:inv.rar
 
 # For completeness, here are tests of main effects using Y,X,Z format
 # Obtain type 3 test for ecosystem type
+	#the inv.rare.hel8:10 are the independent variables. you can parse out their variance first, and then look  for patterns in the residual variation in inv.rare.hel6:7
+	#use varpart command to partition variance. you get an output that shows surprise variance, variance from intereaction can be positive or negative. varpart doesn't tst, only shows variation
+	#one philosphy is to not include what's not significant in a model to assess what is more or less signnificant from what was distinguished as significant.
+	
 rda.inv.rare.hel.eco=rda(inv.rare.hel[,11:2046],inv.rare.hel[,6:7],inv.rare.hel[8:10])
 	anova(rda.inv.rare.hel.eco)
 	RsquareAdj(rda.inv.rare.hel.eco)
@@ -92,10 +96,13 @@ plot(rda.inv.rare.hel.all)
 # The above plot was not so great.
 # Better plots can be made if you extract scores as shown below
 rda.inv.rare.hel.all.spscores=scores(rda.inv.rare.hel.all,display="sp",choices=c(1:17))
+#^species scores
 head(rda.inv.rare.hel.all.spscores)
 rda.inv.rare.hel.all.lcscores=scores(rda.inv.rare.hel.all,display="lc",choices=c(1:17))
+#^linear constrast scores
 head(rda.inv.rare.hel.all.lcscores)
 rda.inv.rare.hel.all.wascores=scores(rda.inv.rare.hel.all,display="wa",choices=c(1:17))
+#^weighted average scores, closer to raw
 head(rda.inv.rare.hel.all.wascores)
 
 colors=ifelse(inv.rare.hel$Habitat=="Leaf",3,6)

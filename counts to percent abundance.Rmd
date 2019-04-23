@@ -67,20 +67,103 @@ for (i in 4:80){
  columnnum<-i+77
  colnames(ford)[columnnum] <- vecname4
 }
-```
-Plots of percent abundance Microcystis
-```{r}
-#MAUMEE
-plot(Microcystis.spp..prop$Treatment, data=maumee)
 
-#NERIE
+```
+
+#Plot Microcystis Abundance to Treatment
+```{r}
+library(plyr)
+#MAUMEE
+maumee$Treatment <- factor(maumee$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
+
+summarystatsMicro<- ddply(maumee, "Treatment", summarize,
+                     Microcystis.spp..mean=mean(Microcystis.spp..prop),
+                     Microcystis.spp..sd=sd(Microcystis.spp..prop),
+                     Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
+library(ggplot2)
+Microsummaryplot<-ggplot(summarystatsMicro, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
+  geom_bar(stat='identity',color='black')+
+  geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
+  theme(axis.text.x=element_text(angle = 45, hjust=1))+
+  ggtitle("Maumee Microcystis spp. % Abundance")
+
+Microsummaryplot
+
+
+#NORTH ERIE
+nerie$Treatment <- factor(nerie$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
+
+summarystatsMicro1<- ddply(nerie, "Treatment", summarize,
+                     Microcystis.spp..mean=mean(Microcystis.spp..prop),
+                     Microcystis.spp..sd=sd(Microcystis.spp..prop),
+                     Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
+
+Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
+  geom_bar(stat='identity',color='black')+
+  geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
+  theme(axis.text.x=element_text(angle = 45, hjust=1))+
+  ggtitle("North Erie Microcystis spp. % Abundance")
+
+Microsummaryplot1
 
 #GREEN BAY
+greenbay$Treatment <- factor(greenbay$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
+
+greenbay$Microcystis.spp..prop
+
+summarystatsMicro2<- ddply(greenbay, "Treatment", summarize,
+                     Microcystis.spp..mean=mean(Microcystis.spp..prop),
+                     Microcystis.spp..sd=sd(Microcystis.spp..prop),
+                     Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
+
+Microsummaryplot2<-ggplot(summarystatsMicro2, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
+  geom_bar(stat='identity',color='black')+
+  geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
+  theme(axis.text.x=element_text(angle = 45, hjust=1))+
+  ggtitle("Green Bay Microcystis spp. % Abundance")
+
+Microsummaryplot2
+
 
 #FORD
+ford$Treatment <- factor(ford$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
 
+
+summarystatsMicro3<- ddply(ford, "Treatment", summarize,
+                     Microcystis.spp..mean=mean(Microcystis.spp..prop),
+                     Microcystis.spp..sd=sd(Microcystis.spp..prop),
+                     Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
+
+Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
+  geom_bar(stat='identity',color='black')+
+  geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
+  theme(axis.text.x=element_text(angle = 45, hjust=1))+
+  ggtitle("Ford Microcystis spp. % Abundance")
+
+Microsummaryplot3
+
+```
 
 
 
 ```
 
+
+
+
+
+
+
+
+
+
+To look at the effect of the nutrient treatments on Microcystis abundance
+```{r}
+plot(Microcystis.spp..prop~Treatment, data=maumee, main='Microcystis Abundance to Nutrient Treatment', ylab='Microcystis % Abundance',las=3)
+MicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=MaumeeMesoComData)
+shapiro.test(resid(MicrocystisANOVA))
+par(mfrow=c(1,2))
+plot(MicrocystisANOVA, which=c(1,2))
+summary(MicrocystisANOVA)
+TukeyHSD(MicrocystisANOVA)
+```

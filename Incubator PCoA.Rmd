@@ -1,34 +1,40 @@
 ---
-title: "Incubator PCoA, PCA, NMDS"
+title: "Incubator PCoA, PCA, NMDS, RDA"
 author: "Jordyn Stoll"
 date: "March 20, 2019"
 output: html_document
 ---
 Load packages, data
 ```{r setup, include=FALSE}
+#prep data
 knitr::opts_chunk$set(echo = TRUE)
-maumcounts<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
-necounts<- read.csv("~/Desktop/USGS/NEspeciescounts .csv")
-gbcounts<- read.csv("~/Desktop/USGS/GB species counts.csv")
-fordcounts<- read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
+maumcounts1<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+necounts1<- read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+gbcounts1<- read.csv("~/Desktop/USGS/GB species counts.csv")
+fordcounts1<- read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
 
+#get rid of chelex and initial treatments
+maumcounts<-maumcounts1[which(maumcounts1$Treatment!='Chelex'& maumcounts1$Treatment!='Initial'),]
+necounts<-necounts1[which(necounts1$Treatment!='Chelex'& necounts1$Treatment!='Initial'),]
+gbcounts<-gbcounts1[which(gbcounts1$Treatment!='Chelex'& gbcounts1$Treatment!='Initial'),]
+fordcounts<-fordcounts1[which(fordcounts1$Treatment!='Chelex'& fordcounts1$Treatment!='Initial'),]
 
-#Maumee (37,70)
+#Maumee (32,70)
 names(maumcounts)
 dim(maumcounts)
-#North Erie (37, 147)
+#North Erie (32, 147)
 names(necounts)
 dim(necounts)
-#Green Bay (37,52)
+#Green Bay (32,52)
 names(gbcounts)
 dim(gbcounts)
-#Ford (37,80)
+#Ford (32,80)
 names(fordcounts)
 dim(fordcounts)
 
 library(vegan)
 ```
-Calculate Bray Curtis Distance
+Rarefy? and Calculate Bray Curtis Distance
 ```{r}
 #[,y1:y2] indicates the columns with species count data in them within the larger dataset... essentially subsets the counts from the other info
 #Maumee
@@ -47,8 +53,7 @@ ford.bc
 Treatment colors
 ```{r}
 #set colors for each treatment
-colors=ifelse(maumcounts$Treatment=="Control",2,ifelse(maumcounts$Treatment=="Nitrogen",3,ifelse(maumcounts$Treatment=="Phoshorus",4,ifelse(maumcounts$Treatment=="Chelex",5,ifelse(maumcounts$Treatment=="Trace",6,ifelse(maumcounts$Treatment=="N+Trace",7,ifelse(maumcounts$Treatment=="P+Trace",8,ifelse(maumcounts$Treatment=="N+P",9,ifelse(maumcounts$Treatment=="N+P+Trace",10,11)))))))))
-
+colors=ifelse(maumcounts$Treatment=="Control","red",ifelse(maumcounts$Treatment=="Nitrogen","orchid",ifelse(maumcounts$Treatment=="Phosphorus","forestgreen",ifelse(maumcounts$Treatment=="Trace","navy",ifelse(maumcounts$Treatment=="N+Trace","royalblue",ifelse(maumcounts$Treatment=="P+Trace","limegreen",ifelse(maumcounts$Treatment=="N+P","gold",ifelse(maumcounts$Treatment=="N+P+Trace","grey0","maroon"))))))))
 
 ```
 Bray Curtis Distance Principal Coordinates Analysis (PCoA) also known as Metric Multidimensional Scaling (MDS)
@@ -61,7 +66,7 @@ maum.dist.bc=vegdist(maumcounts[,4:70],method="bray")
 maum.bc.pcoa=wcmdscale(maum.dist.bc,eig=TRUE)
 eigenvals(maum.bc.pcoa)/sum(eigenvals(maum.bc.pcoa))
 maum.bc.pcoa.scores=scores(maum.bc.pcoa)
-plot(maum.bc.pcoa,type="none",xlab="Axis 1 (33%)",ylab="Axis 2 (21%)",main="Maumee PCoA Bray Curtis Distance")
+plot(maum.bc.pcoa,type="none",xlab="Axis 1 (39%)",ylab="Axis 2 (19%)",main="Maumee PCoA Bray Curtis Distance")
 text(maum.bc.pcoa.scores[,1:2],labels=maumcounts$Treatment,col=colors)
 
 # Bray-Curtis-based PCoA, negative eigenvalues fixed
@@ -75,7 +80,7 @@ for(i in 1:n){
 maum.bc.noneg.pcoa=wcmdscale(maum.dist.bc.noneg,eig=TRUE)
 eigenvals(maum.bc.noneg.pcoa)/sum(eigenvals(maum.bc.noneg.pcoa))
 maum.bc.noneg.pcoa.scores=scores(maum.bc.noneg.pcoa)
-plot(maum.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (4%)",main="Maumee PCoA corrected Bray Curtis distance")
+plot(maum.bc.noneg.pcoa,type="none",xlab="Axis 1 (6%)",ylab="Axis 2 (4%)",main="Maumee PCoA corrected Bray Curtis distance")
 text(maum.bc.noneg.pcoa.scores[,1:2],labels=maumcounts$Treatment,col=colors)
 #corrects for negative values so you can calculate percent variation explained.
 
@@ -86,7 +91,7 @@ ne.dist.bc=vegdist(necounts[,5:147],method="bray")
 ne.bc.pcoa=wcmdscale(ne.dist.bc,eig=TRUE)
 eigenvals(ne.bc.pcoa)/sum(eigenvals(ne.bc.pcoa))
 ne.bc.pcoa.scores=scores(ne.bc.pcoa)
-plot(ne.bc.pcoa,type="none",xlab="Axis 1 (29%)",ylab="Axis 2 (15%)",main="North Erie PCoA Bray Curtis distance")
+plot(ne.bc.pcoa,type="none",xlab="Axis 1 (31%)",ylab="Axis 2 (14%)",main="North Erie PCoA Bray Curtis distance")
 text(ne.bc.pcoa.scores[,1:2],labels=necounts$Treatment,col=colors)
 
 # Bray-Curtis-based PCoA, negative eigenvalues fixed
@@ -110,7 +115,7 @@ gb.dist.bc=vegdist(gbcounts[,5:52],method="bray")
 gb.bc.pcoa=wcmdscale(gb.dist.bc,eig=TRUE)
 eigenvals(gb.bc.pcoa)/sum(eigenvals(gb.bc.pcoa))
 gb.bc.pcoa.scores=scores(gb.bc.pcoa)
-plot(gb.bc.pcoa,type="none",xlab="Axis 1 (30%)",ylab="Axis 2 (21%)",main="Green Bay PCoA Bray Curtis distance")
+plot(gb.bc.pcoa,type="none",xlab="Axis 1 (28%)",ylab="Axis 2 (20%)",main="Green Bay PCoA Bray Curtis distance")
 text(gb.bc.pcoa.scores[,1:2],labels=gbcounts$Treatment,col=colors)
 
 # Bray-Curtis-based PCoA, negative eigenvalues fixed
@@ -124,7 +129,7 @@ for(i in 1:n){
 gb.bc.noneg.pcoa=wcmdscale(gb.dist.bc.noneg,eig=TRUE)
 eigenvals(gb.bc.noneg.pcoa)/sum(eigenvals(gb.bc.noneg.pcoa))
 gb.bc.noneg.pcoa.scores=scores(gb.bc.noneg.pcoa)
-plot(gb.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (4%)",main="Green Bay PCoA corrected Bray Curtis distance")
+plot(gb.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (5%)",main="Green Bay PCoA corrected Bray Curtis distance")
 text(gb.bc.noneg.pcoa.scores[,1:2],labels=gbcounts$Treatment,col=colors)
 
 ```
@@ -134,7 +139,7 @@ ford.dist.bc=vegdist(fordcounts[,4:80],method="bray")
 ford.bc.pcoa=wcmdscale(ford.dist.bc,eig=TRUE)
 eigenvals(ford.bc.pcoa)/sum(eigenvals(ford.bc.pcoa))
 ford.bc.pcoa.scores=scores(ford.bc.pcoa)
-plot(ford.bc.pcoa,type="none",xlab="Axis 1 (34%)",ylab="Axis 2 (24%)",main="Ford PCoA Bray Curtis distance")
+plot(ford.bc.pcoa,type="none",xlab="Axis 1 (39%)",ylab="Axis 2 (24%)",main="Ford PCoA Bray Curtis distance")
 text(ford.bc.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
 
 # Bray-Curtis-based PCoA, negative eigenvalues fixed
@@ -148,7 +153,7 @@ for(i in 1:n){
 ford.bc.noneg.pcoa=wcmdscale(ford.dist.bc.noneg,eig=TRUE)
 eigenvals(ford.bc.noneg.pcoa)/sum(eigenvals(ford.bc.noneg.pcoa))
 ford.bc.noneg.pcoa.scores=scores(ford.bc.noneg.pcoa)
-plot(ford.bc.noneg.pcoa,type="none",xlab="Axis 1 (9%)",ylab="Axis 2 (7%)",main="Ford PCoA corrected Bray Curtis distance")
+plot(ford.bc.noneg.pcoa,type="none",xlab="Axis 1 (10%)",ylab="Axis 2 (7%)",main="Ford PCoA corrected Bray Curtis distance")
 text(ford.bc.noneg.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
 
 ```
@@ -183,7 +188,7 @@ eigenvals(maum.pca)
 eigenvals(maum.pca)/sum(eigenvals(maum.pca))
 plot(maum.pca)
 plot(maum.scores[,1:2],col=colors)
-plot(maum.pca,type="none",xlab="PC1 (46%)",ylab="PC2 (26%)",main="Maumee PCA Euclidean")
+plot(maum.pca,type="none",xlab="PC1 (55%)",ylab="PC2 (22%)",main="Maumee PCA Euclidean")
 text(maum.pca,labels=maumcounts$Treatment,col=colors)
 text(maum.pca,display="species",col=8)
 
@@ -192,7 +197,7 @@ maum.hel=decostand(maumcounts[,4:70],method="hellinger")
 maum.hel.pca=rda(maum.hel)
 summary(maum.hel.pca)
 maum.hel.pca.scores=scores(maum.hel.pca,choices=1:18,display="sites")
-plot(maum.hel.pca,type="none",xlab="PC1 (19%)",ylab="PC2 (16%)",main="Maumee PCA Hellinger Distance")
+plot(maum.hel.pca,type="none",xlab="PC1 (23%)",ylab="PC2 (14%)",main="Maumee PCA Hellinger Distance")
 text(maum.hel.pca,labels=maumcounts$Treatment,col=colors)
 text(maum.hel.pca,display="species",col=8)
 ```
@@ -214,7 +219,7 @@ eigenvals(ne.pca)
 eigenvals(ne.pca)/sum(eigenvals(ne.pca))
 plot(ne.pca)
 plot(ne.scores[,1:2],col=colors)
-plot(ne.pca,type="none",xlab="PC1 (44%)",ylab="PC2 (15%)",main="North Erie PCA Euclidean")
+plot(ne.pca,type="none",xlab="PC1 (46%)",ylab="PC2 (13%)",main="North Erie PCA Euclidean")
 text(ne.pca,labels=necounts$Treatment,col=colors)
 text(ne.pca,display="species",col=8)
 
@@ -223,7 +228,7 @@ ne.hel=decostand(necounts[,5:147],method="hellinger")
 ne.hel.pca=rda(ne.hel)
 summary(ne.hel.pca)
 ne.hel.pca.scores=scores(ne.hel.pca,choices=1:18,display="sites")
-plot(ne.hel.pca,type="none",xlab="PC1 (16%)",ylab="PC2 (14%)",main="North Erie PCA Hellinger Distance")
+plot(ne.hel.pca,type="none",xlab="PC1 (17%)",ylab="PC2 (13%)",main="North Erie PCA Hellinger Distance")
 text(ne.hel.pca,labels=necounts$Treatment,col=colors)
 text(ne.hel.pca,display="species",col=8)
 ```
@@ -245,7 +250,7 @@ eigenvals(gb.pca)
 eigenvals(gb.pca)/sum(eigenvals(gb.pca))
 plot(gb.pca)
 plot(ne.scores[,1:2],col=colors)
-plot(gb.pca,type="none",xlab="PC1 (43%)",ylab="PC2 (25%)",main="Green Bay PCA Euclidean")
+plot(gb.pca,type="none",xlab="PC1 (40%)",ylab="PC2 (25%)",main="Green Bay PCA Euclidean")
 text(gb.pca,labels=gbcounts$Treatment,col=colors)
 text(gb.pca,display="species",col=8)
 
@@ -254,7 +259,7 @@ gb.hel=decostand(gbcounts[,5:52],method="hellinger")
 gb.hel.pca=rda(gb.hel)
 summary(gb.hel.pca)
 gb.hel.pca.scores=scores(gb.hel.pca,choices=1:18,display="sites")
-plot(gb.hel.pca,type="none",xlab="PC1 (23%)",ylab="PC2 (18%)",main="Green Bay PCA Hellinger Distance")
+plot(gb.hel.pca,type="none",xlab="PC1 (22%)",ylab="PC2 (19%)",main="Green Bay PCA Hellinger Distance")
 text(gb.hel.pca,labels=gbcounts$Treatment,col=colors)
 text(gb.hel.pca,display="species",col=8)
 ```
@@ -276,7 +281,7 @@ eigenvals(ford.pca)
 eigenvals(ford.pca)/sum(eigenvals(ford.pca))
 plot(ford.pca)
 plot(ford.scores[,1:2],col=colors)
-plot(ford.pca,type="none",xlab="PC1 (57%)",ylab="PC2 (21%)",main="Ford PCA Euclidean")
+plot(ford.pca,type="none",xlab="PC1 (65%)",ylab="PC2 (16%)",main="Ford PCA Euclidean")
 text(ford.pca,labels=fordcounts$Treatment,col=colors)
 text(ford.pca,display="species",col=8)
 ###Microcystis comes out near N+trace, intersting
@@ -286,7 +291,7 @@ ford.hel=decostand(fordcounts[,4:80],method="hellinger")
 ford.hel.pca=rda(ford.hel)
 summary(ford.hel.pca)
 ford.hel.pca.scores=scores(ford.hel.pca,choices=1:18,display="sites")
-plot(ford.hel.pca,type="none",xlab="PC1 (22%)",ylab="PC2 (20%)",main="Ford PCA Hellinger Distance")
+plot(ford.hel.pca,type="none",xlab="PC1 (25%)",ylab="PC2 (21%)",main="Ford PCA Hellinger Distance")
 text(ford.hel.pca,labels=fordcounts$Treatment,col=colors)
 text(ford.hel.pca,display="species",col=8)
 ```
@@ -300,7 +305,7 @@ maum.dist.hel=vegdist(maum.hel,method="euclidean")
 maum.hel.nmds=metaMDS(maum.dist.hel, k=2, trymax=100, wascores=TRUE)
 maum.hel.nmds$stress
 stressplot(maum.hel.nmds)
-#stress is 0.166912
+#stress is 0.1938
 goodness(maum.hel.nmds)
 plot(maum.hel.nmds, type="none")
 text(maum.hel.nmds, labels=maumcounts$Treatment,col=colors)
@@ -311,48 +316,412 @@ text(maum.hel.nmds.spwa[,1:2],labels=rownames(maum.hel.nmds.spwa),col=8)
 maum.dist.bc=vegdist(maumcounts[,4:70], method="bray")
 maum.bc.nmds=metaMDS(maum.dist.bc, k=2, trymax=100)
 maum.bc.nmds$stress
-#0.1400169 stress
+#0.1387 stress
 plot(maum.bc.nmds, type="none")
 text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
-text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.")
+text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.1387")
 
 
 ```
 NORTH ERIE
 ```{r}
 # NMDS of Hellinger distance matrix
-maum.hel=decostand(maumcounts[,4:70],method="hellinger")
-maum.dist.hel=vegdist(maum.hel,method="euclidean")
-maum.hel.nmds=metaMDS(maum.dist.hel, k=2, trymax=100, wascores=TRUE)
-maum.hel.nmds$stress
-stressplot(maum.hel.nmds)
-#stress is 0.166912
-goodness(maum.hel.nmds)
-plot(maum.hel.nmds, type="none")
-text(maum.hel.nmds, labels=maumcounts$Treatment,col=colors)
-maum.hel.nmds.spwa=wascores(scores(maum.hel.nmds), maumcounts[,4:70])
-text(maum.hel.nmds.spwa[,1:2],labels=rownames(maum.hel.nmds.spwa),col=8)
+str(necounts)
+ne.hel=decostand(necounts[,5:147],method="hellinger")
+ne.dist.hel=vegdist(ne.hel,method="euclidean")
+ne.hel.nmds=metaMDS(ne.dist.hel, k=2, trymax=100, wascores=TRUE)
+ne.hel.nmds$stress
+stressplot(ne.hel.nmds)
+#stress is 0.1970
+goodness(ne.hel.nmds)
+plot(ne.hel.nmds, type="none")
+text(ne.hel.nmds, labels=necounts$Treatment,col=colors)
+ne.hel.nmds.spwa=wascores(scores(ne.hel.nmds), necounts[,5:147])
+text(ne.hel.nmds.spwa[,1:2],labels=rownames(ne.hel.nmds.spwa),col=8)
+text(matrix(c(-1.1,0.4),nrow=1),labels="Stress=0.1970")
 
 # Bray-Curtis NMDS
-maum.dist.bc=vegdist(maumcounts[,4:70], method="bray")
-maum.bc.nmds=metaMDS(maum.dist.bc, k=2, trymax=100)
-maum.bc.nmds$stress
-#0.1400169 stress
-plot(maum.bc.nmds, type="none")
-text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
-text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.")
+ne.dist.bc=vegdist(necounts[,5:147], method="bray")
+ne.bc.nmds=metaMDS(ne.dist.bc, k=2, trymax=100)
+ne.bc.nmds$stress
+# 0.194 stress
+plot(ne.bc.nmds, type="none")
+text(ne.bc.nmds, labels=necounts$Treatment,col=colors)
+text(matrix(c(-0.6,0.17),nrow=1),labels="Stress=0.194")
 
 
 ```
 GREEN BAY
 ```{r}
+# NMDS of Hellinger distance matrix
+str(gbcounts)
+gb.hel=decostand(gbcounts[,5:52],method="hellinger")
+gb.dist.hel=vegdist(gb.hel,method="euclidean")
+gb.hel.nmds=metaMDS(gb.dist.hel, k=2, trymax=100, wascores=TRUE)
+gb.hel.nmds$stress
+stressplot(gb.hel.nmds)
+#stress is 0.2104
+goodness(gb.hel.nmds)
+plot(gb.hel.nmds, type="none")
+text(gb.hel.nmds, labels=gbcounts$Treatment,col=colors)
+gb.hel.nmds.spwa=wascores(scores(gb.hel.nmds), gbcounts[,5:52])
+text(gb.hel.nmds.spwa[,1:2],labels=rownames(gb.hel.nmds.spwa),col=8)
+text(matrix(c(-0.9,0.2),nrow=1),labels="Stress=0.2104")
+
+# Bray-Curtis NMDS
+gb.dist.bc=vegdist(gbcounts[,5:52], method="bray")
+gb.bc.nmds=metaMDS(gb.dist.bc, k=2, trymax=100)
+gb.bc.nmds$stress
+# 0.2161 stress
+plot(gb.bc.nmds, type="none")
+text(gb.bc.nmds, labels=gbcounts$Treatment,col=colors)
+text(matrix(c(-0.45,0.15),nrow=1),labels="Stress=0.2161")
 
 ```
 FORD
 ```{r}
+# NMDS of Hellinger distance matrix
+str(fordcounts)
+ford.hel=decostand(fordcounts[,4:80],method="hellinger")
+ford.dist.hel=vegdist(ford.hel,method="euclidean")
+ford.hel.nmds=metaMDS(ford.dist.hel, k=2, trymax=100, wascores=TRUE)
+ford.hel.nmds$stress
+stressplot(ford.hel.nmds)
+#stress is 0.1359
+goodness(ford.hel.nmds)
+plot(ford.hel.nmds, type="none")
+text(ford.hel.nmds, labels=fordcounts$Treatment,col=colors)
+ford.hel.nmds.spwa=wascores(scores(ford.hel.nmds), fordcounts[,4:80])
+text(ford.hel.nmds.spwa[,1:2],labels=rownames(ford.hel.nmds.spwa),col=8)
+text(matrix(c(-1.1,0.3),nrow=1),labels="Stress=0.1359")
+
+# Bray-Curtis NMDS
+ford.dist.bc=vegdist(fordcounts[,4:80], method="bray")
+ford.bc.nmds=metaMDS(ford.dist.bc, k=2, trymax=100)
+ford.bc.nmds$stress
+# 0.1125 stress
+plot(ford.bc.nmds, type="none")
+text(ford.bc.nmds, labels=fordcounts$Treatment,col=colors)
+text(matrix(c(-0.95,0.15),nrow=1),labels="Stress=0.1125")
 
 ```
 
+RDA-before treatments are separated
 
+```{r}
+#new vegan update installed
+library(vegan)
+#MAUMEE
+dim(maumcounts)
+names(maumcounts)
+maum.colsums=apply(maumcounts[,4:70],2,sum)
+maum.rowsums=apply(maumcounts[,4:70],1,sum)
+min(maum.rowsums)
+min=min(maum.rowsums)
+n=nrow(maumcounts)
+
+# Rarefaction and Hellinger distance transformation
+maum.rare=rrarefy(maumcounts[,4:70],sample=min)
+str(maum.rare)
+maum.rare.hel=cbind(maumcounts[,1:3],decostand(maum.rare,method="hellinger"))
+maum.stands.hel.dist=vegdist(maum.rare.hel[4:70],method="euclidean")
+#^when is this used? Everything just uses maum.rare.hel.... not the actual distance matrix..
+
+# RDA - Redundancy Analysis 
+rda.maum.rare.hel.all=rda(maum.rare.hel[,4:70]~maum.rare.hel$Treatment)
+	summary(rda.maum.rare.hel.all)
+	anova(rda.maum.rare.hel.all)
+	RsquareAdj(rda.maum.rare.hel.all)
+
+	anova(rda.maum.rare.hel.all,by="terms")
+
+#should I separate out treatment types??/
+	
+###
+# In contrast, order does not matter in Type 3 anova tests, also called marginal tests
+# There are different ways to do this.
+# The concept is that all other factors should be accounted for first, and variation is removed.
+# Then the test factor is tested against remaining variation
+# But this is where the RDA commands are acting weird :(
+
+# Here is the one-line formula interface method.
+	anova(rda.maum.rare.hel.all,by="margin")
+# If interactions exist, this method only provides marginal tests for the interaction terms
+
+# Another method of getting a marginal test provides similar results.
+rda.maum.rare.hel.int=rda(maum.rare.hel[,4:70] ~ maum.rare.hel$Treatment)
+	anova(rda.maum.rare.hel.int)
+
+###
+# Plots and getting some more species info
+# To get ordination plots of predicted values (group centroids), raw data on canonical axes, and species
+plot(rda.maum.rare.hel.all)
+# The above plot was not so great.
+# Better plots can be made if you extract scores as shown below
+rda.maum.rare.hel.all.spscores=scores(rda.maum.rare.hel.all,display="sp",choices=c(1:17))
+head(rda.maum.rare.hel.all.spscores)
+rda.maum.rare.hel.all.lcscores=scores(rda.maum.rare.hel.all,display="lc",choices=c(1:17))
+head(rda.maum.rare.hel.all.lcscores)
+rda.maum.rare.hel.all.wascores=scores(rda.maum.rare.hel.all,display="wa",choices=c(1:17))
+head(rda.maum.rare.hel.all.wascores)
+
+
+#modify for treatments colors=ifelse(maum.rare.hel$Treatment=="Leaf",3,6)
+#symbols=ifelse(maum.rare.hel$Treatment=="BOWO",1,ifelse(maum.rare.hel$Ecosys=="SMBW",2,0))
+
+#weighted averages
+plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
+points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,cex=2,lwd=4)
+#linear contrasts
+plot(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
+points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,cex=2,lwd=4)
+#species scores
+plot(rda.maum.rare.hel.all.spscores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
+points(rda.maum.rare.hel.all.spscores[,1:2],col=colors,cex=2,lwd=4)
+
+# This command provides and R-squared for each taxon for each axis
+goodness(rda.maum.rare.hel.all)
+sp.rsq=goodness(rda.maum.rare.hel.all)
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
+sp.aff.rows=match(sp.aff,rownames(rda.maum.rare.hel.all.spscores))
+
+text(rda.maum.rare.hel.all.spscores[sp.aff.rows,1:2],labels=rownames(rda.maum.rare.hel.all.spscores[sp.aff.rows,]))
+
+```
+RDA post treatment separation
+```{r}
+#new vegan update installed
+library(vegan)
+
+#MAUMEE
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+maumcounts$trace<-grepl("Trace", maumcounts$Treatment) 
+maumcounts$nitrogen<-grepl("N", maumcounts$Treatment) 
+maumcounts$phosphorus<-grepl("P", maumcounts$Treatment) 
+
+dim(maumcounts)
+names(maumcounts)
+maum.colsums=apply(maumcounts[,4:70],2,sum)
+maum.rowsums=apply(maumcounts[,4:70],1,sum)
+min(maum.rowsums)
+min=min(maum.rowsums)
+n=nrow(maumcounts)
+
+# Rarefaction and Hellinger distance transformation
+maum.rare=rrarefy(maumcounts[,4:70],sample=min)
+str(maum.rare)
+maum.rare.hel1=cbind(maumcounts[,1:3],decostand(maum.rare,method="hellinger"))
+maum.stands.hel.dist=vegdist(maum.rare.hel[4:70],method="euclidean")
+maum.rare.hel=cbind(maumcounts[,71:73],maum.rare.hel1)
+str(maum.rare.hel)
+
+# RDA - Redundancy Analysis -Treatments apart
+rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:73]~maum.rare.hel$trace*maum.rare.hel$nitrogen*maum.rare.hel$phosphorus)
+	summary(rda.maum.rare.hel.all.treats)
+	anova(rda.maum.rare.hel.all.treats)
+	RsquareAdj(rda.maum.rare.hel.all.treats)
+		anova(rda.maum.rare.hel.all.treats,by="terms")
+	anova(rda.maum.rare.hel.all.treats,by="margin")
+
+###
+# Plots and getting some more species info
+# Better plots can be made if you extract scores as shown below
+rda.maum.rare.hel.all.spscores=scores(rda.maum.rare.hel.all.treats,display="sp",choices=c(1:17))
+head(rda.maum.rare.hel.all.spscores)
+rda.maum.rare.hel.all.lcscores=scores(rda.maum.rare.hel.all.treats,display="lc",choices=c(1:17))
+head(rda.maum.rare.hel.all.lcscores)
+rda.maum.rare.hel.all.wascores=scores(rda.maum.rare.hel.all.treats,display="wa",choices=c(1:17))
+head(rda.maum.rare.hel.all.wascores)
+
+#weighted averages with P symbols
+#make P have a symbol diference
+symbols=ifelse(maum.rare.hel$phosphorus=="TRUE",1,ifelse(maum.rare.hel$phosphorus=="FALSE",2,0))
+plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.4%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
+points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+text(0.2,0.6,"Rsquared adj.= 14.4%")
+# symbols N
+symbols=ifelse(maum.rare.hel$nitrogen=="TRUE",1,ifelse(maum.rare.hel$nitrogen=="FALSE",2,0))
+plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.4%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
+points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+
+# This command provides and R-squared for each taxon for each axis
+goodness(rda.maum.rare.hel.all.treats)
+
+sp.rsq=goodness(rda.maum.rare.hel.all.treats)
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
+sp.aff.rows=match(sp.aff,rownames(rda.maum.rare.hel.all.treats))
+#^yielding NAs....why?
+text(rda.maum.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.maum.rare.hel.all.treats[sp.aff.rows,]))
+
+```
+
+NE RDA
+```{r}
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+necounts$trace<-grepl("Trace", necounts$Treatment) 
+necounts$nitrogen<-grepl("N", necounts$Treatment) 
+necounts$phosphorus<-grepl("P", necounts$Treatment) 
+
+dim(necounts)
+names(necounts)
+ne.colsums=apply(necounts[,5:147],2,sum)
+ne.rowsums=apply(necounts[,5:147],1,sum)
+min(ne.rowsums)
+min=min(ne.rowsums)
+n=nrow(necounts)
+
+# Rarefaction and Hellinger distance transformation
+ne.rare=rrarefy(necounts[,5:147],sample=min)
+str(ne.rare)
+ne.rare.hel1=cbind(necounts[,1:4],decostand(ne.rare,method="hellinger"))
+#ne.stands.hel.dist=vegdist(ne.rare.hel[5:147],method="euclidean")
+ne.rare.hel=cbind(necounts[,148:150],ne.rare.hel1)
+str(ne.rare.hel)
+
+# RDA - Redundancy Analysis -Treatments apart
+rda.ne.rare.hel.all.treats=rda(ne.rare.hel[,8:150]~ne.rare.hel$trace*ne.rare.hel$nitrogen*ne.rare.hel$phosphorus)
+	summary(rda.ne.rare.hel.all.treats)
+	anova(rda.ne.rare.hel.all.treats)
+	RsquareAdj(rda.ne.rare.hel.all.treats)
+		anova(rda.ne.rare.hel.all.treats,by="terms")
+	anova(rda.ne.rare.hel.all.treats,by="margin")
+
+###
+# Plots and getting some more species info
+# Better plots can be made if you extract scores as shown below
+rda.ne.rare.hel.all.spscores=scores(rda.ne.rare.hel.all.treats,display="sp",choices=c(1:17))
+head(rda.ne.rare.hel.all.spscores)
+rda.ne.rare.hel.all.lcscores=scores(rda.ne.rare.hel.all.treats,display="lc",choices=c(1:17))
+head(rda.ne.rare.hel.all.lcscores)
+rda.ne.rare.hel.all.wascores=scores(rda.ne.rare.hel.all.treats,display="wa",choices=c(1:17))
+head(rda.ne.rare.hel.all.wascores)
+
+#weighted averages with P symbols
+#make P have a symbol diference
+symbols=ifelse(ne.rare.hel$phosphorus=="TRUE",1,ifelse(ne.rare.hel$phosphorus=="FALSE",2,0))
+plot(rda.ne.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (14.3%)",ylab="RDA2 (7.3%)",main="North Erie Community, Hellinger transformed")
+points(rda.ne.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+text(0.3,-0.8,"Rsquared adj.= 20.1%")
+# This command provides and R-squared for each taxon for each axis
+goodness(rda.ne.rare.hel.all.treats)
+
+sp.rsq=goodness(rda.ne.rare.hel.all.treats)
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
+sp.aff.rows=match(sp.aff,rownames(rda.ne.rare.hel.all.treats))
+#^yielding NAs....why?
+text(rda.ne.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.ne.rare.hel.all.treats[sp.aff.rows,]))
+```
+GREEN BAY RDA
+```{r}
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+gbcounts$trace<-grepl("Trace", gbcounts$Treatment) 
+gbcounts$nitrogen<-grepl("N", gbcounts$Treatment) 
+gbcounts$phosphorus<-grepl("P", gbcounts$Treatment) 
+
+dim(gbcounts)
+names(gbcounts)
+gb.colsums=apply(gbcounts[,5:52],2,sum)
+gb.rowsums=apply(gbcounts[,5:52],1,sum)
+min(gb.rowsums)
+min=min(gb.rowsums)
+n=nrow(gbcounts)
+
+# Rarefaction and Hellinger distance transformation
+gb.rare=rrarefy(gbcounts[,5:52],sample=min)
+str(gb.rare)
+gb.rare.hel1=cbind(gbcounts[,1:4],decostand(gb.rare,method="hellinger"))
+#ne.stands.hel.dist=vegdist(ne.rare.hel[5:147],method="euclidean")
+gb.rare.hel=cbind(gbcounts[,53:55],gb.rare.hel1)
+str(gb.rare.hel)
+
+# RDA - Redundancy Analysis -Treatments apart
+rda.gb.rare.hel.all.treats=rda(gb.rare.hel[,8:55]~gb.rare.hel$trace*gb.rare.hel$nitrogen*gb.rare.hel$phosphorus)
+	summary(rda.gb.rare.hel.all.treats)
+	anova(rda.gb.rare.hel.all.treats)
+	RsquareAdj(rda.gb.rare.hel.all.treats)
+		anova(rda.gb.rare.hel.all.treats,by="terms")
+	anova(rda.gb.rare.hel.all.treats,by="margin")
+
+###
+# Plots and getting some more species info
+# Better plots can be made if you extract scores as shown below
+rda.gb.rare.hel.all.spscores=scores(rda.gb.rare.hel.all.treats,display="sp",choices=c(1:17))
+head(rda.gb.rare.hel.all.spscores)
+rda.gb.rare.hel.all.lcscores=scores(rda.gb.rare.hel.all.treats,display="lc",choices=c(1:17))
+head(rda.gb.rare.hel.all.lcscores)
+rda.gb.rare.hel.all.wascores=scores(rda.gb.rare.hel.all.treats,display="wa",choices=c(1:17))
+head(rda.gb.rare.hel.all.wascores)
+
+#weighted averages with P symbols
+#make P have a symbol diference
+symbols=ifelse(gb.rare.hel$phosphorus=="TRUE",1,ifelse(gb.rare.hel$phosphorus=="FALSE",2,0))
+plot(rda.gb.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (10.3%)",ylab="RDA2 (7.6%)",main="Green Bay Community, Hellinger transformed")
+points(rda.gb.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+text(0.2,-0.5,"Rsquared adj.= 9.8%")
+# This command provides and R-squared for each taxon for each axis
+goodness(rda.gb.rare.hel.all.treats)
+
+sp.rsq=goodness(rda.gb.rare.hel.all.treats)
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
+sp.aff.rows=match(sp.aff,rownames(rda.gb.rare.hel.all.treats))
+#^yielding NAs....why?
+text(rda.gb.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.gb.rare.hel.all.treats[sp.aff.rows,]))
+```
+FORD RDA
+```{r}
+#add columns for treatments n,p,trace as y/n for analysis of interactive effects
+fordcounts$trace<-grepl("Trace", fordcounts$Treatment) 
+fordcounts$nitrogen<-grepl("N", fordcounts$Treatment) 
+fordcounts$phosphorus<-grepl("P", fordcounts$Treatment) 
+
+dim(fordcounts)
+names(fordcounts)
+ford.colsums=apply(fordcounts[,4:80],2,sum)
+ford.rowsums=apply(fordcounts[,4:80],1,sum)
+min(ford.rowsums)
+min=min(ford.rowsums)
+n=nrow(fordcounts)
+
+# Rarefaction and Hellinger distance transformation
+ford.rare=rrarefy(fordcounts[,4:80],sample=min)
+str(ford.rare)
+ford.rare.hel1=cbind(fordcounts[,1:3],decostand(ford.rare,method="hellinger"))
+#ne.stands.hel.dist=vegdist(ne.rare.hel[5:147],method="euclidean")
+ford.rare.hel=cbind(fordcounts[,81:83],ford.rare.hel1)
+str(ford.rare.hel)
+
+# RDA - Redundancy Analysis -Treatments apart
+rda.ford.rare.hel.all.treats=rda(ford.rare.hel[,7:83]~ford.rare.hel$trace*ford.rare.hel$nitrogen*ford.rare.hel$phosphorus)
+	summary(rda.ford.rare.hel.all.treats)
+	anova(rda.ford.rare.hel.all.treats)
+	RsquareAdj(rda.ford.rare.hel.all.treats)
+		anova(rda.ford.rare.hel.all.treats,by="terms")
+	anova(rda.ford.rare.hel.all.treats,by="margin")
+
+###
+# Plots and getting some more species info
+# Better plots can be made if you extract scores as shown below
+rda.ford.rare.hel.all.spscores=scores(rda.ford.rare.hel.all.treats,display="sp",choices=c(1:17))
+head(rda.ford.rare.hel.all.spscores)
+rda.ford.rare.hel.all.lcscores=scores(rda.ford.rare.hel.all.treats,display="lc",choices=c(1:17))
+head(rda.ford.rare.hel.all.lcscores)
+rda.ford.rare.hel.all.wascores=scores(rda.ford.rare.hel.all.treats,display="wa",choices=c(1:17))
+head(rda.ford.rare.hel.all.wascores)
+
+#weighted averages with P symbols
+#make P have a symbol diference
+symbols=ifelse(ford.rare.hel$phosphorus=="TRUE",1,ifelse(ford.rare.hel$phosphorus=="FALSE",2,0))
+plot(rda.ford.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (18.9%)",ylab="RDA2 (12.3%)",main="Ford Community, Hellinger transformed")
+points(rda.ford.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+text(-0.5,0.5,"Rsquared adj.= 33.6%")
+# This command provides and R-squared for each taxon for each axis
+goodness(rda.ford.rare.hel.all.treats)
+
+sp.rsq=goodness(rda.ford.rare.hel.all.treats)
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
+sp.aff.rows=match(sp.aff,rownames(rda.ford.rare.hel.all.treats))
+#^yielding NAs....why?
+text(rda.ford.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.ford.rare.hel.all.treats[sp.aff.rows,]))
+```
 
 
