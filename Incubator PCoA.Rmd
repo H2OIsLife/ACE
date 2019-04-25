@@ -406,88 +406,6 @@ text(matrix(c(-0.95,0.15),nrow=1),labels="Stress=0.1125")
 
 ```
 
-RDA-before treatments are separated
-
-```{r}
-#new vegan update installed
-library(vegan)
-#MAUMEE
-dim(maumcounts)
-names(maumcounts)
-maum.colsums=apply(maumcounts[,4:70],2,sum)
-maum.rowsums=apply(maumcounts[,4:70],1,sum)
-min(maum.rowsums)
-min=min(maum.rowsums)
-n=nrow(maumcounts)
-
-# Rarefaction and Hellinger distance transformation
-maum.rare=rrarefy(maumcounts[,4:70],sample=min)
-str(maum.rare)
-maum.rare.hel=cbind(maumcounts[,1:3],decostand(maum.rare,method="hellinger"))
-maum.stands.hel.dist=vegdist(maum.rare.hel[4:70],method="euclidean")
-#^when is this used? Everything just uses maum.rare.hel.... not the actual distance matrix..
-
-# RDA - Redundancy Analysis 
-rda.maum.rare.hel.all=rda(maum.rare.hel[,4:70]~maum.rare.hel$Treatment)
-	summary(rda.maum.rare.hel.all)
-	anova(rda.maum.rare.hel.all)
-	RsquareAdj(rda.maum.rare.hel.all)
-
-	anova(rda.maum.rare.hel.all,by="terms")
-
-#should I separate out treatment types??/
-	
-###
-# In contrast, order does not matter in Type 3 anova tests, also called marginal tests
-# There are different ways to do this.
-# The concept is that all other factors should be accounted for first, and variation is removed.
-# Then the test factor is tested against remaining variation
-# But this is where the RDA commands are acting weird :(
-
-# Here is the one-line formula interface method.
-	anova(rda.maum.rare.hel.all,by="margin")
-# If interactions exist, this method only provides marginal tests for the interaction terms
-
-# Another method of getting a marginal test provides similar results.
-rda.maum.rare.hel.int=rda(maum.rare.hel[,4:70] ~ maum.rare.hel$Treatment)
-	anova(rda.maum.rare.hel.int)
-
-###
-# Plots and getting some more species info
-# To get ordination plots of predicted values (group centroids), raw data on canonical axes, and species
-plot(rda.maum.rare.hel.all)
-# The above plot was not so great.
-# Better plots can be made if you extract scores as shown below
-rda.maum.rare.hel.all.spscores=scores(rda.maum.rare.hel.all,display="sp",choices=c(1:17))
-head(rda.maum.rare.hel.all.spscores)
-rda.maum.rare.hel.all.lcscores=scores(rda.maum.rare.hel.all,display="lc",choices=c(1:17))
-head(rda.maum.rare.hel.all.lcscores)
-rda.maum.rare.hel.all.wascores=scores(rda.maum.rare.hel.all,display="wa",choices=c(1:17))
-head(rda.maum.rare.hel.all.wascores)
-
-
-#modify for treatments colors=ifelse(maum.rare.hel$Treatment=="Leaf",3,6)
-#symbols=ifelse(maum.rare.hel$Treatment=="BOWO",1,ifelse(maum.rare.hel$Ecosys=="SMBW",2,0))
-
-#weighted averages
-plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
-points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,cex=2,lwd=4)
-#linear contrasts
-plot(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
-points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,cex=2,lwd=4)
-#species scores
-plot(rda.maum.rare.hel.all.spscores[,1:2],col=colors,xlab="RDA1 (14%)",ylab="RDA2 (9%)")
-points(rda.maum.rare.hel.all.spscores[,1:2],col=colors,cex=2,lwd=4)
-
-# This command provides and R-squared for each taxon for each axis
-goodness(rda.maum.rare.hel.all)
-sp.rsq=goodness(rda.maum.rare.hel.all)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
-sp.aff.rows=match(sp.aff,rownames(rda.maum.rare.hel.all.spscores))
-
-text(rda.maum.rare.hel.all.spscores[sp.aff.rows,1:2],labels=rownames(rda.maum.rare.hel.all.spscores[sp.aff.rows,]))
-
-```
 RDA post treatment separation
 ```{r}
 #new vegan update installed
@@ -521,7 +439,12 @@ rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:73]~maum.rare.hel$trace*maum.r
 	anova(rda.maum.rare.hel.all.treats)
 	RsquareAdj(rda.maum.rare.hel.all.treats)
 		anova(rda.maum.rare.hel.all.treats,by="terms")
-	anova(rda.maum.rare.hel.all.treats,by="margin")
+		
+### Another method of getting a marginal test provides similar results.
+rda.maum.rare.hel.int=rda(maum.rare.hel[,7:73] ~ gb.rare.hel$trace:maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
+	anova(rda.maum.rare.hel.int)
+	summary(rda.maum.rare.hel.int)		
+
 
 ###
 # Plots and getting some more species info
@@ -547,11 +470,11 @@ points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.maum.rare.hel.all.treats)
 
-sp.rsq=goodness(rda.maum.rare.hel.all.treats)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
-sp.aff.rows=match(sp.aff,rownames(rda.maum.rare.hel.all.treats))
-#^yielding NAs....why?
-text(rda.maum.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.maum.rare.hel.all.treats[sp.aff.rows,]))
+sp.rsqm=goodness(rda.maum.rare.hel.all.treats)
+sp.affm=rownames(sp.rsqm)[sp.rsqm[,2]>0.3]
+lm=length(na.omit(sp.affm))
+sp.aff.rowsm=match(na.omit(sp.affm)[1:l],rownames(rda.maum.rare.hel.all.spscores))
+text(rda.maum.rare.hel.all.spscores[sp.aff.rowsm,1:2],labels=rownames(rda.maum.rare.hel.all.spscores[sp.aff.rowsm,]))
 
 ```
 
@@ -585,6 +508,11 @@ rda.ne.rare.hel.all.treats=rda(ne.rare.hel[,8:150]~ne.rare.hel$trace*ne.rare.hel
 	RsquareAdj(rda.ne.rare.hel.all.treats)
 		anova(rda.ne.rare.hel.all.treats,by="terms")
 	anova(rda.ne.rare.hel.all.treats,by="margin")
+	
+### Another method of getting a marginal test provides similar results.
+rda.ne.rare.hel.int=rda(ne.rare.hel[,8:150] ~ ne.rare.hel$trace:ne.rare.hel$nitrogen:ne.rare.hel$phosphorus + Condition(ne.rare.hel$trace + ne.rare.hel$nitrogen +ne.rare.hel$phosphorus))
+	anova(rda.ne.rare.hel.int)
+	summary(rda.ne.rare.hel.int)
 
 ###
 # Plots and getting some more species info
@@ -605,11 +533,11 @@ text(0.3,-0.8,"Rsquared adj.= 20.1%")
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.ne.rare.hel.all.treats)
 
-sp.rsq=goodness(rda.ne.rare.hel.all.treats)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
-sp.aff.rows=match(sp.aff,rownames(rda.ne.rare.hel.all.treats))
-#^yielding NAs....why?
-text(rda.ne.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.ne.rare.hel.all.treats[sp.aff.rows,]))
+sp.rsqne=goodness(rda.ne.rare.hel.all.treats)
+sp.affne=rownames(sp.rsqne)[sp.rsqne[,2]>0.4]
+lne=length(na.omit(sp.affne))
+sp.aff.rowsne=match(na.omit(sp.affne)[1:l],rownames(rda.ne.rare.hel.all.spscores))
+text(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,1:2],labels=rownames(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,]))
 ```
 GREEN BAY RDA
 ```{r}
@@ -641,6 +569,11 @@ rda.gb.rare.hel.all.treats=rda(gb.rare.hel[,8:55]~gb.rare.hel$trace*gb.rare.hel$
 	RsquareAdj(rda.gb.rare.hel.all.treats)
 		anova(rda.gb.rare.hel.all.treats,by="terms")
 	anova(rda.gb.rare.hel.all.treats,by="margin")
+	
+### Another method of getting a marginal test provides similar results.
+rda.gb.rare.hel.int=rda(gb.rare.hel[,8:55] ~ gb.rare.hel$trace:gb.rare.hel$nitrogen:gb.rare.hel$phosphorus + Condition(gb.rare.hel$trace + gb.rare.hel$nitrogen +gb.rare.hel$phosphorus))
+	anova(rda.gb.rare.hel.int)
+	summary(rda.gb.rare.hel.int)
 
 ###
 # Plots and getting some more species info
@@ -661,11 +594,12 @@ text(0.2,-0.5,"Rsquared adj.= 9.8%")
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.gb.rare.hel.all.treats)
 
-sp.rsq=goodness(rda.gb.rare.hel.all.treats)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
-sp.aff.rows=match(sp.aff,rownames(rda.gb.rare.hel.all.treats))
-#^yielding NAs....why?
-text(rda.gb.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.gb.rare.hel.all.treats[sp.aff.rows,]))
+sp.rsqgb=goodness(rda.gb.rare.hel.all.treats)
+sp.affgb=rownames(sp.rsqgb)[sp.rsqgb[,2]>0.3]
+lgb=length(na.omit(sp.affgb))
+sp.aff.rowsgb=match(na.omit(sp.affgb)[1:lgb],rownames(rda.gb.rare.hel.all.spscores))
+text(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,1:2],labels=rownames(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,]))
+
 ```
 FORD RDA
 ```{r}
@@ -696,8 +630,14 @@ rda.ford.rare.hel.all.treats=rda(ford.rare.hel[,7:83]~ford.rare.hel$trace*ford.r
 	anova(rda.ford.rare.hel.all.treats)
 	RsquareAdj(rda.ford.rare.hel.all.treats)
 		anova(rda.ford.rare.hel.all.treats,by="terms")
-	anova(rda.ford.rare.hel.all.treats,by="margin")
-
+		
+### Another method of getting a marginal test provides similar results.
+rda.ford.rare.hel.int=rda(ford.rare.hel[,7:83] ~ ford.rare.hel$trace:ford.rare.hel$nitrogen:ford.rare.hel$phosphorus + Condition(ford.rare.hel$trace + ford.rare.hel$nitrogen +ford.rare.hel$phosphorus))
+	anova(rda.ford.rare.hel.int)
+	summary(rda.ford.rare.hel.int)
+	
+	
+#rerun with more powerful test that separates out interactions and individual treatment effects--- different syntax
 ###
 # Plots and getting some more species info
 # Better plots can be made if you extract scores as shown below
@@ -718,10 +658,10 @@ text(-0.5,0.5,"Rsquared adj.= 33.6%")
 goodness(rda.ford.rare.hel.all.treats)
 
 sp.rsq=goodness(rda.ford.rare.hel.all.treats)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.3]
-sp.aff.rows=match(sp.aff,rownames(rda.ford.rare.hel.all.treats))
-#^yielding NAs....why?
-text(rda.ford.rare.hel.all.treats[sp.aff.rows,1:2],labels=rownames(rda.ford.rare.hel.all.treats[sp.aff.rows,]))
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.4]
+l=length(na.omit(sp.aff))
+sp.aff.rows=match(na.omit(sp.aff)[1:l],rownames(rda.ford.rare.hel.all.spscores))
+text(rda.ford.rare.hel.all.spscores[sp.aff.rows,1:2],labels=rownames(rda.ford.rare.hel.all.spscores[sp.aff.rows,]))
 ```
 
 
