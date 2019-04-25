@@ -438,12 +438,28 @@ rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:73]~maum.rare.hel$trace*maum.r
 	summary(rda.maum.rare.hel.all.treats)
 	anova(rda.maum.rare.hel.all.treats)
 	RsquareAdj(rda.maum.rare.hel.all.treats)
-		anova(rda.maum.rare.hel.all.treats,by="terms")
+
 		
 ### Another method of getting a marginal test provides similar results.
-rda.maum.rare.hel.int=rda(maum.rare.hel[,7:73] ~ gb.rare.hel$trace:maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
+	#three way interaction: N by P by trace
+rda.maum.rare.hel.int=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$trace:maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
 	anova(rda.maum.rare.hel.int)
 	summary(rda.maum.rare.hel.int)		
+	#N by P
+	rda.maum.rare.hel.intNP=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
+	anova(rda.maum.rare.hel.intNP)
+	summary(rda.maum.rare.hel.intNP)	
+	
+	#N by trace
+		rda.maum.rare.hel.intNT=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$nitrogen:maum.rare.hel$trace + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
+	anova(rda.maum.rare.hel.intNT)
+	summary(rda.maum.rare.hel.intNT)
+	#P by trace
+			rda.maum.rare.hel.intPT=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$phosphorus:maum.rare.hel$trace + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
+	anova(rda.maum.rare.hel.intPT)
+	summary(rda.maum.rare.hel.intPT)
+	
+	
 
 
 ###
