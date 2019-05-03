@@ -438,30 +438,31 @@ rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:73]~maum.rare.hel$trace*maum.r
 	summary(rda.maum.rare.hel.all.treats)
 	anova(rda.maum.rare.hel.all.treats)
 	RsquareAdj(rda.maum.rare.hel.all.treats)
-
-		
-### Another method of getting a marginal test provides similar results.
-	#three way interaction: N by P by trace
-rda.maum.rare.hel.int=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$trace:maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
-	anova(rda.maum.rare.hel.int)
-	summary(rda.maum.rare.hel.int)		
-	#N by P
-	rda.maum.rare.hel.intNP=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$nitrogen:maum.rare.hel$phosphorus + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
-	anova(rda.maum.rare.hel.intNP)
-	summary(rda.maum.rare.hel.intNP)	
 	
-	#N by trace
-		rda.maum.rare.hel.intNT=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$nitrogen:maum.rare.hel$trace + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
-	anova(rda.maum.rare.hel.intNT)
-	summary(rda.maum.rare.hel.intNT)
-	#P by trace
-			rda.maum.rare.hel.intPT=rda(maum.rare.hel[,7:73] ~ maum.rare.hel$phosphorus:maum.rare.hel$trace + Condition(maum.rare.hel$trace + maum.rare.hel$nitrogen +maum.rare.hel$phosphorus))
-	anova(rda.maum.rare.hel.intPT)
-	summary(rda.maum.rare.hel.intPT)
-	
+#recode treatments as numerical strings	
+#need 2 vectors for 3 factors?
+factors<-read.csv("~/Desktop/factors.csv")
+maum.rare.hel.fact<-cbind(factors, maum.rare.hel1)	
+dim(maum.rare.hel.fact)	
 	
 
+# If interactions exist, this method only provides marginal tests for the interaction terms
+rda.maum.rare.hel.all.xyz=rda(maum.rare.hel.fact[,12:78],maum.rare.hel.fact[,2:8])
+	summary(rda.maum.rare.hel.all.xyz)
+	anova(rda.maum.rare.hel.all.xyz)
+	RsquareAdj(rda.maum.rare.hel.all.xyz)
 
+# Let's try testing this using Y,X,Z format
+rda.maum.rare.hel.factor=rda(maum.rare.hel.fact[,15:81],maum.rare.hel.fact[,c(5:8)],maum.rare.hel.fact[2:4])
+#what columns correspond to my factors?
+	anova(rda.maum.rare.hel.factor)
+# This way the same interactions are quite significant		
+
+	
+### Another method of getting a marginal test provides similar results. The conditional statements don't work with interactions. The programs are enforcing that statistical philosophy that you should test for interactions before testing for main effects... so to get around that, we have to use the X,Y,Z coding
+	
+
+	
 ###
 # Plots and getting some more species info
 # Better plots can be made if you extract scores as shown below
