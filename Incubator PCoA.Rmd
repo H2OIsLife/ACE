@@ -1,9 +1,14 @@
 ---
 title: "Incubator PCoA, PCA, NMDS, RDA"
 author: "Jordyn Stoll"
-date: "March 20, 2019"
+date: "March 20, 2019-"
 output: html_document
 ---
+###Background
+
+This data is from a bottle incubation experiment. Water was collected from Maumee Bay, North Lake Erie, Green Bay and the mouth of the Ford River, placed into clear bottles and treated with NH4, PO4 and trace metals (Fe, Mo, Mn, Ni, Zn, Co) in replicate of 4 for each treatment. The control had no nutrients added, and the 'chelex' treatment removed trace metals via chelation with 'chelex'. For these analyses I remove the chelex and initial treatments. After a 72 hour incubation, water was sampled and analyzed for ash free dry mass, chl-a, microcystin and community composition. Community composition was comepleted by counting 400 natural units per sample and identifying down to lowest taxonomic unit, or labelled as a morphospecies.
+
+
 Load packages, data
 ```{r setup, include=FALSE}
 #prep data
@@ -85,6 +90,9 @@ text(maum.bc.noneg.pcoa.scores[,1:2],labels=maumcounts$Treatment,col=colors)
 #corrects for negative values so you can calculate percent variation explained.
 
 ```
+Interpretation: After correcting for negative eigenvalues due to the non-metric Bray-curtis tranformation, this PCoA explains very little variation. There is some clumping of trace metal treatments near the bottom of the ordination, but it's not consistent for all trace metal treatments. I wouldn't use this ordination for anything beyond exploration. 
+
+
 NORTH ERIE PCOA
 ```{r}
 ne.dist.bc=vegdist(necounts[,5:147],method="bray")
@@ -109,6 +117,8 @@ plot(ne.bc.noneg.pcoa,type="none",xlab="Axis 1 (7%)",ylab="Axis 2 (5%)",main="No
 text(ne.bc.noneg.pcoa.scores[,1:2],labels=necounts$Treatment,col=colors)
 
 ```
+Interpretation: Again, after correction, the variation explained is very low. There is interesting clustering among the treatments. N+P+trace cluster toward the top of the graph, P+trace, N+P and P treatments cluster near the bottom right and trace, N+trace and N treatments cluster in the center left portion of the ordination. This means that N and trace are having a similar effect on the community composition, which is different from P treatments, while N+P+trace is further different. 
+
 GREEN BAY PCOA
 ```{r}
 gb.dist.bc=vegdist(gbcounts[,5:52],method="bray")
@@ -133,6 +143,8 @@ plot(gb.bc.noneg.pcoa,type="none",xlab="Axis 1 (5%)",ylab="Axis 2 (5%)",main="Gr
 text(gb.bc.noneg.pcoa.scores[,1:2],labels=gbcounts$Treatment,col=colors)
 
 ```
+Interpretation: This ordination is garbage. The variation explained is again very low, and there are no distinguishable patterns in the ordination. All treatments seem randomly dispersed in the ordination space. 
+
 FORD PCOA
 ```{r}
 ford.dist.bc=vegdist(fordcounts[,4:80],method="bray")
@@ -157,6 +169,8 @@ plot(ford.bc.noneg.pcoa,type="none",xlab="Axis 1 (10%)",ylab="Axis 2 (7%)",main=
 text(ford.bc.noneg.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
 
 ```
+Interpretation: The variation explained is slightly better than for other sites and there are some distinguishable clusters. N+P+trace cluster tightly near the top of the ordination, showing that that treatment caused the community composition to change compared to the other treatments. Three of the four N+P treatments are unique compared to the rest of the treatments. 
+
 Maumee PCA
 ```{r}
 #MAUMEE
@@ -406,7 +420,7 @@ text(matrix(c(-0.95,0.15),nrow=1),labels="Stress=0.1125")
 
 ```
 
-RDA post treatment separation
+RDA Maumee
 ```{r}
 #new vegan update installed
 library(vegan)
