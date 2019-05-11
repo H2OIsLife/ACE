@@ -169,7 +169,7 @@ plot(ford.bc.noneg.pcoa,type="none",xlab="Axis 1 (10%)",ylab="Axis 2 (7%)",main=
 text(ford.bc.noneg.pcoa.scores[,1:2],labels=fordcounts$Treatment,col=colors)
 
 ```
-Interpretation: The variation explained is slightly better than for other sites and there are some distinguishable clusters. N+P+trace cluster tightly near the top of the ordination, showing that that treatment caused the community composition to change compared to the other treatments. Three of the four N+P treatments are unique compared to the rest of the treatments. 
+Interpretation: The variation explained is slightly better than for other sites and there are some distinguishable clusters. N+P+trace cluster tightly near the top of the ordination, showing that that treatment caused the community composition to change compared to the other treatments. Three of the four N+P treatments are unique compared to the rest of the treatments. Something about adding N+P and N+P+trace is influencing the communties (in all of the N+P+trace and 3/4 of the N+P replicates) so that their composotion is consistently, markedly different. 
 
 Maumee PCA
 ```{r}
@@ -215,6 +215,11 @@ plot(maum.hel.pca,type="none",xlab="PC1 (23%)",ylab="PC2 (14%)",main="Maumee PCA
 text(maum.hel.pca,labels=maumcounts$Treatment,col=colors)
 text(maum.hel.pca,display="species",col=8)
 ```
+Interpretation: While Euclidean is typically not the best distance to use for ecological data, the Euclidean PCA presents facinating results. Mougeotia, Microcystis and Melosira spp. stand out from the species cluster, which are the same species that are important in the Hellinger transformed RDA later on. Mougeotia spp. is associated with the trace metal treatment, while Melosira spp. seems to fall around a variety of P containing treatments. 
+
+The Hellinger transformed PCA tells a similar story. Melosira falls out near the P containing treatments, while Aulacoseira and Mougeotia come out near the trace and nitrogen treatments. There is a fair amount of variation explained by these PCA axes. 
+
+
 NORTH ERIE PCA
 ```{r}
 ne.cov=cov(necounts[,5:147])
@@ -246,6 +251,8 @@ plot(ne.hel.pca,type="none",xlab="PC1 (17%)",ylab="PC2 (13%)",main="North Erie P
 text(ne.hel.pca,labels=necounts$Treatment,col=colors)
 text(ne.hel.pca,display="species",col=8)
 ```
+Interpretation: Again, while Euclidean isn't the best distance to use, the Euclidean PCA shows Microcystis spp. being associated with trace metal only treatment. P and P+trace treatments cluster together, as do nitrogen containing treatments. The axes explain a substantial amount of variation. The hellinger transformed PCA does not show the same patterns. N+trace and N treatments cluster, and diagonally P contaning treatments cluster. Pediastrum spp. falls out inbetween these treatment semi-clusters, near a control and N+P+trace treatment. Though there are some patterns, I don't think this ordination does a good job demonstrating any strong patterns. There is a lot of overlap between treatments, with only low to moderate variation explained on the axes. 
+
 GREEN BAY PCA
 ```{r}
 gb.cov=cov(gbcounts[,5:52])
@@ -277,6 +284,8 @@ plot(gb.hel.pca,type="none",xlab="PC1 (22%)",ylab="PC2 (19%)",main="Green Bay PC
 text(gb.hel.pca,labels=gbcounts$Treatment,col=colors)
 text(gb.hel.pca,display="species",col=8)
 ```
+Interpretation: In the euclidean PCA, Aulacoseira and Microcystis spp. separate from the rest of the species, mainly near N and trace containing treatments. There is again a large proportion of variation explained, but no strong patterns displayed by this ordination. In the hellinger transformed PCA, Melosira spp. falls out from the rest near N+P, N+P+trace and N+trace  treatments, which makes me think that N is driving this pattern. There is still a lot of overlap of treatments in this PCA, and only moderate variation explained. 
+
 FORD PCA
 ```{r}
 ford.cov=cov(fordcounts[,4:80])
@@ -298,7 +307,6 @@ plot(ford.scores[,1:2],col=colors)
 plot(ford.pca,type="none",xlab="PC1 (65%)",ylab="PC2 (16%)",main="Ford PCA Euclidean")
 text(ford.pca,labels=fordcounts$Treatment,col=colors)
 text(ford.pca,display="species",col=8)
-###Microcystis comes out near N+trace, intersting
 
 # Hellinger distance-based PCA
 ford.hel=decostand(fordcounts[,4:80],method="hellinger")
@@ -309,6 +317,9 @@ plot(ford.hel.pca,type="none",xlab="PC1 (25%)",ylab="PC2 (21%)",main="Ford PCA H
 text(ford.hel.pca,labels=fordcounts$Treatment,col=colors)
 text(ford.hel.pca,display="species",col=8)
 ```
+Interpretation: In the euclidean PCA, Microcystis, Scenedesmus and Fragillaria spp. fall outside of the species cluster. Scenedesmus spp. is associated with P+trace treatments, while the other don't seems to be closely associated with a particular treatment. In the hellinger PCA, Fragillaria again stands out but not with a particular treatment. Cyclotello and Selenastrum appear to be associated with N+P and N+P+trace treatments. The N+P+trace and N+P treatments cluster tightly near the top of the ordination, away from the other treatments. This PCA explains moderate to above moderate variation, so this pattern may be genuinely meaningful. It will be interesting to see how diversity is influenced by these treatments. 
+
+
 #Non-metric Multidimensional Scaling (NMDS)
 
 MAUMEE
