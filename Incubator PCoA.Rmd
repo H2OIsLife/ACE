@@ -344,10 +344,13 @@ maum.bc.nmds$stress
 #0.1387 stress
 plot(maum.bc.nmds, type="none")
 text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
-text(matrix(c(0.3,0.45),nrow=1),labels="Stress=0.1387")
+text(matrix(c(0.3,0.16),nrow=1),labels="Stress=0.1387")
 
 
 ```
+Interpretation: The hellinger transformed NMDS is garbage. It's stress is nearly higher than acceptable (0.1938, when above 0.2 is bad), and there isn't a pattern in the treatment positions. The BC trandofrmed is better, with a stress of 0.1387 and most of the P containing treatments pulling away from the rest on the NMDS1 axis. Phosphorus may be shifting the community. 
+
+
 NORTH ERIE
 ```{r}
 # NMDS of Hellinger distance matrix
@@ -365,6 +368,7 @@ ne.hel.nmds.spwa=wascores(scores(ne.hel.nmds), necounts[,5:147])
 text(ne.hel.nmds.spwa[,1:2],labels=rownames(ne.hel.nmds.spwa),col=8)
 text(matrix(c(-1.1,0.4),nrow=1),labels="Stress=0.1970")
 
+
 # Bray-Curtis NMDS
 ne.dist.bc=vegdist(necounts[,5:147], method="bray")
 ne.bc.nmds=metaMDS(ne.dist.bc, k=2, trymax=100)
@@ -372,10 +376,13 @@ ne.bc.nmds$stress
 # 0.194 stress
 plot(ne.bc.nmds, type="none")
 text(ne.bc.nmds, labels=necounts$Treatment,col=colors)
-text(matrix(c(-0.6,0.17),nrow=1),labels="Stress=0.194")
+text(matrix(c(-0.4,0.17),nrow=1),labels="Stress=0.194")
 
 
 ```
+Interpretation: Both the hellinger and BC transformed NMDS's have terrible stresses, but interesting patterns emerging. N+P+trace treatments cluster strongly, and there generally seems to be a seperate between P treatments and N and trace treatments. The controls are all over- I'm not sure what that is indicative of. Perhaps the control, or lack of nutrient treatment showing no community pattern, and then the clustering of various treatments is overall indicative that there is an effect of nutrient treatments on the community. 
+
+
 GREEN BAY
 ```{r}
 # NMDS of Hellinger distance matrix
@@ -391,7 +398,7 @@ plot(gb.hel.nmds, type="none")
 text(gb.hel.nmds, labels=gbcounts$Treatment,col=colors)
 gb.hel.nmds.spwa=wascores(scores(gb.hel.nmds), gbcounts[,5:52])
 text(gb.hel.nmds.spwa[,1:2],labels=rownames(gb.hel.nmds.spwa),col=8)
-text(matrix(c(-0.9,0.2),nrow=1),labels="Stress=0.2104")
+text(matrix(c(-0.6,0.3),nrow=1),labels="Stress=0.2104")
 
 # Bray-Curtis NMDS
 gb.dist.bc=vegdist(gbcounts[,5:52], method="bray")
@@ -403,6 +410,8 @@ text(gb.bc.nmds, labels=gbcounts$Treatment,col=colors)
 text(matrix(c(-0.45,0.15),nrow=1),labels="Stress=0.2161")
 
 ```
+Intepretation: Both of these NMDSs are really bad- super high stress and no discernable patterns. 
+
 FORD
 ```{r}
 # NMDS of Hellinger distance matrix
@@ -417,8 +426,8 @@ goodness(ford.hel.nmds)
 plot(ford.hel.nmds, type="none")
 text(ford.hel.nmds, labels=fordcounts$Treatment,col=colors)
 ford.hel.nmds.spwa=wascores(scores(ford.hel.nmds), fordcounts[,4:80])
-text(ford.hel.nmds.spwa[,1:2],labels=rownames(ford.hel.nmds.spwa),col=8)
-text(matrix(c(-1.1,0.3),nrow=1),labels="Stress=0.1359")
+#text(ford.hel.nmds.spwa[,1:2],labels=rownames(ford.hel.nmds.spwa),col=8)
+text(matrix(c(-0.7,0.3),nrow=1),labels="Stress=0.1359")
 
 # Bray-Curtis NMDS
 ford.dist.bc=vegdist(fordcounts[,4:80], method="bray")
@@ -427,9 +436,10 @@ ford.bc.nmds$stress
 # 0.1125 stress
 plot(ford.bc.nmds, type="none")
 text(ford.bc.nmds, labels=fordcounts$Treatment,col=colors)
-text(matrix(c(-0.95,0.15),nrow=1),labels="Stress=0.1125")
+text(matrix(c(-0.5,0.18),nrow=1),labels="Stress=0.1125")
 
 ```
+Interpretation: Both of these NMDSs have great stress values and depict a very clear divergence in the N+P+trace treatment communities from the rest of the treatments. The rest of the treatments cluster, with replicates generally being close to one another. N+P and P+trace treatments cluster on the outer edge of the larger cluster that the rest of the treatments fall within. They may have been begining to separate/exhibit a community composition change during the experiment. Considering the experiment only last 72 hours, there is a chance the communities would have futher shifted if given more time. The reason we ended the experiment at 72 hours is that any longer other effects start to skew results, namely herbivory. 
 
 RDA Maumee
 ```{r}
@@ -438,54 +448,58 @@ library(vegan)
 
 #MAUMEE
 #add columns for treatments n,p,trace as y/n for analysis of interactive effects
+#deleted morphospecies 12 and renamed mougeotia to filamentous chlorophyte
+maumcounts<- read.csv("~/Desktop/USGS/Maumee Species Counts_no12.csv")
+maumcounts<-maumcounts[which(maumcounts$Treatment!='Chelex'& maumcounts$Treatment!='Initial'),]
+
 maumcounts$trace<-grepl("Trace", maumcounts$Treatment) 
 maumcounts$nitrogen<-grepl("N", maumcounts$Treatment) 
 maumcounts$phosphorus<-grepl("P", maumcounts$Treatment) 
 
 dim(maumcounts)
 names(maumcounts)
-maum.colsums=apply(maumcounts[,4:70],2,sum)
-maum.rowsums=apply(maumcounts[,4:70],1,sum)
+maum.colsums=apply(maumcounts[,4:69],2,sum)
+maum.rowsums=apply(maumcounts[,4:69],1,sum)
 min(maum.rowsums)
 min=min(maum.rowsums)
 n=nrow(maumcounts)
 
 # Rarefaction and Hellinger distance transformation
-maum.rare=rrarefy(maumcounts[,4:70],sample=min)
+maum.rare=rrarefy(maumcounts[,4:69],sample=min)
 str(maum.rare)
 maum.rare.hel1=cbind(maumcounts[,1:3],decostand(maum.rare,method="hellinger"))
-maum.stands.hel.dist=vegdist(maum.rare.hel[4:70],method="euclidean")
-maum.rare.hel=cbind(maumcounts[,71:73],maum.rare.hel1)
+#maum.stands.hel.dist=vegdist(maum.rare.hel[4:70],method="euclidean")
+maum.rare.hel=cbind(maumcounts[,70:72],maum.rare.hel1)
 str(maum.rare.hel)
 
 # RDA - Redundancy Analysis -Treatments apart
-rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:73]~maum.rare.hel$trace*maum.rare.hel$nitrogen*maum.rare.hel$phosphorus)
+rda.maum.rare.hel.all.treats=rda(maum.rare.hel[,7:72]~maum.rare.hel$trace*maum.rare.hel$nitrogen*maum.rare.hel$phosphorus)
 	summary(rda.maum.rare.hel.all.treats)
 	anova(rda.maum.rare.hel.all.treats)
 	RsquareAdj(rda.maum.rare.hel.all.treats)
+#overall significant with adjusted Rsquared of 0.1359
 	
 #recode treatments as numerical strings	
-#need 2 vectors for 3 factors?
+#need 2 vectors for 3 factors
 factors<-read.csv("~/Desktop/factors.csv")
 maum.rare.hel.fact<-cbind(factors, maum.rare.hel1)	
 dim(maum.rare.hel.fact)	
+str(maum.rare.hel.fact)
 	
 
 # If interactions exist, this method only provides marginal tests for the interaction terms
-rda.maum.rare.hel.all.xyz=rda(maum.rare.hel.fact[,12:78],maum.rare.hel.fact[,2:8])
+rda.maum.rare.hel.all.xyz=rda(maum.rare.hel.fact[,12:77],maum.rare.hel.fact[,2:7])
 	summary(rda.maum.rare.hel.all.xyz)
 	anova(rda.maum.rare.hel.all.xyz)
 	RsquareAdj(rda.maum.rare.hel.all.xyz)
-
+#slightly lower adj Rsquared
+	
+### Another method of getting a marginal test provides similar results. The conditional statements don't work with interactions. The programs are enforcing that statistical philosophy that you should test for interactions before testing for main effects... so to get around that, we have to use the X,Y,Z coding	
+	
 # Let's try testing this using Y,X,Z format
-rda.maum.rare.hel.factor=rda(maum.rare.hel.fact[,15:81],maum.rare.hel.fact[,c(5:8)],maum.rare.hel.fact[2:4])
-#what columns correspond to my factors?
+rda.maum.rare.hel.factor=rda(maum.rare.hel.fact[,12:77],maum.rare.hel.fact[,c(5:8)],maum.rare.hel.fact[2:4])
 	anova(rda.maum.rare.hel.factor)
-# This way the same interactions are quite significant		
-
-	
-### Another method of getting a marginal test provides similar results. The conditional statements don't work with interactions. The programs are enforcing that statistical philosophy that you should test for interactions before testing for main effects... so to get around that, we have to use the X,Y,Z coding
-	
+#not significant	
 
 	
 ###
@@ -493,6 +507,7 @@ rda.maum.rare.hel.factor=rda(maum.rare.hel.fact[,15:81],maum.rare.hel.fact[,c(5:
 # Better plots can be made if you extract scores as shown below
 rda.maum.rare.hel.all.spscores=scores(rda.maum.rare.hel.all.treats,display="sp",choices=c(1:17))
 head(rda.maum.rare.hel.all.spscores)
+head(rda.ne.rare.hel.all.spscores)
 rda.maum.rare.hel.all.lcscores=scores(rda.maum.rare.hel.all.treats,display="lc",choices=c(1:17))
 head(rda.maum.rare.hel.all.lcscores)
 rda.maum.rare.hel.all.wascores=scores(rda.maum.rare.hel.all.treats,display="wa",choices=c(1:17))
@@ -501,13 +516,13 @@ head(rda.maum.rare.hel.all.wascores)
 #weighted averages with P symbols
 #make P have a symbol diference
 symbols=ifelse(maum.rare.hel$phosphorus=="TRUE",1,ifelse(maum.rare.hel$phosphorus=="FALSE",2,0))
-plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.4%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
+plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.0%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
 points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
-text(0.2,0.6,"Rsquared adj.= 14.4%")
+text(0.4,0.7,"Rsquared adj.= 13.6%")
 # symbols N
-symbols=ifelse(maum.rare.hel$nitrogen=="TRUE",1,ifelse(maum.rare.hel$nitrogen=="FALSE",2,0))
-plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.4%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
-points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
+#symbols=ifelse(maum.rare.hel$nitrogen=="TRUE",1,ifelse(maum.rare.hel$nitrogen=="FALSE",2,0))
+#plot(rda.maum.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (12.4%)",ylab="RDA2 (8.3%)",main="Maumee Community, Hellinger transformed")
+#points(rda.maum.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
 
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.maum.rare.hel.all.treats)
@@ -515,46 +530,55 @@ goodness(rda.maum.rare.hel.all.treats)
 sp.rsqm=goodness(rda.maum.rare.hel.all.treats)
 sp.affm=rownames(sp.rsqm)[sp.rsqm[,2]>0.3]
 lm=length(na.omit(sp.affm))
-sp.aff.rowsm=match(na.omit(sp.affm)[1:l],rownames(rda.maum.rare.hel.all.spscores))
+sp.aff.rowsm=match(na.omit(sp.affm)[1:lm],rownames(rda.maum.rare.hel.all.spscores))
 text(rda.maum.rare.hel.all.spscores[sp.aff.rowsm,1:2],labels=rownames(rda.maum.rare.hel.all.spscores[sp.aff.rowsm,]))
+legend(0.57,0.13,legend=c("Control","Nitrogen","Phosphorus","Trace","N+Trace","P+Trace","N+P","N+P+Trace"),pch=c(2,2,1,2,2,1,1,1), col=c("red","orchid","forestgreen","navy","royalblue","limegreen","gold","grey0"),pt.cex=1, cex=0.8)
+
 
 ```
+Interpretation: The regular RDA with all factors is significant, but even with using the XYZ format I was unable to parse out variation for each interaction/main effect. The ordination depicts a separation in communities based on treatments containing P (circles) or not (triangles). A filamentous chlorphyte (likely Mougeotia spp.) and Microcystis spp. are associated with N and trace treatments, while Melosira spp. is associated with the P treatments. 
 
 NE RDA
 ```{r}
 #add columns for treatments n,p,trace as y/n for analysis of interactive effects
+#modified csv to remove dinobryon (was coming out as Inf in RDA) and renamed important taxa.
+#after re-run, have to delete more columns that are coming out with infs....
+
+necounts<- read.csv("~/Desktop/USGS/NEspeciescountsFORrda.csv")
+necounts<-necounts[which(necounts1$Treatment!='Chelex'& necounts$Treatment!='Initial'),]
+
 necounts$trace<-grepl("Trace", necounts$Treatment) 
 necounts$nitrogen<-grepl("N", necounts$Treatment) 
 necounts$phosphorus<-grepl("P", necounts$Treatment) 
 
 dim(necounts)
 names(necounts)
-ne.colsums=apply(necounts[,5:147],2,sum)
-ne.rowsums=apply(necounts[,5:147],1,sum)
+ne.colsums=apply(necounts[,5:143],2,sum)
+ne.rowsums=apply(necounts[,5:143],1,sum)
 min(ne.rowsums)
 min=min(ne.rowsums)
 n=nrow(necounts)
 
 # Rarefaction and Hellinger distance transformation
-ne.rare=rrarefy(necounts[,5:147],sample=min)
+ne.rare=rrarefy(necounts[,5:143],sample=min)
 str(ne.rare)
 ne.rare.hel1=cbind(necounts[,1:4],decostand(ne.rare,method="hellinger"))
 #ne.stands.hel.dist=vegdist(ne.rare.hel[5:147],method="euclidean")
-ne.rare.hel=cbind(necounts[,148:150],ne.rare.hel1)
+ne.rare.hel=cbind(necounts[,144:146],ne.rare.hel1)
 str(ne.rare.hel)
 
 # RDA - Redundancy Analysis -Treatments apart
-rda.ne.rare.hel.all.treats=rda(ne.rare.hel[,8:150]~ne.rare.hel$trace*ne.rare.hel$nitrogen*ne.rare.hel$phosphorus)
+rda.ne.rare.hel.all.treats=rda(ne.rare.hel[,8:146]~ne.rare.hel$trace*ne.rare.hel$nitrogen*ne.rare.hel$phosphorus)
 	summary(rda.ne.rare.hel.all.treats)
 	anova(rda.ne.rare.hel.all.treats)
 	RsquareAdj(rda.ne.rare.hel.all.treats)
-		anova(rda.ne.rare.hel.all.treats,by="terms")
-	anova(rda.ne.rare.hel.all.treats,by="margin")
+#adj. Rsquared is 0.1963
+#anova is significant
 	
 ### Another method of getting a marginal test provides similar results.
-rda.ne.rare.hel.int=rda(ne.rare.hel[,8:150] ~ ne.rare.hel$trace:ne.rare.hel$nitrogen:ne.rare.hel$phosphorus + Condition(ne.rare.hel$trace + ne.rare.hel$nitrogen +ne.rare.hel$phosphorus))
-	anova(rda.ne.rare.hel.int)
-	summary(rda.ne.rare.hel.int)
+#rda.ne.rare.hel.int=rda(ne.rare.hel[,8:146] ~ ne.rare.hel$trace:ne.rare.hel$nitrogen:ne.rare.hel$phosphorus + Condition(ne.rare.hel$trace + ne.rare.hel$nitrogen +ne.rare.hel$phosphorus))
+#	anova(rda.ne.rare.hel.int)
+#	summary(rda.ne.rare.hel.int)
 
 ###
 # Plots and getting some more species info
@@ -569,21 +593,27 @@ head(rda.ne.rare.hel.all.wascores)
 #weighted averages with P symbols
 #make P have a symbol diference
 symbols=ifelse(ne.rare.hel$phosphorus=="TRUE",1,ifelse(ne.rare.hel$phosphorus=="FALSE",2,0))
-plot(rda.ne.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (14.3%)",ylab="RDA2 (7.3%)",main="North Erie Community, Hellinger transformed")
+plot(rda.ne.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (14.9%)",ylab="RDA2 (7.6%)",main="North Erie Community, Hellinger transformed")
 points(rda.ne.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
-text(0.3,-0.8,"Rsquared adj.= 20.1%")
+text(-0.3,0.85,"Rsquared adj.= 20.3%")
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.ne.rare.hel.all.treats)
 
 sp.rsqne=goodness(rda.ne.rare.hel.all.treats)
-sp.affne=rownames(sp.rsqne)[sp.rsqne[,2]>0.4]
+sp.affne=rownames(sp.rsqne)[sp.rsqne[,2]>0.50]
 lne=length(na.omit(sp.affne))
-sp.aff.rowsne=match(na.omit(sp.affne)[1:l],rownames(rda.ne.rare.hel.all.spscores))
-text(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,1:2],labels=rownames(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,]))
+sp.aff.rowsne=match(na.omit(sp.affne)[1:lne],rownames(rda.ne.rare.hel.all.spscores))
+text(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,1:2],labels=rownames(rda.ne.rare.hel.all.spscores[sp.aff.rowsne,]),cex=0.5)
+legend(0.27,0.96,legend=c("Control","Nitrogen","Phosphorus","Trace","N+Trace","P+Trace","N+P","N+P+Trace"),pch=c(2,2,1,2,2,1,1,1), col=c("red","orchid","forestgreen","navy","royalblue","limegreen","gold","grey0"),pt.cex=1, cex=0.7)
+
 ```
+Interpreation: I didn't bother with the XYZ format for sites other than Maumee because I still wasn't able to get the variation explained that I was looking for. This ordination is super neat!! It demonstrates a clear community shift from the control with N, Trace, and N+trace treatments clustering and Microcystis being associated. It also shows N+P, P+trace and P treatments clustering with filamentous chlorophytes and centric diatom associations. It also shows N+P+trace being different from everything else! Neat! The adj. Rsquared is higher for this RDA as well. 
+
+
 GREEN BAY RDA
 ```{r}
 #add columns for treatments n,p,trace as y/n for analysis of interactive effects
+
 gbcounts$trace<-grepl("Trace", gbcounts$Treatment) 
 gbcounts$nitrogen<-grepl("N", gbcounts$Treatment) 
 gbcounts$phosphorus<-grepl("P", gbcounts$Treatment) 
@@ -609,13 +639,13 @@ rda.gb.rare.hel.all.treats=rda(gb.rare.hel[,8:55]~gb.rare.hel$trace*gb.rare.hel$
 	summary(rda.gb.rare.hel.all.treats)
 	anova(rda.gb.rare.hel.all.treats)
 	RsquareAdj(rda.gb.rare.hel.all.treats)
-		anova(rda.gb.rare.hel.all.treats,by="terms")
-	anova(rda.gb.rare.hel.all.treats,by="margin")
+#anova significant, adj. rsquared 0.103
+	
 	
 ### Another method of getting a marginal test provides similar results.
-rda.gb.rare.hel.int=rda(gb.rare.hel[,8:55] ~ gb.rare.hel$trace:gb.rare.hel$nitrogen:gb.rare.hel$phosphorus + Condition(gb.rare.hel$trace + gb.rare.hel$nitrogen +gb.rare.hel$phosphorus))
-	anova(rda.gb.rare.hel.int)
-	summary(rda.gb.rare.hel.int)
+#rda.gb.rare.hel.int=rda(gb.rare.hel[,8:55] ~ gb.rare.hel$trace:gb.rare.hel$nitrogen:gb.rare.hel$phosphorus + Condition(gb.rare.hel$trace + gb.rare.hel$nitrogen +gb.rare.hel$phosphorus))
+#	anova(rda.gb.rare.hel.int)
+#	summary(rda.gb.rare.hel.int)
 
 ###
 # Plots and getting some more species info
@@ -632,51 +662,60 @@ head(rda.gb.rare.hel.all.wascores)
 symbols=ifelse(gb.rare.hel$phosphorus=="TRUE",1,ifelse(gb.rare.hel$phosphorus=="FALSE",2,0))
 plot(rda.gb.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (10.3%)",ylab="RDA2 (7.6%)",main="Green Bay Community, Hellinger transformed")
 points(rda.gb.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
-text(0.2,-0.5,"Rsquared adj.= 9.8%")
+text(0.25,0.69,"Rsquared adj.= 9.8%",cex=1)
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.gb.rare.hel.all.treats)
 
 sp.rsqgb=goodness(rda.gb.rare.hel.all.treats)
-sp.affgb=rownames(sp.rsqgb)[sp.rsqgb[,2]>0.3]
+sp.affgb=rownames(sp.rsqgb)[sp.rsqgb[,2]>0.2]
 lgb=length(na.omit(sp.affgb))
 sp.aff.rowsgb=match(na.omit(sp.affgb)[1:lgb],rownames(rda.gb.rare.hel.all.spscores))
-text(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,1:2],labels=rownames(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,]))
+text(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,1:2],labels=rownames(rda.gb.rare.hel.all.spscores[sp.aff.rowsgb,]),cex=0.8)
+legend(0.57,0.75,legend=c("Control","Nitrogen","Phosphorus","Trace","N+Trace","P+Trace","N+P","N+P+Trace"),pch=c(2,2,1,2,2,1,1,1), col=c("red","orchid","forestgreen","navy","royalblue","limegreen","gold","grey0"),pt.cex=1, cex=0.6)
 
 ```
+Interpretation: Even though Microsystis is important in the community, it does not explain variation in the RDA. Perhaps this is due to microcystis being conistent throughout all of the treatments. This RDA isn't as good as the last two. It has a lower variation explained with an adjusted rsquared of only 9.8%. The treatments seperate, but not as clearly as other sites did. I won't give this RDA very much cadence, even though the anova is significant. 
+
 FORD RDA
 ```{r}
 #add columns for treatments n,p,trace as y/n for analysis of interactive effects
+#removed morphospecies 8 (inf) and renames morphospecies 41- chlorophyte
+fordcounts<- read.csv("~/Desktop/USGS/Ford Compilation_species_RDA.csv")
+fordcounts<-fordcounts[which(fordcounts1$Treatment!='Chelex'& fordcounts$Treatment!='Initial'),]
+
+
 fordcounts$trace<-grepl("Trace", fordcounts$Treatment) 
 fordcounts$nitrogen<-grepl("N", fordcounts$Treatment) 
 fordcounts$phosphorus<-grepl("P", fordcounts$Treatment) 
 
 dim(fordcounts)
 names(fordcounts)
-ford.colsums=apply(fordcounts[,4:80],2,sum)
-ford.rowsums=apply(fordcounts[,4:80],1,sum)
+ford.colsums=apply(fordcounts[,4:79],2,sum)
+ford.rowsums=apply(fordcounts[,4:79],1,sum)
 min(ford.rowsums)
 min=min(ford.rowsums)
 n=nrow(fordcounts)
 
 # Rarefaction and Hellinger distance transformation
-ford.rare=rrarefy(fordcounts[,4:80],sample=min)
+ford.rare=rrarefy(fordcounts[,4:79],sample=min)
 str(ford.rare)
 ford.rare.hel1=cbind(fordcounts[,1:3],decostand(ford.rare,method="hellinger"))
 #ne.stands.hel.dist=vegdist(ne.rare.hel[5:147],method="euclidean")
-ford.rare.hel=cbind(fordcounts[,81:83],ford.rare.hel1)
+ford.rare.hel=cbind(fordcounts[,80:82],ford.rare.hel1)
 str(ford.rare.hel)
 
 # RDA - Redundancy Analysis -Treatments apart
-rda.ford.rare.hel.all.treats=rda(ford.rare.hel[,7:83]~ford.rare.hel$trace*ford.rare.hel$nitrogen*ford.rare.hel$phosphorus)
+rda.ford.rare.hel.all.treats=rda(ford.rare.hel[,7:82]~ford.rare.hel$trace*ford.rare.hel$nitrogen*ford.rare.hel$phosphorus)
 	summary(rda.ford.rare.hel.all.treats)
 	anova(rda.ford.rare.hel.all.treats)
-	RsquareAdj(rda.ford.rare.hel.all.treats)
-		anova(rda.ford.rare.hel.all.treats,by="terms")
-		
+		RsquareAdj(rda.ford.rare.hel.all.treats)
+#anova is significant, Rsquared is very high at 32.7%
+	
+	
 ### Another method of getting a marginal test provides similar results.
-rda.ford.rare.hel.int=rda(ford.rare.hel[,7:83] ~ ford.rare.hel$trace:ford.rare.hel$nitrogen:ford.rare.hel$phosphorus + Condition(ford.rare.hel$trace + ford.rare.hel$nitrogen +ford.rare.hel$phosphorus))
-	anova(rda.ford.rare.hel.int)
-	summary(rda.ford.rare.hel.int)
+#rda.ford.rare.hel.int=rda(ford.rare.hel[,7:83] ~ ford.rare.hel$trace:ford.rare.hel$nitrogen:ford.rare.hel$phosphorus + Condition(ford.rare.hel$trace + ford.rare.hel$nitrogen +ford.rare.hel$phosphorus))
+#	anova(rda.ford.rare.hel.int)
+#	summary(rda.ford.rare.hel.int)
 	
 	
 #rerun with more powerful test that separates out interactions and individual treatment effects--- different syntax
@@ -693,17 +732,18 @@ head(rda.ford.rare.hel.all.wascores)
 #weighted averages with P symbols
 #make P have a symbol diference
 symbols=ifelse(ford.rare.hel$phosphorus=="TRUE",1,ifelse(ford.rare.hel$phosphorus=="FALSE",2,0))
-plot(rda.ford.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (18.9%)",ylab="RDA2 (12.3%)",main="Ford Community, Hellinger transformed")
+plot(rda.ford.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (18.7%)",ylab="RDA2 (12.3%)",main="Ford Community, Hellinger transformed")
 points(rda.ford.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
-text(-0.5,0.5,"Rsquared adj.= 33.6%")
+text(-0.5,0.6,"Rsquared adj.= 32.7%")
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.ford.rare.hel.all.treats)
 
 sp.rsq=goodness(rda.ford.rare.hel.all.treats)
-sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.4]
+sp.aff=rownames(sp.rsq)[sp.rsq[,2]>0.555]
 l=length(na.omit(sp.aff))
 sp.aff.rows=match(na.omit(sp.aff)[1:l],rownames(rda.ford.rare.hel.all.spscores))
-text(rda.ford.rare.hel.all.spscores[sp.aff.rows,1:2],labels=rownames(rda.ford.rare.hel.all.spscores[sp.aff.rows,]))
+text(rda.ford.rare.hel.all.spscores[sp.aff.rows,1:2],labels=rownames(rda.ford.rare.hel.all.spscores[sp.aff.rows,]),cex=0.8)
+legend(-0.76,-0.11,legend=c("Control","Nitrogen","Phosphorus","Trace","N+Trace","P+Trace","N+P","N+P+Trace"),pch=c(2,2,1,2,2,1,1,1), col=c("red","orchid","forestgreen","navy","royalblue","limegreen","gold","grey0"),pt.cex=1, cex=0.6)
+
 ```
-
-
+Interpretation: This RDA has a significant anova and the highest adjusted Rsquared for all of my sites at 32.7%. Treatments separate out but not in explicit patterns. N+P+trace diverges strongly from the other treatments. Microcystis is associated with trace and P treatments here, but is also close to N.. it has been associated with N and trace at the other sites. Chlorophytes and diatoms explain large amounts of variation and are near the N+P treatment, which also is separate from other treatments. 
