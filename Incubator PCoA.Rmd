@@ -507,7 +507,6 @@ rda.maum.rare.hel.factor=rda(maum.rare.hel.fact[,12:77],maum.rare.hel.fact[,c(5:
 # Better plots can be made if you extract scores as shown below
 rda.maum.rare.hel.all.spscores=scores(rda.maum.rare.hel.all.treats,display="sp",choices=c(1:17))
 head(rda.maum.rare.hel.all.spscores)
-head(rda.ne.rare.hel.all.spscores)
 rda.maum.rare.hel.all.lcscores=scores(rda.maum.rare.hel.all.treats,display="lc",choices=c(1:17))
 head(rda.maum.rare.hel.all.lcscores)
 rda.maum.rare.hel.all.wascores=scores(rda.maum.rare.hel.all.treats,display="wa",choices=c(1:17))
