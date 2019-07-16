@@ -3,7 +3,6 @@ title: "Incubator PCoA, PCA, NMDS, RDA"
 author: "Jordyn Stoll"
 date: "March 20-May 12, 2019"
 output:
-  pdf_document: default
   html_document: default
 ---
 ###Background
@@ -334,7 +333,7 @@ maum.hel.nmds$stress
 stressplot(maum.hel.nmds)
 #stress is 0.1938
 goodness(maum.hel.nmds)
-plot(maum.hel.nmds, type="none")
+plot(maum.hel.nmds, type="none", main="Maumee Bay Hellinger NMDS")
 text(maum.hel.nmds, labels=maumcounts$Treatment,col=colors)
 maum.hel.nmds.spwa=wascores(scores(maum.hel.nmds), maumcounts[,4:70])
 text(maum.hel.nmds.spwa[,1:2],labels=rownames(maum.hel.nmds.spwa),col=8)
@@ -344,7 +343,7 @@ maum.dist.bc=vegdist(maumcounts[,4:70], method="bray")
 maum.bc.nmds=metaMDS(maum.dist.bc, k=2, trymax=100)
 maum.bc.nmds$stress
 #0.1387 stress
-plot(maum.bc.nmds, type="none")
+plot(maum.bc.nmds, type="none", main="Maumee Bay Bray Curtis NMDS")
 text(maum.bc.nmds, labels=maumcounts$Treatment,col=colors)
 text(matrix(c(0.3,0.16),nrow=1),labels="Stress=0.1387")
 
@@ -364,7 +363,7 @@ ne.hel.nmds$stress
 stressplot(ne.hel.nmds)
 #stress is 0.1970
 goodness(ne.hel.nmds)
-plot(ne.hel.nmds, type="none")
+plot(ne.hel.nmds, type="none", main="North Erie Hellinger NMDS")
 text(ne.hel.nmds, labels=necounts$Treatment,col=colors)
 ne.hel.nmds.spwa=wascores(scores(ne.hel.nmds), necounts[,5:147])
 text(ne.hel.nmds.spwa[,1:2],labels=rownames(ne.hel.nmds.spwa),col=8)
@@ -376,7 +375,7 @@ ne.dist.bc=vegdist(necounts[,5:147], method="bray")
 ne.bc.nmds=metaMDS(ne.dist.bc, k=2, trymax=100)
 ne.bc.nmds$stress
 # 0.194 stress
-plot(ne.bc.nmds, type="none")
+plot(ne.bc.nmds, type="none", main="North Erie Bray Curtis NMDS")
 text(ne.bc.nmds, labels=necounts$Treatment,col=colors)
 text(matrix(c(-0.4,0.17),nrow=1),labels="Stress=0.194")
 
@@ -396,7 +395,7 @@ gb.hel.nmds$stress
 stressplot(gb.hel.nmds)
 #stress is 0.2104
 goodness(gb.hel.nmds)
-plot(gb.hel.nmds, type="none")
+plot(gb.hel.nmds, type="none", main="Green Bay Hellinger NMDS")
 text(gb.hel.nmds, labels=gbcounts$Treatment,col=colors)
 gb.hel.nmds.spwa=wascores(scores(gb.hel.nmds), gbcounts[,5:52])
 text(gb.hel.nmds.spwa[,1:2],labels=rownames(gb.hel.nmds.spwa),col=8)
@@ -407,7 +406,7 @@ gb.dist.bc=vegdist(gbcounts[,5:52], method="bray")
 gb.bc.nmds=metaMDS(gb.dist.bc, k=2, trymax=100)
 gb.bc.nmds$stress
 # 0.2161 stress
-plot(gb.bc.nmds, type="none")
+plot(gb.bc.nmds, type="none", main="Green Bay Bray Curtis NMDS")
 text(gb.bc.nmds, labels=gbcounts$Treatment,col=colors)
 text(matrix(c(-0.45,0.15),nrow=1),labels="Stress=0.2161")
 
@@ -425,7 +424,7 @@ ford.hel.nmds$stress
 stressplot(ford.hel.nmds)
 #stress is 0.1359
 goodness(ford.hel.nmds)
-plot(ford.hel.nmds, type="none")
+plot(ford.hel.nmds, type="none", main="Ford Hellinger NMDS")
 text(ford.hel.nmds, labels=fordcounts$Treatment,col=colors)
 ford.hel.nmds.spwa=wascores(scores(ford.hel.nmds), fordcounts[,4:80])
 #text(ford.hel.nmds.spwa[,1:2],labels=rownames(ford.hel.nmds.spwa),col=8)
@@ -436,7 +435,7 @@ ford.dist.bc=vegdist(fordcounts[,4:80], method="bray")
 ford.bc.nmds=metaMDS(ford.dist.bc, k=2, trymax=100)
 ford.bc.nmds$stress
 # 0.1125 stress
-plot(ford.bc.nmds, type="none")
+plot(ford.bc.nmds, type="none", main="Ford Bray Curtis NMDS")
 text(ford.bc.nmds, labels=fordcounts$Treatment,col=colors)
 text(matrix(c(-0.5,0.18),nrow=1),labels="Stress=0.1125")
 

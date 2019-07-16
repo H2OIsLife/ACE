@@ -9,16 +9,28 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #SPECIES COUNTS
-maumee<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
-str(maumee)
-nerie<-read.csv("~/Desktop/USGS/NEspeciescounts .csv")
-str(nerie)
-ford<-read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
-str(ford)
-greenbay<-read.csv("~/Desktop/USGS/GB species counts.csv")
-str(greenbay)
-#DIVISONS COUNTS
+maumee1<- read.csv("~/Desktop/USGS/Maumee Species Counts.csv")
+str(maumee1)
+nerie1<-read.csv("~/Desktop/USGS/NEspeciescounts .csv")
+str(nerie1)
+ford1<-read.csv("~/Desktop/USGS/Ford Compilation - species.csv")
+str(ford1)
+greenbay1<-read.csv("~/Desktop/USGS/GB species counts.csv")
+str(greenbay1)
 
+#remove initial and chelex treatments
+maumee<- maumee1[which(maumee1$Treatment!='Chelex'& maumee1$Treatment!='Initial'),]
+#order treatments in a logical way
+maumee$Treatment <- factor(maumee$Treatment,levels=c("Control","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+nerie<- nerie1[which(nerie1$Treatment!='Chelex'& nerie1$Treatment!='Initial'),]
+nerie$Treatment <- factor(nerie$Treatment,levels=c("Control","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+ford<- ford1[which(ford1$Treatment!='Chelex'& ford1$Treatment!='Initial'),]
+ford$Treatment <- factor(ford$Treatment,levels=c("Control","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+
+greenbay<- greenbay1[which(greenbay1$Treatment!='Chelex'& greenbay1$Treatment!='Initial'),]
+greenbay$Treatment <- factor(greenbay$Treatment,levels=c("Control","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
 
 ```
 Create a loop to transform from counts to percent abundance
@@ -73,33 +85,33 @@ for (i in 4:80){
 #Plot Microcystis Abundance to Treatment
 ```{r}
 library(plyr)
+library(RColorBrewer)
+display.brewer.all()
 #MAUMEE
-maumee$Treatment <- factor(maumee$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
-
 summarystatsMicro<- ddply(maumee, "Treatment", summarize,
                      Microcystis.spp..mean=mean(Microcystis.spp..prop),
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 library(ggplot2)
-Microsummaryplot<-ggplot(summarystatsMicro, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
-  geom_bar(stat='identity',color='black')+
+library(modelr)
+Microsummaryplot<-ggplot(summarystatsMicro, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+ geom_ref_line(h=0.61,size=1,colour="black")+
+  geom_bar(stat='identity',color='black')+ 
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
   ggtitle("Maumee Microcystis spp. % Abundance")
 
+
 Microsummaryplot
 
-
 #NORTH ERIE
-nerie$Treatment <- factor(nerie$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
 
 summarystatsMicro1<- ddply(nerie, "Treatment", summarize,
                      Microcystis.spp..mean=mean(Microcystis.spp..prop),
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
-  geom_bar(stat='identity',color='black')+
+Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+  geom_bar(stat='identity',color='black')+ geom_ref_line(h=0.21,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
   ggtitle("North Erie Microcystis spp. % Abundance")
@@ -107,17 +119,14 @@ Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..me
 Microsummaryplot1
 
 #GREEN BAY
-greenbay$Treatment <- factor(greenbay$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
-
-greenbay$Microcystis.spp..prop
 
 summarystatsMicro2<- ddply(greenbay, "Treatment", summarize,
                      Microcystis.spp..mean=mean(Microcystis.spp..prop),
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot2<-ggplot(summarystatsMicro2, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
-  geom_bar(stat='identity',color='black')+
+Microsummaryplot2<-ggplot(summarystatsMicro2, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+  geom_bar(stat='identity',color='black')+geom_ref_line(h=0.60,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
   ggtitle("Green Bay Microcystis spp. % Abundance")
@@ -126,16 +135,14 @@ Microsummaryplot2
 
 
 #FORD
-ford$Treatment <- factor(ford$Treatment,levels=c("Initial","Control","Nitrogen","Phosphorus", "Trace","N+P","N+Trace","P+Trace","N+P+Trace","Chelex"))
-
 
 summarystatsMicro3<- ddply(ford, "Treatment", summarize,
                      Microcystis.spp..mean=mean(Microcystis.spp..prop),
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ 
-  geom_bar(stat='identity',color='black')+
+Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+  geom_bar(stat='identity',color='black')+geom_ref_line(h=0.01,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
   ggtitle("Ford Microcystis spp. % Abundance")
@@ -143,27 +150,112 @@ Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..me
 Microsummaryplot3
 
 ```
+##% abundance stats
 
-
-
-```
-
-
-
-
-
-
-
-
-
-
-To look at the effect of the nutrient treatments on Microcystis abundance
+MAUMEE BAY % ABUNDANCE 
 ```{r}
+#ONE WAY ANOVA
 plot(Microcystis.spp..prop~Treatment, data=maumee, main='Microcystis Abundance to Nutrient Treatment', ylab='Microcystis % Abundance',las=3)
-MicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=MaumeeMesoComData)
+MicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=maumee)
 shapiro.test(resid(MicrocystisANOVA))
 par(mfrow=c(1,2))
 plot(MicrocystisANOVA, which=c(1,2))
 summary(MicrocystisANOVA)
 TukeyHSD(MicrocystisANOVA)
+#NPTRACE-CONTROL, NPTRACE-NTRACE significant
+
+#ADD SEPARATE TREATMENT COLUMNS FOR INTERACTION ANALYSIS
+maumee$trace<-grepl("Trace", maumee$Treatment) 
+maumee$nitrogen<-grepl("N", maumee$Treatment) 
+maumee$phosphorus<-grepl("P", maumee$Treatment) 
+
+#MULTIWAY ANOVA
+MicrocystisMANOVA<-aov(Microcystis.spp.~trace*nitrogen*phosphorus, data=maumee)
+shapiro.test(resid(MicrocystisMANOVA))
+par(mfrow=c(1,2))
+plot(MicrocystisMANOVA, which=c(1,2))
+summary(MicrocystisMANOVA)
+#P, TNP significant
 ```
+NORTH ERIE % ABUNDANCE STATS
+```{r}
+#ONE WAY ANOVA
+par(mfrow=c(1,1))
+plot(Microcystis.spp..prop~Treatment, data=nerie, main='Microcystis Abundance to Nutrient Treatment', ylab='Microcystis % Abundance',las=3)
+NEMicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=nerie)
+shapiro.test(resid(NEMicrocystisANOVA))
+par(mfrow=c(1,2))
+plot(NEMicrocystisANOVA, which=c(1,2))
+summary(NEMicrocystisANOVA)
+TukeyHSD(NEMicrocystisANOVA)
+#NP-N, NPT-N, NP-T, NPT-T, NPT-NT
+#N, T, and NT yield higher % abundance of Microcystis, so Microcystis is outcompeting other taxa in the community when given N/T. When given P, Microcystis is less competitive. 
+
+#ADD SEPARATE TREATMENT COLUMNS FOR INTERACTION ANALYSIS
+nerie$trace<-grepl("Trace", nerie$Treatment) 
+nerie$nitrogen<-grepl("N", nerie$Treatment) 
+nerie$phosphorus<-grepl("P", nerie$Treatment) 
+
+#MULTIWAY ANOVA
+NEMicrocystisMANOVA<-aov(Microcystis.spp.~trace*nitrogen*phosphorus, data=nerie)
+shapiro.test(resid(NEMicrocystisMANOVA))
+par(mfrow=c(1,2))
+plot(NEMicrocystisMANOVA, which=c(1,2))
+summary(NEMicrocystisMANOVA)
+#P, T-N, N-P
+#What does it mean for these interactions to be significant? 
+
+```
+GREEN BAY % ABUNDANCE
+```{r}
+#ONE WAY ANOVA
+par(mfrow=c(1,1))
+plot(Microcystis.spp..prop~Treatment, data=greenbay, main='Microcystis Abundance to Nutrient Treatment', ylab='Microcystis % Abundance',las=3)
+GBMicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=greenbay)
+shapiro.test(resid(GBMicrocystisANOVA))
+par(mfrow=c(1,2))
+plot(GBMicrocystisANOVA, which=c(1,2))
+summary(GBMicrocystisANOVA)
+#not significant
+
+#ADD SEPARATE TREATMENT COLUMNS FOR INTERACTION ANALYSIS
+greenbay$trace<-grepl("Trace", greenbay$Treatment) 
+greenbay$nitrogen<-grepl("N", greenbay$Treatment) 
+greenbay$phosphorus<-grepl("P", greenbay$Treatment) 
+
+#MULTIWAY ANOVA
+GBMicrocystisMANOVA<-aov(Microcystis.spp.~trace*nitrogen*phosphorus, data=greenbay)
+shapiro.test(resid(GBMicrocystisMANOVA))
+par(mfrow=c(1,2))
+plot(GBMicrocystisMANOVA, which=c(1,2))
+summary(GBMicrocystisMANOVA)
+#not significant
+```
+FORD % abundance
+```{r}
+#ONE WAY ANOVA
+par(mfrow=c(1,1))
+plot(Microcystis.spp..prop~Treatment, data=ford, main='Microcystis Abundance to Nutrient Treatment', ylab='Microcystis % Abundance',las=3)
+FMicrocystisANOVA<-aov(Microcystis.spp.~Treatment, data=ford)
+shapiro.test(resid(FMicrocystisANOVA))
+par(mfrow=c(1,2))
+plot(FMicrocystisANOVA, which=c(1,2))
+summary(FMicrocystisANOVA)
+TukeyHSD(FMicrocystisANOVA)
+#NPT-N, NPT-P, NPT-T, NPT-NT
+# single element additions support Microcystis, while combinations support other community memebers (decreasing the competitiveness of Microcystis)
+
+#ADD SEPARATE TREATMENT COLUMNS FOR INTERACTION ANALYSIS
+ford$trace<-grepl("Trace", ford$Treatment) 
+ford$nitrogen<-grepl("N", ford$Treatment) 
+ford$phosphorus<-grepl("P", ford$Treatment) 
+
+#MULTIWAY ANOVA
+FMicrocystisMANOVA<-aov(Microcystis.spp.~trace*nitrogen*phosphorus, data=ford)
+shapiro.test(resid(FMicrocystisMANOVA))
+par(mfrow=c(1,2))
+plot(FMicrocystisMANOVA, which=c(1,2))
+summary(FMicrocystisMANOVA)
+#T-P, N-P
+```
+
