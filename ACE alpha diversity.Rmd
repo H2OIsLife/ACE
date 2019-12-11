@@ -100,7 +100,7 @@ maum.hills=cbind(maumee[,c(2,3)],
 	apply(renyi.indperms[,seq(from=4,to=maxperm,by=4)],1,mean))
 colnames(maum.hills)=c("TREATMENT","# COUNTED","H0","H1","H2","HInf")
 maum.hills
-# Why are richness Hill nubers not whole numbers??
+# Why are richness Hill numbers not whole numbers??
 #add columns for treatments n,p,trace as y/n for analysis of interactive effects
 maum.hills$trace<-grepl("Trace", maum.hills$TREATMENT) 
 maum.hills$nitrogen<-grepl("N", maum.hills$TREATMENT) 
@@ -174,15 +174,15 @@ TukeyHSD(maumeeBPaov2)
 ```
 Graphing results
 ```{r}
-par(mfrow=c(1,1))
+par(mfrow=c(2,2))
 #order treatments in a logical way
 maum.hills$TREATMENT <- factor(maum.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
 
 #richness
 boxplot(H0~TREATMENT, data=maum.hills,
         main="Maumee Richness",
-        xlab="Treatment",
-        ylab="species richness",
+        xlab="",
+        ylab="Species Richness",
         las=2,
         col=c("gray76","gray76","darkturquoise","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
 legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
@@ -190,7 +190,7 @@ legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("dar
 #Shannon
 boxplot(H1~TREATMENT, data=maum.hills,
         main="Maumee Shannon Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Shannon Index",
         las=2,
         col=c("gray76","gray76","darkturquoise","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
@@ -199,7 +199,7 @@ legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("dar
 #Simpson
 boxplot(H2~TREATMENT, data=maum.hills,
         main="Maumee Simpson Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Simpson Index",
         las=2,
         col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
@@ -207,7 +207,7 @@ legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("dar
 #Berger Parker
 boxplot(HInf~TREATMENT, data=maum.hills,
         main="Maumee Berger Parker Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Berger Parker Index",
         las=2,
         col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
@@ -331,18 +331,76 @@ plot(neSHANNONaov,which=c(1,2), main="NE Shannon Normality")
 summary(neSHANNONaov)
 #P significant
 
+#Exponential Simpson Entropy (Simpson Hill)
+neSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=ne.hills)
+shapiro.test(resid(neSIMPSONaov))
+par(mfrow=c(1,2))
+plot(neSIMPSONaov,which=c(1,2), main="NE SIMPSON Normality")
+summary(neSIMPSONaov)
+#P significant
+
+#Exponential BP Entropy (Berger Parker Hill)
+neBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=ne.hills)
+shapiro.test(resid(neBPaov))
+par(mfrow=c(1,2))
+plot(neBPaov,which=c(1,2), main="NE BP Normality")
+summary(neBPaov)
+#P significant
+
+#Exponential Richness (Richness Hill)
+neRICHaov<-aov(H0~nitrogen*phosphorus*trace, data=ne.hills)
+shapiro.test(resid(neRICHaov))
+par(mfrow=c(1,2))
+plot(neRICHaov,which=c(1,2), main="NE RICH Normality")
+summary(neRICHaov)
+# NO significant
+
+#create a 4 panel graph of all hill number results
+par(mfrow=c(2,2))
+#order treatments
 ne.hills$TREATMENT <- factor(ne.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
 
-ne.hills$TREATMENT
-par(mfrow=c(1,1))
+
+#richness
+boxplot(H0~TREATMENT, data=ne.hills,
+        main="North Erie Richness",
+        xlab="",
+        ylab="Species Richness",
+        las=2,
+        col=c("gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+#Shannon
 boxplot(H1~TREATMENT, data=ne.hills,
         main="North Erie Shannon Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Shannon Index",
         las=2,
         col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
 legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
 
+#Simpson
+boxplot(H2~TREATMENT, data=ne.hills,
+        main="North Erie Simpson Index",
+        xlab="",
+        ylab="Simpson Index",
+        las=2,
+        col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+#Berger Parker
+boxplot(HInf~TREATMENT, data=ne.hills,
+        main="North Erie Berger Parker Index",
+        xlab="",
+        ylab="Berger Parker Index",
+        las=2,
+        col=c("gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76"))
+legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+
+ne.hills$TREATMENT
+par(mfrow=c(1,1))
+
+#Other graphs to compare specific treatments
 boxplot(H0~phosphorus, data=ne.hills, main="North Erie P on Richness")
 boxplot(H0~nitrogen, data=ne.hills, main="North Erie N on Richness")
 boxplot(H0~trace, data=ne.hills, main="North Erie Metals on Richness")
@@ -378,6 +436,14 @@ gb.hills$trace<-grepl("Trace", gb.hills$TREATMENT)
 gb.hills$nitrogen<-grepl("N", gb.hills$TREATMENT) 
 gb.hills$phosphorus<-grepl("P", gb.hills$TREATMENT) 
 
+#Exponential Richness Entropy (Richness Hill)
+gbRICHaov<-aov(H0~nitrogen*phosphorus*trace, data=gb.hills)
+shapiro.test(resid(gbRICHaov))
+par(mfrow=c(1,2))
+plot(gbRICHaov,which=c(1,2), main="GB Rich Normality")
+summary(gbRICHaov)
+#NP, NPT significant
+
 #Exponential Shannon Entropy (Shannon Hill)
 gbSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=gb.hills)
 shapiro.test(resid(gbSHANNONaov))
@@ -386,16 +452,64 @@ plot(gbSHANNONaov,which=c(1,2), main="GB Shannon Normality")
 summary(gbSHANNONaov)
 #N significant
 
-gb.hills$TREATMENT <- factor(gb.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+#Exponential Simpson Entropy (Simpson Hill)
+gbSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=gb.hills)
+shapiro.test(resid(gbSIMPSONaov))
+par(mfrow=c(1,2))
+plot(gbSIMPSONaov,which=c(1,2), main="GB SIMPSON Normality")
+summary(gbSIMPSONaov)
+#N significant
 
-par(mfrow=c(1,1))
+#Exponential BP Entropy (BP Hill)
+gbBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=gb.hills)
+shapiro.test(resid(gbBPaov))
+par(mfrow=c(1,2))
+plot(gbBPaov,which=c(1,2), main="GB BP Normality")
+summary(gbBPaov)
+#NO significant
+
+#order treatments
+gb.hills$TREATMENT <- factor(gb.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+#4 panel plot
+par(mfrow=c(2,2))
+
+#richness
+boxplot(H0~TREATMENT, data=gb.hills,
+        main="Green Bay Richness Index",
+        xlab="",
+        ylab="Richness Index",
+        las=2,
+        col=c("gray76","gray76","gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76","darkturquoise"))
+
+#Shannon
 boxplot(H1~TREATMENT, data=gb.hills,
         main="Green Bay Shannon Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Shannon Index",
         las=2,
         col=c("gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
 legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+#Simpson
+boxplot(H2~TREATMENT, data=gb.hills,
+        main="Green Bay Simpson Index",
+        xlab="",
+        ylab="Simpson Index",
+        las=2,
+        col=c("gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+
+#BP
+boxplot(HInf~TREATMENT, data=gb.hills,
+        main="Green Bay Berger Parker Index",
+        xlab="",
+        ylab="Berger Parker Index",
+        las=2,
+        col=c("gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+
+
+
+
+#Other plots
 
 boxplot(H0~phosphorus, data=gb.hills, main="Green Bay P on Richness")
 boxplot(H0~nitrogen, data=gb.hills, main="Green Bay N on Richness")
@@ -432,6 +546,14 @@ ford.hills$trace<-grepl("Trace", ford.hills$TREATMENT)
 ford.hills$nitrogen<-grepl("N", ford.hills$TREATMENT) 
 ford.hills$phosphorus<-grepl("P", ford.hills$TREATMENT) 
 
+#Exponential Richness Entropy (Richness Hill)
+fordRICHaov<-aov(H0~nitrogen*phosphorus*trace, data=ford.hills)
+shapiro.test(resid(fordRICHaov))
+par(mfrow=c(1,2))
+plot(fordRICHaov,which=c(1,2), main="Ford RICH Normality")
+summary(fordRICHaov)
+#NP significant
+
 #Exponential Shannon Entropy (Shannon Hill)
 fordSHANNONaov<-aov(H1~nitrogen*phosphorus*trace, data=ford.hills)
 shapiro.test(resid(fordSHANNONaov))
@@ -440,16 +562,63 @@ plot(fordSHANNONaov,which=c(1,2), main="Ford Shannon Normality")
 summary(fordSHANNONaov)
 #N,NPT significant
 
-ford.hills$TREATMENT <- factor(ford.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+#Exponential SIMPSON Entropy (SIMPSON Hill)
+fordSIMPSONaov<-aov(H2~nitrogen*phosphorus*trace, data=ford.hills)
+shapiro.test(resid(fordSIMPSONaov))
+par(mfrow=c(1,2))
+plot(fordSIMPSONaov,which=c(1,2), main="Ford SIMPSON Normality")
+summary(fordSIMPSONaov)
+#N significant
 
-par(mfrow=c(1,1))
+#Exponential BP Entropy (BP Hill)
+fordBPaov<-aov(HInf~nitrogen*phosphorus*trace, data=ford.hills)
+shapiro.test(resid(fordBPaov))
+par(mfrow=c(1,2))
+plot(fordBPaov,which=c(1,2), main="Ford BP Normality")
+summary(fordBPaov)
+#NO significant
+
+
+
+ford.hills$TREATMENT <- factor(ford.hills$TREATMENT,levels=c( "Control","Chelex","Nitrogen","Phosphorus","Trace","N+P","N+Trace","P+Trace","N+P+Trace"))
+#4 panel graph
+par(mfrow=c(2,2))
+
+#Richness
+boxplot(H0~TREATMENT, data=ford.hills,
+        main="Ford Richness Index",
+        xlab="",
+        ylab="Richness Index",
+        las=2,
+        col=c("gray76","gray76","gray76","gray76","gray76","darkturquoise","gray76","gray76","gray76"))
+
+
+#Shannon
 boxplot(H1~TREATMENT, data=ford.hills,
         main="Ford Shannon Index",
-        xlab="Treatment",
+        xlab="",
         ylab="Shannon Index",
         las=2,
         col=c("gray76","gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","darkturquoise"))
-legend("topleft", bty="n", legend=c("ANOVA p <0.05","ANOVA p >0.05"),fill=c("darkturquoise","gray76"), cex=0.8)
+
+
+#Simpson
+boxplot(H2~TREATMENT, data=ford.hills,
+        main="Ford Simpson Index",
+        xlab="",
+        ylab="Simpson Index",
+        las=2,
+        col=c("gray76","darkturquoise","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+
+#BP
+boxplot(HInf~TREATMENT, data=ford.hills,
+        main="Ford Berger Parker Index",
+        xlab="",
+        ylab="Berger Parker Index",
+        las=2,
+        col=c("gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76","gray76"))
+
+
 
 boxplot(H0~phosphorus, data=ford.hills, main="Ford P on Richness")
 boxplot(H0~nitrogen, data=ford.hills, main="Ford N on Richness")
