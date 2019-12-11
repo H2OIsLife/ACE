@@ -734,7 +734,7 @@ head(rda.ford.rare.hel.all.wascores)
 symbols=ifelse(ford.rare.hel$phosphorus=="TRUE",1,ifelse(ford.rare.hel$phosphorus=="FALSE",2,0))
 plot(rda.ford.rare.hel.all.wascores[,1:2],col=colors,xlab="RDA1 (18.7%)",ylab="RDA2 (12.3%)",main="Ford Community, Hellinger transformed")
 points(rda.ford.rare.hel.all.lcscores[,1:2],col=colors,pch=symbols,cex=2,lwd=4)
-text(-0.5,0.6,"Rsquared adj.= 32.7%")
+text(-0.5,0.5,"Rsquared adj.= 32.7%")
 # This command provides and R-squared for each taxon for each axis
 goodness(rda.ford.rare.hel.all.treats)
 
