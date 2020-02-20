@@ -94,11 +94,11 @@ summarystatsMicro<- ddply(maumee, "Treatment", summarize,
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 library(ggplot2)
 library(modelr)
-Microsummaryplot<-ggplot(summarystatsMicro, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+ geom_ref_line(h=0.61,size=1,colour="black")+
+Microsummaryplot<-ggplot(summarystatsMicro, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Pastel2")+ theme(legend.position = "none")+ geom_ref_line(h=0.61,size=1,colour="black")+
   geom_bar(stat='identity',color='black')+ 
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
-  ggtitle("Maumee Microcystis spp. % Abundance")
+  ggtitle("Maumee M. aerugenosa % Abundance")
 
 
 Microsummaryplot
@@ -110,11 +110,11 @@ summarystatsMicro1<- ddply(nerie, "Treatment", summarize,
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+Microsummaryplot1<-ggplot(summarystatsMicro1, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Pastel2")+ theme(legend.position = "none")+
   geom_bar(stat='identity',color='black')+ geom_ref_line(h=0.21,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
-  ggtitle("North Erie Microcystis spp. % Abundance")
+  ggtitle("North Erie M. aerugenosa % Abundance")
 
 Microsummaryplot1
 
@@ -125,11 +125,11 @@ summarystatsMicro2<- ddply(greenbay, "Treatment", summarize,
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot2<-ggplot(summarystatsMicro2, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+Microsummaryplot2<-ggplot(summarystatsMicro2, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Pastel2")+ theme(legend.position = "none")+
   geom_bar(stat='identity',color='black')+geom_ref_line(h=0.60,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
-  ggtitle("Green Bay Microcystis spp. % Abundance")
+  ggtitle("Green Bay M. aerugenosa % Abundance")
 
 Microsummaryplot2
 
@@ -141,11 +141,11 @@ summarystatsMicro3<- ddply(ford, "Treatment", summarize,
                      Microcystis.spp..sd=sd(Microcystis.spp..prop),
                      Microcystis.spp..se=sd(Microcystis.spp..prop)/sqrt(length(Microcystis.spp..prop)))
 
-Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Dark2")+ theme(legend.position = "none")+
+Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..mean, fill=Treatment))+ scale_fill_brewer( palette = "Pastel2")+ theme(legend.position = "none")+
   geom_bar(stat='identity',color='black')+geom_ref_line(h=0.01,size=1,colour="black")+
   geom_errorbar(aes(ymin=Microcystis.spp..mean-Microcystis.spp..se, ymax=Microcystis.spp..mean+Microcystis.spp..se))+
   theme(axis.text.x=element_text(angle = 45, hjust=1))+
-  ggtitle("Ford Microcystis spp. % Abundance")
+  ggtitle("Ford M. aerugenosa % Abundance")
 
 Microsummaryplot3
 

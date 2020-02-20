@@ -66,6 +66,10 @@ Bray Curtis Distance Principal Coordinates Analysis (PCoA) also known as Metric 
 
 MAUMEE PCOA
 ```{r}
+#the covariane matrix is species by species, whereas a a distance matrix is sample by sample (site by site)
+#so a covariance matrix is calculated, and then you multiply those species scores by species abundance per site
+# a distance matrix loses species specific values.
+
 #not based on euclidean distance format so no need for decostand fuction first
 #gives negative eigenvalues because its not euclidean distance- fix this if need be
 maum.dist.bc=vegdist(maumcounts[,4:70],method="bray")
@@ -488,7 +492,8 @@ dim(maum.rare.hel.fact)
 str(maum.rare.hel.fact)
 	
 
-# If interactions exist, this method only provides marginal tests for the interaction terms
+# If interactions exist, this method only provides marginal tests for the interaction terms- you get a p-value only for the interactiona nd not for the main effects. You can also had a 'condition' statement to pull a variable out of a model. 
+
 rda.maum.rare.hel.all.xyz=rda(maum.rare.hel.fact[,12:77],maum.rare.hel.fact[,2:7])
 	summary(rda.maum.rare.hel.all.xyz)
 	anova(rda.maum.rare.hel.all.xyz)
