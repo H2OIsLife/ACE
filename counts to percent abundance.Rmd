@@ -150,6 +150,57 @@ Microsummaryplot3<-ggplot(summarystatsMicro3, aes(Treatment, Microcystis.spp..me
 Microsummaryplot3
 
 ```
+
+Non tidy verse plots
+```{r}
+#calculate mean and error for proporation of M. Aeruginosa per treatment
+#Maumee
+MEAN1 = with(maumee, tapply(Microcystis.spp..prop,list(Treatment),mean))
+MEAN1
+ERROR1 = with(maumee,tapply(Microcystis.spp..prop,list(Treatment),sd)/sqrt(tapply(Microcystis.spp..prop,list(Treatment),length)))
+ERROR1
+#North Erie
+MEAN2 = with(nerie, tapply(Microcystis.spp..prop,list(Treatment),mean))
+MEAN2
+ERROR2 = with(nerie,tapply(Microcystis.spp..prop,list(Treatment),sd)/sqrt(tapply(Microcystis.spp..prop,list(Treatment),length)))
+ERROR2
+#Green Bay
+MEAN3 = with(greenbay, tapply(Microcystis.spp..prop,list(Treatment),mean))
+MEAN3
+ERROR3 = with(greenbay,tapply(Microcystis.spp..prop,list(Treatment),sd)/sqrt(tapply(Microcystis.spp..prop,list(Treatment),length)))
+ERROR3
+#Ford
+MEAN4 = with(ford, tapply(Microcystis.spp..prop,list(Treatment),mean))
+MEAN4
+ERROR4 = with(ford,tapply(Microcystis.spp..prop,list(Treatment),sd)/sqrt(tapply(Microcystis.spp..prop,list(Treatment),length)))
+ERROR4
+
+#plot barplots
+#set appropriate margins
+#par(mfrow=c(1,1)) 
+par(pin=c(4,3),mar=c(5,5,1,0))
+#construct barplot
+#Maumee
+xloc1=barplot(MEAN1, beside=T, ylim=c(0,0.7), las=1, col=c("grey"),xlab=NULL, xaxt="n", ylab="M. aeruginosa % abundance", main="Maumee Microcystis") 
+arrows(xloc1, MEAN1-ERROR1, xloc1, MEAN1+ERROR1, code=3, angle=90, length=0.05)
+mtext(c("Control","N","P","Trace","N+P","N+Trace","P+Trace","N+P+Trace"),side=1,at=xloc1,las=2,line=0.2)
+#North Erie
+xloc2=barplot(MEAN2, beside=T, ylim=c(0,0.7), las=1, col=c("grey"),xlab=NULL, xaxt="n", ylab="M. aeruginosa % abundance", main="North Erie Microcystis") 
+arrows(xloc2, MEAN2-ERROR2, xloc2, MEAN2+ERROR2, code=3, angle=90, length=0.05)
+mtext(c("Control","N","P","Trace","N+P","N+Trace","P+Trace","N+P+Trace"),side=1,at=xloc2,las=2,line=0.2)
+#Green Bay
+xloc3=barplot(MEAN3, beside=T, ylim=c(0,0.7), las=1, col=c("grey"),xlab=NULL, xaxt="n", ylab="M. aeruginosa % abundance", main="Green Bay Microcystis") 
+arrows(xloc3, MEAN3-ERROR3, xloc3, MEAN3+ERROR3, code=3, angle=90, length=0.05)
+mtext(c("Control","N","P","Trace","N+P","N+Trace","P+Trace","N+P+Trace"),side=1,at=xloc3,las=2,line=0.2)
+#Ford
+xloc4=barplot(MEAN4, beside=T, ylim=c(0,0.7), las=1, col=c("grey"),xlab=NULL, xaxt="n", ylab="M. aeruginosa % abundance", main="Ford Microcystis") 
+arrows(xloc4, MEAN4-ERROR4, xloc4, MEAN4+ERROR4, code=3, angle=90, length=0.05)
+mtext(c("Control","N","P","Trace","N+P","N+Trace","P+Trace","N+P+Trace"),side=1,at=xloc4,las=2,line=0.2)
+par(mfrow=c(2,2))
+```
+
+
+
 ##% abundance stats
 
 MAUMEE BAY % ABUNDANCE 
