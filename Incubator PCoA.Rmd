@@ -40,6 +40,10 @@ dim(fordcounts)
 
 library(vegan)
 ```
+There is sample based vs individual based rarefaction. If you sample a number of quadrats based on size of a roof and have some roofts with 10 quadrats and some with 4, you rarefy your samples to 4 random qudrats to rarefy by sample. 
+
+For these data, I rarefy by individual or 'natural unit'. Each sample had roughly 400 natural units counted. I determine the lowest number of natural units counted in any sample (min of row sums) and rarefy to that value. 
+
 Rarefy? and Calculate Bray Curtis Distance
 ```{r}
 #[,y1:y2] indicates the columns with species count data in them within the larger dataset... essentially subsets the counts from the other info
